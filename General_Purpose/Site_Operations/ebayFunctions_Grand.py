@@ -13,11 +13,11 @@ from Item import Item
 #from Item import ItemList
 from Product import ProductList
 
-from cleanEntriesReborn import cleanTitle
-from cleanEntriesReborn import cleanPrice
-from cleanEntriesReborn import cleanShipping
-from cleanEntriesReborn import cleanDate
-from cleanEntriesReborn import stripComma
+from cleanEntries import cleanTitle
+from cleanEntries import cleanPrice
+from cleanEntries import cleanShipping
+from cleanEntries import cleanDate
+from cleanEntries import stripComma
 
 from traverseHtml import findElement
 from traverseHtml import findAllLetters
@@ -43,21 +43,16 @@ def log_error(e):
     print(e)
 
 def simple_get(url):
-    """
-    Attempts to get the content at `url` by making an HTTP GET request.
-    If the content-type of response is some kind of HTML/XML, return the
-    text content, otherwise return None.
-    """
-    try:
-        with closing(get(url, stream=True)) as resp:
-            if is_good_response(resp):
-                return resp.content
-            else:
-                return None
-
-    except RequestException as e:
-        log_error('Error during requests to {0} : {1}'.format(url, str(e)))
-        return None
+	lil = {"http": "http://10.10.1.10:3128", "https": "http://10.10.1.10:1080"}
+	try:
+		with closing(get(url, stream=True, proxies = lil)) as resp:
+			if is_good_response(resp):
+				return resp.content
+			else:
+				return None
+	except RequestException as e:
+		log_error('Error during requests to {0} : {1}'.format(url, str(e)))
+		return None
 
 """def simple_get(driver, url):
 	driver.get(url)

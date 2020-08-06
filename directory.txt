@@ -1,0 +1,48 @@
+EbayScraper
+
+	
+	TXT
+		...all text files
+
+	School_Scraping
+		School.py
+
+	Book_Scraping
+		Book.py
+		BookChangings.py
+
+		PNG_Books
+			...all graphs displaying data
+		CSV_Books
+			...all csv files that store book data
+		Extra_Books
+
+	Device_Scraping
+		links_csv_txt.py
+		ScrapeDevices.py
+
+		CSV_Devices
+			...all csv files that store item data
+		PNG_Devices
+			...all graphs displaying data
+		Extra_Devices
+
+	General_Purpose
+		Site_Operations
+			cleanEntries.py
+			ebayFunctions_Grand.py
+			Item.py
+			Product.py
+			traverseHtml.py
+		Might_Be_Useful
+			collecting_and_exportingLinks.py
+			MonthlyReport.py
+			NumberCrunching.py
+			testing_export_data.py
+			...files that might be useful for later implementation but are NOT currently in use
+		Outdated_Files
+			cleanEntriesOld.py
+			ScrapeDevicesOld.py
+			...older versions of current files that are NOT currently in use
+			
+		...all .py files used to scrape data from ebay regardless of item
