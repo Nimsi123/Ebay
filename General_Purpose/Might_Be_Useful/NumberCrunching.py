@@ -1,10 +1,11 @@
 import sys
 import datetime
 
-from Item import Item
-from Item import ItemList
-from Product import ProductList
-from MonthlyReport import MonthlyReportList
+from Ebay.ItemOrganization.Item import *
+#Item, ItemList
+
+from Ebay.ItemOrganization.Product import ProductList
+from Ebay.GeneralPurpose.MightBeUseful.MonthlyReport import MonthlyReportList
 
 class BuyingOption:
     def __init__(self, purchaseP, perUnitP, percentOfL, quantity):

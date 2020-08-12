@@ -11,11 +11,8 @@ EbayScraper
 		Book.py
 		BookChangings.py
 
-		PNG_Books
-			...all graphs displaying data
 		CSV_Books
 			...all csv files that store book data
-		Extra_Books
 
 	Device_Scraping
 		links_csv_txt.py
@@ -23,17 +20,18 @@ EbayScraper
 
 		CSV_Devices
 			...all csv files that store item data
-		PNG_Devices
-			...all graphs displaying data
-		Extra_Devices
+
+	ItemOrganization
+		Item.py
+		Product.py
+
+	Site_Operations
+		cleanEntries.py
+		ebayFunctions_Grand.py
+		traverseHtml.py
 
 	General_Purpose
-		Site_Operations
-			cleanEntries.py
-			ebayFunctions_Grand.py
-			Item.py
-			Product.py
-			traverseHtml.py
+
 		Might_Be_Useful
 			collecting_and_exportingLinks.py
 			MonthlyReport.py

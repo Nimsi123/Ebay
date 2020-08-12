@@ -1,4 +1,4 @@
-from Item import ItemList
+from Ebay.ItemOrganization.Item import Item
 import matplotlib.pyplot as plt
 
 class MonthlyReport(ItemList):

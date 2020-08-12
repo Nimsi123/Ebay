@@ -8,24 +8,18 @@ import webbrowser
 import time
 import sys
 
-from Item import Item
-from Product import ProductList
+from Ebay.ItemOrganization.Item import Item
+from Ebay.ItemOrganization.Product import ProductList
 
-from cleanEntries import cleanTitle
-from cleanEntries import cleanPrice
-from cleanEntries import cleanShipping
-from cleanEntries import cleanDate
-from cleanEntries import stripComma
+from Ebay.Site_Operations.cleanEntries import *
+#cleanTitle, cleanPrice, cleanShipping, cleanDate, stripComma
 
-from traverseHtml import findElement
-from traverseHtml import findAllLetters
-from traverseHtml import findClassName
-from traverseHtml import findKey
-from traverseHtml import findLink
+from Ebay.Site_Operations.traverseHtml import *
+#findElement, findAllLetters, findClassName, findKey, findLink
 
-from links_csv_txt import linkList
-from links_csv_txt import exportFileList
-from links_csv_txt import exportHtmlList
+from Ebay.Device_Scraping.links_csv_txt import *
+#linkList, exportFileList, exportHtmlList
+
 
 def is_good_response(resp):
     """

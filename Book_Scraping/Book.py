@@ -1,5 +1,8 @@
 import csv
 
+from Ebay.ItemOrganization.Item import *
+#Item, ItemList
+
 class Book:
 	def __init__(self, titulo, autor):
 		self.title = titulo
