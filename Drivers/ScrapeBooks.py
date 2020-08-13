@@ -7,6 +7,7 @@ import csv
 import webbrowser
 import time
 import sys
+import os
 
 from Ebay.ItemOrganization.Item import Item
 #from Item import ItemList
@@ -16,12 +17,13 @@ from Ebay.Site_Operations.traverseHtml import *
 #findElement, findAllLetters, findKey, findLink
 
 from Ebay.Site_Operations.ebayFunctions_Grand import *
-#aboutALink, is_good_response, log_error, simple_get
+#aboutALink, getEbayLink, is_good_response, log_error, simple_get
 
 from Ebay.Book_Scraping.Book import BookList
 
+from Ebay.ItemOrganization.Product import ProductList
 
-
+from Ebay.ItemOrganization.FileManagment import fileCheck
 
 def extractBook(html, elementType, attributeKey, attributeValue):
     #this function will return algorithm-friendly data that is in the html block
@@ -67,37 +69,88 @@ def searchBooks(html, bookCollection, elementType = "tr"):
 
     return bookCollection
 
-link = "https://www.goodreads.com/list/show/8402.Books_Every_High_School_Student_Should_Read"
 
-def getEbayLink(driver, searchString):
+csvSub = r"C:\Users\nimar\AppData\Local\Programs\Python\Python37\Ebay\Book_Scraping\CSV_Books"
+pngSub = r"C:\Users\nimar\Desktop\ImageDisplay\PNG"
 
-	driver.get("https://www.ebay.com")
+#data import sequence
+bookCollection = BookList()
+path = os.path.join(csvSub, "books.csv")
+bookCollection.importData(path)
 
-	inputBox = driver.find_element_by_id("gh-ac")
-	inputBox.send_keys(searchString)
+#making new files
+for book in bookCollection.bookList:
+	fileCheck(book.getTitle(), False, csvSub, pngSub)
 
-	button = driver.find_elements_by_xpath("//input[@type = 'submit' and @class = 'btn btn-prim gh-spr']")[0]
-	button.click()
 
-	#button = driver.find_elements_by_xpath("//input[@class='checkbox__control' and @aria-label='Sold Items']")[0]
-	#button = driver.find_elements_by_xpath("//input[@aria-label='Sold Items']")[0]
-	#button.click()
+#dig up the starting links, and call aboutALink
+xpath = os.path.join(csvSub, "linkBooks.csv")
+with open(xpath, "r", encoding = "utf-8") as file:
+	csv_reader = csv.DictReader(file)
 
-	#replace above code with:
-	link = driver.current_url
-	cutStart = link.find("&_trksid=")
-	cutEnd = link.find("&_nkw=")
-	newLink = link[:cutStart] + link[cutEnd:] + "&rt=nc&LH_Sold=1&LH_Complete=1"
+	count = 0
+	for line in csv_reader:
+		if count < 71:
+			count += 1
+			continue
+		print(f"{bookCollection.bookList[count].getTitle()}")
+		print("link: ", line["link"])
 
-	#print("return value: ", newLink + "&_ipg=200")
+		path = os.path.join(csvSub, f"{bookCollection.bookList[count].getTitle()}.csv")
+		aboutALink(line["link"], path)
+		count += 1
 
-	return newLink + "&_ipg=200"
+print("done importing")
+
+pdf = FPDF()
+
+#data visualization/import sequence
+listOfProductData = []
+for book in bookCollection.bookList:
+	path = os.path.join(csvSub, f"{book.getTitle()}.csv")
+
+	tempProduct = ProductList()
+	tempProduct.importData(path)
+	listOfProductData.append( tempProduct )
+
+
+for i in range(len(bookCollection.bookList)):
+	item = bookCollection.bookList[i].getTitle().replace(" ", "_")
+	avgPricePath = os.path.join(pngSub, f"{item}_avgPrice.png")
+	volumePath = os.path.join(pngSub, f"{item}_volume.png")
+
+	result = listOfProductData[i].makeMonthlyCollection( item , avgPricePath, volumePath)
+
+	if result == False:
+		continue
+	else:
+		continue
+		pdf.add_page()
+		pdf.image(avgPricePath)
+		pdf.add_page()
+		pdf.image(volumePath)
+
+print("done visualizing")
+
+sys.exit()
+print("done")
+path = os.path.join(r'C:\Users\nimar\AppData\Local\Programs\Python\Python37\Ebay\Book_Scraping', "visualization.pdf")
+pdf.output(path, 'F')
+webbrowser.open_new(path)
+
+
+
+
+
+
 
 
 
 
 #data collection sequence (names of the books)
-"""raw_html = simple_get(link)
+"""
+link = "https://www.goodreads.com/list/show/8402.Books_Every_High_School_Student_Should_Read"
+raw_html = simple_get(link)
 html = BeautifulSoup(raw_html, 'html.parser')
 bookCollection = BookList()
 searchBooks(html, bookCollection)
@@ -106,20 +159,7 @@ bookCollection.exportData("books.csv")
 
 print("done")
 
-sys.exit()"""
-
-#data import sequence
-bookCollection = BookList()
-bookCollection.importData("books.csv")
-
-print("done importing")
-
-"""
-#making new files
-for book in bookCollection.bookList:
-	with open(f"{book.getTitle()}.csv", "w") as file:
-	    pass
-print("done making files")
+sys.exit()
 """
 
 """
@@ -131,7 +171,7 @@ linkList = []
 brokenList = []
 for book in bookCollection.bookList:
 	try:
-		linkList.append( getEbayLink(driver, f"{book.getTitle()} {book.getAuthor()} book") )
+		linkList.append( getEbayLink("All Listings", f"{book.getTitle()} {book.getAuthor()} book") )
 	except:
 		brokenList.append(f"{book.getTitle()} {book.getAuthor()}")
 		break
@@ -150,24 +190,3 @@ for item in brokenList:
 
 print("done for good")
 """
-
-#sys.exit()
-
-chromedriver = "C:\webdrivers\chromedriver"
-driver = webdriver.Chrome(chromedriver)
-
-#dig up the starting links, and call aboutALink
-with open("link.csv", "r", encoding = "utf-8") as file:
-	csv_reader = csv.DictReader(file)
-	count = 0
-	for line in csv_reader:
-		print("link: ", line["link"])
-		aboutALink(line["link"], f"{bookCollection.bookList[count].getTitle()}.csv", driver)
-		print(f"done with {bookCollection.bookList[count].getTitle()}")
-		count += 1
-
-#data collection sequence (eBay data)
-print("here")
-#aboutALink("https://www.ebay.com/sch/i.html?_from=R40&_nkw=ti-83+calculators&_sacat=0&_ipg=200&LH_Sold=1&LH_Complete=1&rt=nc&LH_All=1", "fake.csv")
-print("out")
-

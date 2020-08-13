@@ -219,9 +219,7 @@ def getEbayLink(listingType, searchString):
 
 	return link + "&_ipg=200"
 
-def aboutALink(link, exportFile):
-
-	productCollection = ProductList()
+def aboutALink(link, productCollection):
 
 	totalTime = 0
 
@@ -266,10 +264,3 @@ def aboutALink(link, exportFile):
 		#if there is no next link, we have reached the end
 		if link == "nothing found":
 			break
-
-
-	productCollection.finishedCollectingListings()
-
-	productCollection.exportData(exportFile)
-	#analyze the data
-	print(f"Average Price sold at auction: {productCollection.averagePriceSold}")

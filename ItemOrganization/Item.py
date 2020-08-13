@@ -146,7 +146,7 @@ class ItemList:
 
         if number_of_lines == 0:
             #no overlap
-            print("no overlap")
+            #print("no overlap")
             #print("lines: ", lines_in_file)
             return [False, [0, len(self.itemList)], -1]
         else:
@@ -189,12 +189,12 @@ class ItemList:
             with open(exportFile, "w", encoding = "utf-8") as ebay_csv:
                 data = ["title", "price", "date"]
                 csv_writer = csv.DictWriter(ebay_csv, fieldnames = data)
-                print("writing header")
+                #print("writing header")
                 csv_writer.writeheader()
                 for item in self.itemList:
                     csv_writer.writerow({"title": item.getTitle(), "price": item.getPrice(), "date": item.getDate()})
             return
-        print("dumping")
+        #print("dumping")
 
         if package[1] == -1:
             return
@@ -205,7 +205,7 @@ class ItemList:
             return
         else:
             self.append_dump(exportFile, package[2])
-        print("passed dump")
+        #print("passed dump")
 
     def appendFileToFile(oldFile, tempFileName, needsHeader):
         with open(tempFileName, "a", encoding = "utf-8") as ebay_csv_temp:
