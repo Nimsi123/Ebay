@@ -2,7 +2,7 @@ import csv
 import statistics
 import datetime
 
-import numpy
+import numpy as np
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
@@ -98,7 +98,7 @@ class ProductList(ItemList):
                 date = datetime.datetime(int(d[0:4]), int(d[5:7]), int(d[8:10]))
                 self.itemList.append( Item(line["title"], float(line["price"]), date ) )
 
-    def makeMonthlyCollection(self, title, avgPng, volumePng):
+    def graphData(self, title, avgPng, volumePng):
         #added histogram
 
 
@@ -118,12 +118,12 @@ class ProductList(ItemList):
             if item.getDate() not in reportDictionary:
                 #we have moved onto a new month
                 reportDictionary[before_date] = itemSubset
-                before_date = item.getDate()
-                itemSubset = []
+                before_date = item.getDate() #update before_date
+                itemSubset = [] #make a new list for the next day
+
             itemSubset.append(item)
         #for the last entry (it wont enter the last if block)
         reportDictionary[before_date] = itemSubset
-        before_date = item.getDate() #does this do anything?
 
         #key:value
         #date: average price sold on this date
@@ -147,8 +147,8 @@ class ProductList(ItemList):
             avgPriceList.append(avgPrice)
             volumeList.append( len(itemSubset) )
 
-        X = numpy.array( list(range(len(avgPriceList))) ).reshape(-1, 1)
-        Y = numpy.array( avgPriceList ).reshape(-1, 1)
+        X = np.array( list(range(len(avgPriceList))) ).reshape(-1, 1)
+        Y = np.array( avgPriceList ).reshape(-1, 1)
 
         linear_regressor = LinearRegression()  # create object for the class
         linear_regressor.fit(X, Y)  # perform linear regression
@@ -166,8 +166,120 @@ class ProductList(ItemList):
 
 
 
-        X = numpy.array( list(range(len(volumeList))) ).reshape(-1, 1)
-        Y = numpy.array( volumeList ).reshape(-1, 1)
+        X = np.array( list(range(len(volumeList))) ).reshape(-1, 1)
+        Y = np.array( volumeList ).reshape(-1, 1)
+
+        linear_regressor = LinearRegression()  # create object for the class
+        linear_regressor.fit(X, Y)  # perform linear regression
+        Y_pred = linear_regressor.predict(X)  # make predictions
+
+        plt.figure(figsize = (5, 4))
+        plt.scatter(X, Y)
+        plt.plot(X, Y_pred, color='red')
+
+        plt.xlabel("days into the past")
+        plt.ylabel("volume of sales")
+        plt.title(title)
+        plt.savefig(volumePng)
+        #plt.show()
+        plt.close()
+
+
+
+        """
+        plt.figure(figsize = (5, 4))
+        plt.hist(avgPriceList)
+
+        plt.xlabel("average price")
+        plt.ylabel("number sold")
+        plt.title(title)
+        plt.show()
+        #plt.savefig(avgPng)
+        plt.close()
+        """
+
+    def graphDataNumpy(self, title, avgPng, volumePng):
+
+        if len(self.itemList) == 0:
+            print("nothing for :", title)
+            return False
+
+        #key:value
+        #date: (avgPrice, volume)
+        reportDictionary = {}
+
+        before_date = self.itemList[0].getDate()
+        itemSubset = []
+        for item in self.itemList:
+            if item.getDate() not in reportDictionary:
+                #we have moved onto a new month
+
+                #it is necessary because of the design of this algo
+                try:
+                    mean = statistics.mean([item.getPrice() for item in itemSubset])
+                    volume = len(itemSubset)
+                    reportDictionary[before_date] = (mean, volume)
+
+                except:
+                    #itemSubset is empty
+                    before_date = item.getDate()
+                    reportDictionary[before_date] = 0
+
+                    itemSubset.append(item)
+                    continue
+
+                before_date = item.getDate()
+                reportDictionary[before_date] = 0
+                itemSubset = []
+                itemSubset.append(item)
+
+            itemSubset.append(item)
+
+        #for the last entry (it wont enter the last if block)
+        mean = statistics.mean([item.getPrice() for item in itemSubset])
+        volume = len(itemSubset)
+        reportDictionary[before_date] = (mean, volume)
+
+
+
+        length = len(reportDictionary)
+        dateList = []
+        avgPriceList = np.zeros(length, dtype= np.uint32)
+        volumeList = np.zeros(length, dtype= np.uint32)
+
+        counter = 0
+        for date, collection in reportDictionary.items():
+            #collection: (mean, value)
+
+            #make lists for plotting
+            dateList.append(date)
+            avgPriceList[counter] =  collection[0] 
+            volumeList[counter] = collection[1]
+
+            counter += 1
+
+
+
+        X = np.array( list(range(len(avgPriceList))) ).reshape(-1, 1)
+        Y = avgPriceList.reshape(-1, 1)
+
+        linear_regressor = LinearRegression()  # create object for the class
+        linear_regressor.fit(X, Y)  # perform linear regression
+        Y_pred = linear_regressor.predict(X)  # make predictions
+
+        plt.figure(figsize = (5, 4))
+        plt.scatter(X, Y)
+        plt.plot(X, Y_pred, color='red')
+        plt.xlabel("days into the past")
+        plt.ylabel("average price")
+        plt.title(title)
+        plt.savefig(avgPng)
+        #plt.show()
+        plt.close()
+
+
+        X = np.array( list(range(len(avgPriceList))) ).reshape(-1, 1)
+        Y = volumeList.reshape(-1, 1)
 
         linear_regressor = LinearRegression()  # create object for the class
         linear_regressor.fit(X, Y)  # perform linear regression

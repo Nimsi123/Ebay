@@ -33,20 +33,32 @@ totalQueries.importData()
 
 print("import one")
 
-"""
 #data collection sequence
-for query in totalQueries.queryCollection[47:]:
+for query in totalQueries.queryCollection:
     print("collecting: ", query.name)
 
     #we don't want to be storing all that ProductList() data!
     #tempList will go out of scope and it will be relieved of its memory usage
+
+    #data for All listings
     tempList = ProductList()
     aboutALink(query.linkAll, tempList)
     tempList.exportData(query.csvProductList)
 
+    #data for Auction listings
+    tempList = ProductList()
+    aboutALink(query.linkAuction, tempList)
+    tempList.exportData(query.csvProductListAuction)
+
+    #data for Buy It Now listings
+    tempList = ProductList()
+    aboutALink(query.linkBIN, tempList)
+    tempList.exportData(query.csvProductListBIN)
+
 print("finished data collection")
-sys.exit()
-"""
+
+
+
 
 #import old ProductList data
 #data visualization
@@ -57,10 +69,3 @@ for query in totalQueries.queryCollection:
     del query
 
 print("visualize finished")
-
-
-
-
-
-
-

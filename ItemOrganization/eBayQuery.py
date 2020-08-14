@@ -16,6 +16,9 @@ class eBayQuery:
 		self.name = nombre
 
 		self.csvProductList = eBayQuery.csvDirectory + "CSV_Collection\\" + self.name.replace(" ", "_") + ".csv"
+		self.csvProductListAuction = eBayQuery.csvDirectory + "CSV_Collection\\" + self.name.replace(" ", "_") + "_Auction" + ".csv"
+		self.csvProductListBIN = eBayQuery.csvDirectory + "CSV_Collection\\" + self.name.replace(" ", "_") + "_BIN" + ".csv"
+
 		self.pngAveragePrice = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_avgPrice.png"
 		self.pngVolume = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_volume.png"
 		self.fileCheck()
@@ -34,13 +37,14 @@ class eBayQuery:
 		self.productCollection = ProductList()
 
 	def fileCheck(self):
-		for path in [self.csvProductList, self.pngAveragePrice, self.pngVolume]:
+		for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN, self.pngAveragePrice, self.pngVolume]:
 			if not os.path.isfile(path):
 				with open(path, "w") as file:
 					pass
 
 	def graph(self, pdf = None):
-		result = self.productCollection.makeMonthlyCollection(self.name, self.pngAveragePrice, self.pngVolume)
+		result = self.productCollection.graphData(self.name, self.pngAveragePrice, self.pngVolume)
+		#result = self.productCollection.graphDataNumpy(self.name, self.pngAveragePrice, self.pngVolume)
 
 		if result != False and pdf != None:
 			pdf.add_page()
@@ -71,7 +75,7 @@ class eBayQuery:
 class queryList:
 	def __init__(self):
 		self.queryCollection = []
-		self.exportDirectory = r"C:\Users\nimar\AppData\Local\Programs\Python\Python37\Ebay\\queryListExport.csv"
+		self.exportDirectory = r"..\\queryListExport.csv"
 
 	def addQuery(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
 		self.queryCollection.append( eBayQuery(nombre, enlaceAll, enlaceAuction, enlaceBIN) )
