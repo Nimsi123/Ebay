@@ -34,7 +34,7 @@ def cleanShipping(entry):
         return 0
     else:
         #print("cleaned shipping: ", repr(entry.strip()[2:len(entry)-9]))
-        return round(float(entry.strip()[2:len(entry)-9]), 2)
+        return round(float(stripComma(entry.strip()[2:len(entry)-9])), 2)
 
 def cleanDate(entry):
     try:
