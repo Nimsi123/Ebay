@@ -139,8 +139,13 @@ def searchListings(html, elementType, classCode, itemCollection):
 					print("key: ", key)
 					print("////////////////////////////////////////////////////////////////////////////////")"""
 
+	count = 0
+	count_skipped_early = 0
+	count_skipped_bad = 0
+	count_skipped_classcode = 0
 	for listing in html.find_all(elementType):
 		if listing.get("class") == None:
+			count_skipped_early += 1
 			continue
 		else:
 			className = (listing.get("class"))[0]
@@ -170,6 +175,7 @@ def searchListings(html, elementType, classCode, itemCollection):
 				#bad listing
 				#print(f"title: {title} price: {price} shipping: {shipping} date: {date}")
 				#print("bad listing")
+				count_skipped_bad += 1
 				continue
 
 			else:
@@ -178,7 +184,15 @@ def searchListings(html, elementType, classCode, itemCollection):
 				#add shipping to price
 				totalCost = round(price+shipping, 2)
 				#print("add item")
+				count += 1
 				itemCollection.addItem( Item(title, totalCost, date) )
+		else:
+			count_skipped_classcode += 1
+	print("number of listings: ", len(html.find_all(elementType)))
+	print("count added: ", count)
+	print("count_skipped_early: ", count_skipped_early)
+	print("count_skipped_bad: ", count_skipped_bad)
+	print("count_skipped_classcode: ", count_skipped_classcode)
 
 def getEbayLink(listingType, searchString):
 
@@ -224,6 +238,7 @@ def aboutALink(link, productCollection):
 	totalTime = 0
 
 	#get html and organize it
+	print("link: ", link)
 	raw_html = simple_get(link)
 	html = BeautifulSoup(raw_html, 'html.parser')
 
@@ -240,6 +255,8 @@ def aboutALink(link, productCollection):
 
 	max_iteration = int(total_listings/200 +1)
 
+	print("total_listings: ", total_listings)
+	print("max_iteration", max_iteration)
 
 	count = 0
 	while count < max_iteration:
@@ -257,10 +274,16 @@ def aboutALink(link, productCollection):
 
 		#get the link for the next page
 		#print("link: ", link)
-		link = findLink(html, "a", "pagination__next")
+		#link = findLink(html, "a", "pagination__next")
+		link = findLink_new(link)
 
-		#print("count: ", count)
+		print("count: ", count)
+		print("link: ", link)
+		print("length", len(productCollection.itemList))
 
+		"""
 		#if there is no next link, we have reached the end
 		if link == "nothing found":
+			print("leaving unfortunately")
 			break
+		"""

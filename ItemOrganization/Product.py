@@ -3,8 +3,8 @@ import statistics
 import datetime
 
 import numpy as np
-from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+#from sklearn.linear_model import LinearRegression
+#import matplotlib.pyplot as plt
 
 from Ebay.ItemOrganization.Item import *
 #Item, ItemList

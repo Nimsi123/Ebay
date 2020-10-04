@@ -16,6 +16,10 @@ from Ebay.Site_Operations.ebayFunctions_Grand import *
 #aboutALink, getEbayLink
 
 from Ebay.ItemOrganization.eBayQuery import queryList
+print("running")
+
+#not exporting all the data it's collecting
+#something wrong with the export data method
 
 #process of downloading html and iterating over pages
 #   request the link and download the html
@@ -46,9 +50,9 @@ sys.exit()
 totalQueries = queryList()
 totalQueries.importData()
 
-print("import one")
+#print("import one")
 
-print(totalQueries.queryCollection[-9])
+#print(totalQueries.queryCollection[-9])
 
 """
 lengthList = []
@@ -69,12 +73,16 @@ for query in totalQueries.queryCollection:
 """
 
 
+#print(totalQueries.queryCollection[183])
 
 
-"""
+
+count = 0
 #data collection sequence
-for query in totalQueries.queryCollection[212:]:
+for query in totalQueries.queryCollection[:1]:
     print("collecting: ", query.name)
+    print(count)
+    count += 1
 
     #we don't want to be storing all that ProductList() data!
     #tempList will go out of scope and it will be relieved of its memory usage
@@ -87,17 +95,19 @@ for query in totalQueries.queryCollection[212:]:
     #data for Auction listings
     tempList = ProductList()
     aboutALink(query.linkAuction, tempList)
+    print("length", len(tempList.itemList))
     tempList.exportData(query.csvProductListAuction)
 
     #data for Buy It Now listings
     tempList = ProductList()
     aboutALink(query.linkBIN, tempList)
+    print("length", len(tempList.itemList))
     tempList.exportData(query.csvProductListBIN)
 
 print("finished data collection")
+
+
 """
-
-
 #import old ProductList data
 #data visualization
 for query in totalQueries.queryCollection[-9:]:
@@ -107,3 +117,4 @@ for query in totalQueries.queryCollection[-9:]:
     del query
 
 print("visualize finished")
+"""

@@ -10,15 +10,15 @@ from Ebay.Site_Operations.ebayFunctions_Grand import getEbayLink
 
 
 class eBayQuery:
-	csvDirectory = r"C:\Users\nimar\AppData\Local\Programs\Python\Python37\Ebay" + "\\"
-	pngDirectory = r"C:\Users\nimar\Desktop\ImageDisplay\PNG" + "\\"
+	csvDirectory = r".." + "\\CSV_Collection\\"
+	pngDirectory = r"..\ImageDisplay\PNG" + "\\"
 
 	def __init__(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
 		self.name = nombre
 
-		self.csvProductList = eBayQuery.csvDirectory + "CSV_Collection\\" + self.name.replace(" ", "_") + ".csv"
-		self.csvProductListAuction = eBayQuery.csvDirectory + "CSV_Collection\\" + self.name.replace(" ", "_") + "_Auction" + ".csv"
-		self.csvProductListBIN = eBayQuery.csvDirectory + "CSV_Collection\\" + self.name.replace(" ", "_") + "_BIN" + ".csv"
+		self.csvProductList = eBayQuery.csvDirectory + self.name.replace(" ", "_") + ".csv"
+		self.csvProductListAuction = eBayQuery.csvDirectory + self.name.replace(" ", "_") + "_Auction" + ".csv"
+		self.csvProductListBIN = eBayQuery.csvDirectory + self.name.replace(" ", "_") + "_BIN" + ".csv"
 
 		self.pngAveragePrice = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_avgPrice.png"
 		self.pngVolume = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_volume.png"

@@ -149,6 +149,12 @@ def findLink(html, elementType, classCode):
     else:
         return element.get("href")
 
+def findLink_new(old_link):
+    if old_link.find("&_pgn=") == -1:
+        return old_link + "&_pgn=2"
+    else:
+        end = old_link.find("&_pgn=") + len("&_pgn=")
+        return old_link[:end] + str((int(old_link[end:]) + 1))
 
 """
 def countListings(html, elementType, classCode):

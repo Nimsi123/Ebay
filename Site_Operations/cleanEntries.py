@@ -75,5 +75,9 @@ def cleanDate(entry):
         month = 7
     elif month.upper() == "AUG":
         month = 8
+    elif month.upper() == "SEP":
+        month = 9
+    elif month.upper() == "OCT":
+        month = 10
 
     return datetime.datetime(int(year), int(month), int(day))
