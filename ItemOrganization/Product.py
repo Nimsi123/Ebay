@@ -98,6 +98,9 @@ class ProductList(ItemList):
                 date = datetime.datetime(int(d[0:4]), int(d[5:7]), int(d[8:10]))
                 self.itemList.append( Item(line["title"], float(line["price"]), date ) )
 
+    def date_sort(self):
+        self.itemList.sort(key = lambda item: item.date)
+
     def splitData(self, title):
 
         #key:value

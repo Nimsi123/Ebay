@@ -2,12 +2,13 @@ from requests import get
 from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
-from selenium import webdriver
+#from selenium import webdriver
 import csv
 import webbrowser
 import time
 import sys
 from fpdf import FPDF
+from time import sleep
 
 import functools
 
@@ -132,12 +133,6 @@ def searchListings(html, elementType, classCode, itemCollection):
 	#ebay tries to mess with the sale date and my code
 	#right before the code starts, I will find the special className that can be used to find the sale date!
 	key = findKey(html, elementType, ["S", "o", "l", "d"])
-	"""if key == None:
-					#print("********************************************************************************")
-				else:
-					print("////////////////////////////////////////////////////////////////////////////////")
-					print("key: ", key)
-					print("////////////////////////////////////////////////////////////////////////////////")"""
 
 	count = 0
 	count_skipped_early = 0
@@ -188,37 +183,17 @@ def searchListings(html, elementType, classCode, itemCollection):
 				itemCollection.addItem( Item(title, totalCost, date) )
 		else:
 			count_skipped_classcode += 1
-	print("number of listings: ", len(html.find_all(elementType)))
-	print("count added: ", count)
-	print("count_skipped_early: ", count_skipped_early)
-	print("count_skipped_bad: ", count_skipped_bad)
-	print("count_skipped_classcode: ", count_skipped_classcode)
+
+	printer_bool = False
+
+	if printer_bool:
+		print("PAGE STATS")
+		print(f"num listings: {len(html.find_all(elementType))}")
+		print(f"count added: {count}")
+		print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_classcode: {count_skipped_classcode}")
+		print("\n")
 
 def getEbayLink(listingType, searchString):
-
-	"""
-	driver.get("https://www.ebay.com")
-
-	inputBox = driver.find_element_by_id("gh-ac")
-	inputBox.send_keys(searchString)
-
-	button = driver.find_elements_by_xpath("//input[@type = 'submit' and @class = 'btn btn-prim gh-spr']")[0]
-	button.click()
-
-	#button = driver.find_elements_by_xpath("//input[@class='checkbox__control' and @aria-label='Sold Items']")[0]
-	#button = driver.find_elements_by_xpath("//input[@aria-label='Sold Items']")[0]
-	#button.click()
-
-	#replace above code with:
-	link = driver.current_url
-	cutStart = link.find("&_trksid=")
-	cutEnd = link.find("&_nkw=")
-	newLink = link[:cutStart] + link[cutEnd:] + "&rt=nc&LH_Sold=1&LH_Complete=1" + "&_ipg=200"
-
-	#print("return value: ", newLink)
-
-	return newLink
-	"""
 
 	link = "https://www.ebay.com/sch/i.html?_from=R40&_nkw=" + searchString + "&LH_Sold=1&LH_Complete=1"
 
@@ -233,22 +208,15 @@ def getEbayLink(listingType, searchString):
 
 	return link + "&_ipg=200"
 
-def aboutALink(link, productCollection):
-
-	totalTime = 0
+def aboutALink(client, link, productCollection):
 
 	#get html and organize it
 	print("link: ", link)
-	raw_html = simple_get(link)
+	#raw_html = simple_get(link)
+	raw_html = client.get(url = link).text
 	html = BeautifulSoup(raw_html, 'html.parser')
 
-	#driver.get(link)
-	#html = BeautifulSoup(driver.page_source, 'html.parser')
-
 	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", stripComma))
-
-	#there is nothing for us here
-	#print("total_listings: ", total_listings)
 
 	if total_listings == 0:
 		return
@@ -263,8 +231,10 @@ def aboutALink(link, productCollection):
 
 		#get html and organize it
 		#print("current link: ", link)
-
-		raw_html = simple_get(link, True)
+		#webbrowser.open(link)
+		#sleep(10)
+		#raw_html = simple_get(link, True)
+		raw_html = client.get(url = link).text
 		html = BeautifulSoup(raw_html, 'html.parser')
 
 
@@ -277,13 +247,12 @@ def aboutALink(link, productCollection):
 		#link = findLink(html, "a", "pagination__next")
 		link = findLink_new(link)
 
-		print("count: ", count)
-		print("link: ", link)
-		print("length", len(productCollection.itemList))
+		printer_bool = False
 
-		"""
-		#if there is no next link, we have reached the end
-		if link == "nothing found":
-			print("leaving unfortunately")
-			break
-		"""
+		if printer_bool:
+			print(f"new link: {link}")
+			print(f"iter count: {count} ... current itemList length: {len(productCollection.itemList)}")
+
+		#print("iter count: ", count)
+		#print("new link: ", link)
+		#print("current itemList length", len(productCollection.itemList))

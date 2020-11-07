@@ -1,4 +1,5 @@
 import datetime
+import bs4
 
 #functions to adjust html inputs to work with my algorithms
 def cleanTitle(entry):
@@ -33,23 +34,25 @@ def cleanShipping(entry):
         #just another safety precaution
         return 0
     else:
-        #print("cleaned shipping: ", repr(entry.strip()[2:len(entry)-9]))
-        return round(float(stripComma(entry.strip()[2:len(entry)-9])), 2)
+        try:
+            message = stripComma(entry.strip()[2:len(entry)-9])
+            if "shipping" in message:
+                return round(float(message[:-9]))
+            else:
+                return round(float(message), 2)
+        except:
+            print("bad shipping: ", entry)
+            return None
 
 def cleanDate(entry):
-    try:
-        entry = entry.contents
-    except:
-        pass
-    try:
-        entry = entry[0]
-    except:
-        pass
 
-    try:
-        entry = str(entry)
-    except:
+    #coerce entry into a string
+    if type(entry) == bs4.Tag:
+        entry = str(entry.contents[0])
+    else:
+        print(f"entry type: {type(entry)}")
         print("date not able to become a string")
+        return None
 
     if entry.find("Sold") == -1:
         return None
@@ -64,20 +67,15 @@ def cleanDate(entry):
 
     year = date[endDay + len(", "):]
 
-    stringDate = ""
-    if month.upper() == "APR":
-        month = 4
-    elif month.upper() == "MAY":
-        month = 5
-    elif month.upper() == "JUN":
-        month = 6
-    elif month.upper() == "JUL":
-        month = 7
-    elif month.upper() == "AUG":
-        month = 8
-    elif month.upper() == "SEP":
-        month = 9
-    elif month.upper() == "OCT":
-        month = 10
+    month_dict = {
+        "APR": 4,
+        "MAY": 5,
+        "JUN": 6,
+        "JUL": 7,
+        "AUG": 8,
+        "SEP": 9,
+        "OCT": 10,
+        "NOV": 11
+    }
 
-    return datetime.datetime(int(year), int(month), int(day))
+    return datetime.datetime(int(year), month_dict[month.upper()], int(day))

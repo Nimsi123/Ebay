@@ -177,6 +177,9 @@ class ItemList:
                     return [True, [0, overlapA], [overlapB, len(self.itemList)]]
 
 
+
+
+
     def exportData(self, exportFile):
 
         package = self.overlap(exportFile)
@@ -249,4 +252,31 @@ class ItemList:
             csv_writer = csv.DictWriter(ebay_csv, fieldnames = data)
 
             for item in self.itemList[indexRange[0]: indexRange[1]]:
+                csv_writer.writerow({"title": item.getTitle(), "price": item.getPrice(), "date": item.getDate()})
+
+
+
+    def new_export(self, exportFile, importList):
+
+        importList.importData(exportFile)
+        for item in importList.itemList:
+
+            #membership test
+            member = False
+            for item_two in self.itemList:
+                if item.title == item_two.title and item.price == item_two.price and item.date == item_two.date:
+                    member = True
+                    break
+
+            if not member:
+                self.itemList.append(item)
+
+        self.date_sort()
+
+        with open(exportFile, "w", encoding = "utf-8") as ebay_csv:
+            data = ["title", "price", "date"]
+            csv_writer = csv.DictWriter(ebay_csv, fieldnames = data)
+            #print("writing header")
+            csv_writer.writeheader()
+            for item in self.itemList:
                 csv_writer.writerow({"title": item.getTitle(), "price": item.getPrice(), "date": item.getDate()})

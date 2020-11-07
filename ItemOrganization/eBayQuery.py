@@ -39,7 +39,8 @@ class eBayQuery:
 		self.productCollection = ProductList()
 
 	def fileCheck(self):
-		for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN, self.pngAveragePrice, self.pngVolume, self.pngCombo]:
+		#for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN, self.pngAveragePrice, self.pngVolume, self.pngCombo]:
+		for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN]:
 			if not os.path.isfile(path):
 				with open(path, "w") as file:
 					pass
