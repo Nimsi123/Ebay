@@ -1,16 +1,16 @@
-from requests import get
-from requests.exceptions import RequestException
-from contextlib import closing
+#from requests import get
+#from requests.exceptions import RequestException
+#from contextlib import closing
 from bs4 import BeautifulSoup
 #from selenium import webdriver
-import csv
-import webbrowser
-import time
-import sys
-from fpdf import FPDF
-from time import sleep
+#import csv
+#import webbrowser
+#import time
+#import sys
+#from fpdf import FPDF
+#from time import sleep
 
-import functools
+#import functools
 
 from Ebay.ItemOrganization.Item import Item
 from Ebay.ItemOrganization.Product import ProductList
@@ -20,43 +20,6 @@ from Ebay.Site_Operations.cleanEntries import *
 
 from Ebay.Site_Operations.traverseHtml import *
 #findElement, findAllLetters, findKey, findLink
-
-def is_good_response(resp):
-	"""
-	Returns True if the response seems to be HTML, False otherwise.
-	"""
-	content_type = resp.headers['Content-Type'].lower()
-	return (resp.status_code == 200 
-			and content_type is not None 
-			and content_type.find('html') > -1)
-
-def log_error(e):
-	"""
-	It is always a good idea to log errors. 
-	This function just prints them, but you can
-	make it do anything.
-	"""
-	print(e)
-
-def simple_get(url, testing = False):
-	try:
-		with closing(get(url, stream=True)) as resp:
-			if is_good_response(resp):
-				if testing:
-					return resp.text
-				else:
-					return resp.content
-			else:
-				return None
-	except RequestException as e:
-		log_error('Error during requests to {0} : {1}'.format(url, str(e)))
-		return None
-
-"""def simple_get(driver, url):
-	driver.get(url)
-	return driver.page_source"""
-
-
 
 
 def extract(rawGetFunction, html, elementType, className, cleanFunction):
@@ -124,7 +87,7 @@ def extractNested(rawGetFunction, html, outerElementType, outerClassName, innerE
 	return cleaned_inner
 
 
-def searchListings(html, elementType, classCode, itemCollection):
+def searchListings(html, elementType, classCode, itemCollection, printer_bool_page_stats):
 	#find all "elementType" HTML elements
 	#extract data to make Item objects
 	#search all posted listings and make an ProductList object
@@ -184,14 +147,12 @@ def searchListings(html, elementType, classCode, itemCollection):
 		else:
 			count_skipped_classcode += 1
 
-	printer_bool = False
-
-	if printer_bool:
+	if printer_bool_page_stats:
+		print("\n")
 		print("PAGE STATS")
-		print(f"num listings: {len(html.find_all(elementType))}")
+		print(f"num item listings: {len(html.find_all(elementType))}")
 		print(f"count added: {count}")
 		print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_classcode: {count_skipped_classcode}")
-		print("\n")
 
 def getEbayLink(listingType, searchString):
 
@@ -208,51 +169,43 @@ def getEbayLink(listingType, searchString):
 
 	return link + "&_ipg=200"
 
-def aboutALink(client, link, productCollection):
+def receive_html(client, link):
+	"""
+	Returns the html from a webpage as a BeautifulSoup object.
+	"""
 
-	#get html and organize it
-	print("link: ", link)
-	#raw_html = simple_get(link)
 	raw_html = client.get(url = link).text
 	html = BeautifulSoup(raw_html, 'html.parser')
 
+	return html
+
+
+def aboutALink(client, link, productCollection):
+	printer_bool_product_stats = True
+	printer_bool_page_stats = True
+
+	html = receive_html(client, link)
+
+	print("extract: ", extract(findElement, html, "h1", "srp-controls__count-heading", stripComma))
 	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", stripComma))
 
 	if total_listings == 0:
 		return
 
-	max_iteration = int(total_listings/200 +1)
+	max_iteration = min(50, int(total_listings/200 +1)) #ebay won't show us more that 10,000 items from their page even though there might be more to look at
 
-	print("total_listings: ", total_listings)
-	print("max_iteration", max_iteration)
+	if printer_bool_product_stats:
+		print("\nPRODUCT STATS")
+		print("total_listings: ", total_listings)
+		print("max_iteration", max_iteration)
 
-	count = 0
-	while count < max_iteration:
+	for count in range(max_iteration):
 
-		#get html and organize it
-		#print("current link: ", link)
-		#webbrowser.open(link)
-		#sleep(10)
-		#raw_html = simple_get(link, True)
-		raw_html = client.get(url = link).text
-		html = BeautifulSoup(raw_html, 'html.parser')
+		html = receive_html(client, link)
+		searchListings(html, "li", "s-item", productCollection, printer_bool_page_stats) #search the listings for data. populate the productCollection list
 
-
-		#search the listings for data
-		searchListings(html, "li", "s-item", productCollection)
-		count += 1
-
-		#get the link for the next page
-		#print("link: ", link)
-		#link = findLink(html, "a", "pagination__next")
-		link = findLink_new(link)
-
-		printer_bool = False
-
-		if printer_bool:
-			print(f"new link: {link}")
+		if printer_bool_page_stats:
 			print(f"iter count: {count} ... current itemList length: {len(productCollection.itemList)}")
+			print(f"link: {link}")
 
-		#print("iter count: ", count)
-		#print("new link: ", link)
-		#print("current itemList length", len(productCollection.itemList))
+		link = findLink_new(link) #get the link for the next page

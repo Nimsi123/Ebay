@@ -14,15 +14,15 @@ class eBayQuery:
 	pngDirectory = r"..\ImageDisplay\PNG" + "\\"
 
 	def __init__(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
-		self.name = nombre
+		self.name = nombre.replace(" ", "_")
 
-		self.csvProductList = eBayQuery.csvDirectory + self.name.replace(" ", "_") + ".csv"
-		self.csvProductListAuction = eBayQuery.csvDirectory + self.name.replace(" ", "_") + "_Auction" + ".csv"
-		self.csvProductListBIN = eBayQuery.csvDirectory + self.name.replace(" ", "_") + "_BIN" + ".csv"
+		self.csvProductList = eBayQuery.csvDirectory + self.name + ".csv"
+		self.csvProductListAuction = eBayQuery.csvDirectory + self.name + "_Auction.csv"
+		self.csvProductListBIN = eBayQuery.csvDirectory + self.name + "_BIN.csv"
 
-		self.pngAveragePrice = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_avgPrice.png"
-		self.pngVolume = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_volume.png"
-		self.pngCombo = eBayQuery.pngDirectory + self.name.replace(" ", "_") + "_combo.png"
+		self.pngAveragePrice = eBayQuery.pngDirectory + self.name + "_avgPrice.png"
+		self.pngVolume = eBayQuery.pngDirectory + self.name + "_volume.png"
+		self.pngCombo = eBayQuery.pngDirectory + self.name + "_combo.png"
 		self.fileCheck()
 
 		#links are either all there, or not at all
@@ -63,7 +63,7 @@ class eBayQuery:
 		else:
 			(dateList, avgPriceList, volumeList) = package
 
-
+		#plot Auction data
 		ProductList.fillPlot(avgPriceList, avgPriceAx, "days into the past", "average price", self.name, "lightcoral", "firebrick", "Auction")
 		ProductList.fillPlot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, "lightcoral", "firebrick")
 
@@ -78,6 +78,7 @@ class eBayQuery:
 		else:
 			(dateList, avgPriceList, volumeList) = package
 
+		#plot BIN data
 		ProductList.fillPlot(avgPriceList, avgPriceAx, "days into the past", "average price", self.name, "aquamarine", "teal", "Buy It Now")
 		ProductList.fillPlot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, "aquamarine", "teal")
 
@@ -85,6 +86,7 @@ class eBayQuery:
 		#export the fig
 		fig.savefig(self.pngCombo)
 
+		#close out
 		fig.clf()
 		plt.close()
 
@@ -94,6 +96,9 @@ class eBayQuery:
 
 	def importProductData(self, csvDirectory):
 		self.productCollection.importData(csvDirectory)
+
+	def get_dict_data(self):
+		return {"name": query.name, "AllListingsLink": query.linkAll, "AuctionLink": query.linkAuction, "BuyItNowLink": query.linkBIN}
 
 	def __str__(self):
 		message = ""
@@ -116,6 +121,8 @@ class queryList:
 	def addQuery(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
 		self.queryCollection.append( eBayQuery(nombre, enlaceAll, enlaceAuction, enlaceBIN) )
 
+
+
 	def exportData(self, append):
 		if append == True:
 			with open(self.exportDirectory, "a", encoding = "utf-8") as file:
@@ -123,14 +130,14 @@ class queryList:
 				csv_writer = csv.DictWriter(file, fieldnames = data)
 
 				for query in self.queryCollection:
-					csv_writer.writerow({"name": query.name, "AllListingsLink": query.linkAll, "AuctionLink": query.linkAuction, "BuyItNowLink": query.linkBIN})
+					csv_writer.writerow(self.get_dict_data())
 		else:
 			with open(self.exportDirectory, "w", encoding = "utf-8") as file:
 				data = ["name", "queryDataDirectory", "productListDirectory", "AveragePriceDirectory", "VolumeDirectory", "AllListingsLink", "AuctionLink", "BuyItNowLink"]
 				csv_writer = csv.DictWriter(file, fieldnames = data)
 				csv_writer.writeheader()
 				for query in self.queryCollection:
-					csv_writer.writerow({"name": query.name, "AllListingsLink": query.linkAll, "AuctionLink": query.linkAuction, "BuyItNowLink": query.linkBIN})
+					csv_writer.writerow(query.get_dict_data())
 
 	def importData(self):
 		with open(self.exportDirectory, "r", encoding = "utf-8") as file:

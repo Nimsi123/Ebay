@@ -3,8 +3,8 @@ import statistics
 import datetime
 
 import numpy as np
-#from sklearn.linear_model import LinearRegression
-#import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import matplotlib.pyplot as plt
 
 from Ebay.ItemOrganization.Item import *
 #Item, ItemList
@@ -17,79 +17,15 @@ class ProductList(ItemList):
         self.percentUnderAverage = 0
 
     def addItem(self, item):
+        """
+        Add an Item object to itemList
+        """
         self.itemList.append(item)
 
-    def removePriceOutliers(self, topPrice):
-        #make all yuge prices equal to -1
-        #all price functions should be adjusted so prices of -1 are not included in any calculation
-
-        i = 0
-        while i < len(self.itemList):
-            if self.itemList[i].getPrice() >= topPrice:
-                #delete the item with the outlier price
-                del self.itemList[i]
-                i -= 1
-            i+= 1
-
-    def getStatsData(self):
-        string = ""
-        string += f"Mean: {self.mean} "
-        string += f"Median: {self.median} "
-        string += f"Standard Deviation: {self.stdev}"
-
-        return string
-
-    def countDates(self):
-        #all we have is april, may, june, and july
-        pass
-
-    def finishedCollectingListings(self):
-        #print(self)
-        #print("printed self")
-        self.makeListOfPrices()
-        self.statistics()
-        #self.plotHistogram()
-        self.findAveragePrice()
-
-    def analyzeAveragePrice(self, profit):
-        #assume i sell at the averagePriceSold again
-        #then i will make a profit
-        
-        #purchase_price: the price i would have to buy at to make a profit
-        purchase_price = round((0.87)*(self.averagePriceSold)-8 -profit, 2)
-        
-        total = 0
-        for price in self.listOfPrices:
-            if price <= purchase_price:
-                #a calculator at or below the purchase price is available
-                #i can buy this calculator and make a profit
-                total += 1
-
-        self.percentAvailable = round(total/len(self.listOfPrices), 2)
-        #after ebay and shipping fee's, after profit, how much do i buy calculators for
-        #print(f"Buy for purchase price of: {purchase_price} and make a perUnitProfit: ${profit}")
-        #print(f"Percent under or at purchase price to buy: {self.percentAvailable}")
-
-        return self.percentAvailable, purchase_price
-
-    def calculateTotalProfit(self, bottom_price):
-        #if you buy at the bottom price, you make 0 profit (bottom_price - price)
-        #if there is any difference in bottom_price and price, you make a profit
-        #the lowest you can buy is (0.87)*(self.averagePriceSold)-8
-        #   because of ebay fees and shipping
-        
-        #bottom_price = round((0.87)*(self.averagePriceSold)-8, 2)
-
-        totalProfit = 0
-        for price in self.listOfPrices:
-            if price <= bottom_price:
-                #a calculator at or below the purchase price is available
-                #i can buy this calculator and make a profit
-                totalProfit += (bottom_price - price)
-
-        return bottom_price, totalProfit
-
     def importData(self, dataFile):
+        """
+        Open up a csv file that holds individual item data. Populate the itemList with newly created Item objects.
+        """
 
         with open(dataFile, "r", encoding = "utf-8") as csv_file:
             csv_reader = csv.DictReader(csv_file)
@@ -99,12 +35,20 @@ class ProductList(ItemList):
                 self.itemList.append( Item(line["title"], float(line["price"]), date ) )
 
     def date_sort(self):
+        """
+        Sort the itemList by date. Earliest date in the beginning of the list.
+        """
         self.itemList.sort(key = lambda item: item.date)
 
     def splitData(self, title):
+        """
+        self.itemList is a list of items.
+        extract three new meaningful lists.
+        --> (dateList, avgPriceList, volumeList)
+        """
 
         #key:value
-        #date (mm/dd/yyyy): listOfItems
+        #date (mm/dd/yyyy): list of items
         reportDictionary = {}
 
         #put all the sales in a dictionary
@@ -127,19 +71,18 @@ class ProductList(ItemList):
 
         #key:value
         #date: average price sold on this date
-        #date: total sales on this date
         reportAverageDictionary = {}
+        #date: total sales on this date
         reportVolumeDictionary = {}
 
         dateList = []
         avgPriceList = []
-
         volumeList = []
+        #for every date, organize the average price and volume of sales
         for date, itemSubset in reportDictionary.items():
-            #store specific values in dictionaries
             avgPrice = statistics.mean([item.getPrice() for item in itemSubset])
-            reportAverageDictionary[date] = avgPrice
 
+            reportAverageDictionary[date] = avgPrice
             reportVolumeDictionary[date] = len(itemSubset)
 
             #make lists for plotting
@@ -195,3 +138,64 @@ class ProductList(ItemList):
         #plt.savefig(avgPng)
         plt.close()
         """
+
+
+    """DATA ANALYSIS CODE"""
+
+    def removePriceOutliers(self, topPrice):
+        #make all yuge prices equal to -1
+        #all price functions should be adjusted so prices of -1 are not included in any calculation
+
+        i = 0
+        while i < len(self.itemList):
+            if self.itemList[i].getPrice() >= topPrice:
+                #delete the item with the outlier price
+                del self.itemList[i]
+                i -= 1
+            i+= 1
+
+    def finishedCollectingListings(self):
+        #print(self)
+        #print("printed self")
+        self.makeListOfPrices()
+        self.statistics()
+        #self.plotHistogram()
+        self.findAveragePrice()
+
+    def analyzeAveragePrice(self, profit):
+        #assume i sell at the averagePriceSold again
+        #then i will make a profit
+        
+        #purchase_price: the price i would have to buy at to make a profit
+        purchase_price = round((0.87)*(self.averagePriceSold)-8 -profit, 2)
+        
+        total = 0
+        for price in self.listOfPrices:
+            if price <= purchase_price:
+                #a calculator at or below the purchase price is available
+                #i can buy this calculator and make a profit
+                total += 1
+
+        self.percentAvailable = round(total/len(self.listOfPrices), 2)
+        #after ebay and shipping fee's, after profit, how much do i buy calculators for
+        #print(f"Buy for purchase price of: {purchase_price} and make a perUnitProfit: ${profit}")
+        #print(f"Percent under or at purchase price to buy: {self.percentAvailable}")
+
+        return self.percentAvailable, purchase_price
+
+    def calculateTotalProfit(self, bottom_price):
+        #if you buy at the bottom price, you make 0 profit (bottom_price - price)
+        #if there is any difference in bottom_price and price, you make a profit
+        #the lowest you can buy is (0.87)*(self.averagePriceSold)-8
+        #   because of ebay fees and shipping
+        
+        #bottom_price = round((0.87)*(self.averagePriceSold)-8, 2)
+
+        totalProfit = 0
+        for price in self.listOfPrices:
+            if price <= bottom_price:
+                #a calculator at or below the purchase price is available
+                #i can buy this calculator and make a profit
+                totalProfit += (bottom_price - price)
+
+        return bottom_price, totalProfit

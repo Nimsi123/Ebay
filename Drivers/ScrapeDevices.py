@@ -20,24 +20,22 @@ print("running")
 
 #sys.exit()
 from scraper_api import ScraperAPIClient
-client = ScraperAPIClient('c733663048589db82005534b6739c32e')
+#client = ScraperAPIClient('c733663048589db82005534b6739c32e')
+client = ScraperAPIClient('cbbdd094d7401d8912b09341e37be9b1')
 
+"""
+DESCRIPTION OF HIGH LEVEL OPERATIONS
 
-#not exporting all the data it's collecting
-#something wrong with the export data method
+process of downloading html and iterating over pages
+   request the link and download the html
+   scrape data from the html
+   export the data
 
-#process of downloading html and iterating over pages
-#   request the link and download the html
-#   scrape data from the html
-#   export the data
-
-#process of importing and displaying the data
-#   import the data into a series of ProductList() objects
-#   per ProductList() object, graph its contents
-#   print all the graphs into a single pdf sheet
-
-
-
+process of importing and displaying the data
+   import the data into a series of ProductList() objects
+   per ProductList() object, graph its contents
+   print all the graphs into a single pdf sheet
+"""
 
 def data_import_new_books():
     totalQueries = queryList()
@@ -78,11 +76,15 @@ def data_import():
 
 
 def data_collection(client, totalQueries):
-    #data collection sequence
+    """
+    Iterate through queries in totalQueries. 
+    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
+    Export this data to every query's respective csv file.
+    """
 
-    count = 0
+    count = 236
     
-    for query in totalQueries.queryCollection[:1]:
+    for query in totalQueries.queryCollection[count:]:
         print("collecting: ", query.name)
         print("count: ", count)
         count += 1
@@ -99,17 +101,15 @@ def data_collection(client, totalQueries):
         print(f"\n{query.name} AUCTION")
         tempList = ProductList()
         aboutALink(client, query.linkAuction, tempList)
-        #tempList.exportData(query.csvProductListAuction)
         tempList.new_export(query.csvProductListAuction, ProductList())
-        print("length for AUCTION", len(tempList.itemList))
+        print("\nlength of AUCTION", len(tempList.itemList))
 
         #data for Buy It Now listings
         print(f"\n{query.name} BIN")
         tempList = ProductList()
         aboutALink(client, query.linkBIN, tempList)
-        #tempList.exportData(query.csvProductListBIN)
         tempList.new_export(query.csvProductListBIN, ProductList())
-        print("length for BIN", len(tempList.itemList))
+        print("\nlength of BIN", len(tempList.itemList))
 
     print("finished data collection")
 
@@ -121,12 +121,52 @@ def data_visualization(totalQueries):
         #query.importProductData()
         query.graphCombination()
 
+        #does this line really do anything?
         del query #don't want to be storing the query in memory
 
     print("visualize finished")
 
 
+def test_export_function(client, totalQueries):
+    #data collection sequence
+
+    count = 0
+    
+    query = totalQueries.queryCollection[0]
+
+    print("collecting: ", query.name)
+
+    length_of_auction_list = []
+    length_of_csv = []
+
+    for i in range(4):
+
+        #data for Auction listings
+        print(f"\n{query.name} AUCTION")
+        tempList = ProductList()
+        aboutALink(client, query.linkAuction, tempList)
+
+        #after we populate tempList
+        length_of_auction_list.append( len(tempList.itemList) )
+
+        importList = ProductList()
+        tempList.new_export(query.csvProductListAuction, importList)
+
+        #after we populate the csv file
+        length_of_csv.append( len(importList.itemList) )
+
+        print("length for AUCTION", len(tempList.itemList))
+
+    print(length_of_auction_list)
+    print(length_of_csv)
+    print("finished data collection")
+
+
 #sys.exit()
 totalQueries = data_import()
 
-data_collection(client, totalQueries)
+#data_collection(client, totalQueries)
+
+#test_export_function(client, totalQueries)
+
+data_visualization(totalQueries)
