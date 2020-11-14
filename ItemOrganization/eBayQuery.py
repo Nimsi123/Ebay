@@ -56,23 +56,23 @@ class eBayQuery:
 				with open(path, "w") as file:
 					pass
 
-    def fillPlot(data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
-    	"""
+	def fillPlot(data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
+		"""
 		Helper function to graphCombination.
-    	"""
+		"""
 
-        X = np.array( list(range(len(data))) ).reshape(-1, 1)
-        Y = np.array( data ).reshape(-1, 1)
+		X = np.array( list(range(len(data))) ).reshape(-1, 1)
+		Y = np.array( data ).reshape(-1, 1)
 
-        linear_regressor = LinearRegression()  # create object for the class
-        linear_regressor.fit(X, Y)  # perform linear regression
-        Y_pred = linear_regressor.predict(X)  # make predictions
+		linear_regressor = LinearRegression()  # create object for the class
+		linear_regressor.fit(X, Y)  # perform linear regression
+		Y_pred = linear_regressor.predict(X)  # make predictions
 
-        ax.scatter(X, Y, c = colScatter, label = labeling)
-        ax.plot(X, Y_pred, color= colLine)
-        ax.set_xlabel(xTitle)
-        ax.set_ylabel(yTitle)
-        ax.set_title(graphTitle)
+		ax.scatter(X, Y, c = colScatter, label = labeling)
+		ax.plot(X, Y_pred, color= colLine)
+		ax.set_xlabel(xTitle)
+		ax.set_ylabel(yTitle)
+		ax.set_title(graphTitle)
 
 	def graphCombination(self):
 		"""

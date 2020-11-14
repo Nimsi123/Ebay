@@ -1,4 +1,4 @@
-from Ebay.ItemOrganization.ProductList import ProductList
+#from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.queryList import queryList
 from Ebay.Site_Operations.ebayFunctions_Grand import *
 #aboutALink, getEbayLink
@@ -85,8 +85,8 @@ def test_export_function(client, totalQueries):
 #data_visualization(totalQueries)
 
 
-#totalQueries = queryList()
-#totalQueries.importData()
+totalQueries = queryList()
+totalQueries.importData()
 
 #totalQueries.data_collection(client)
 #totalQueries.data_visualization(client)

@@ -1,25 +1,6 @@
-#from requests import get
-#from requests.exceptions import RequestException
-#from contextlib import closing
-from bs4 import BeautifulSoup
-#from selenium import webdriver
-#import csv
-#import webbrowser
-#import time
-#import sys
-#from fpdf import FPDF
-#from time import sleep
-
-#import functools
-
 from Ebay.ItemOrganization.Item import Item
-from Ebay.ItemOrganization.Product import ProductList
-
-from Ebay.Site_Operations.cleanEntries import *
-#cleanTitle, cleanPrice, cleanShipping, cleanDate, stripComma
-
-from Ebay.Site_Operations.traverseHtml import *
-#findElement, findAllLetters, findKey, findLink
+from Ebay.Site_Operations.cleanEntries import cleanTitle, cleanPrice, cleanShipping, cleanDate, stripComma
+from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink
 
 
 def extract(rawGetFunction, html, elementType, className, cleanFunction):

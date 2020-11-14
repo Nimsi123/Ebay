@@ -1,7 +1,8 @@
 import csv
 import matplotlib.pyplot as plt
 
-from Ebay.ItemOrganization.ProductList import ProductList
+#from Ebay.ItemOrganization.ProductList import ProductList
+from Ebay.ItemOrganization.eBayQuery import eBayQuery
 
 class queryList:
 
@@ -11,7 +12,7 @@ class queryList:
 
 	def __init__(self):
 		self.queryCollection = []
-		self.exportDirectory = r"..\\queryListExport.csv"
+		self.exportDirectory = r"..\\ItemOrganization\\queryListExport.csv"
 
 	def addQuery(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
 		"""
