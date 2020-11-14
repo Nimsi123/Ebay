@@ -110,10 +110,6 @@ class ItemList:
                     #export data after marker B self.itemList[overlapB:]
                     return [True, [0, overlapA], [overlapB, len(self.itemList)]]
 
-
-
-
-
     def exportData(self, exportFile):
 
         package = self.overlap(exportFile)
@@ -187,3 +183,45 @@ class ItemList:
 
             for item in self.itemList[indexRange[0]: indexRange[1]]:
                 csv_writer.writerow({"title": item.getTitle(), "price": item.getPrice(), "date": item.getDate()})
+
+
+class ProductList(ItemList):
+    def graphData(self, title, avgPng, volumePng):
+        #added histogram
+
+        dateList, avgPriceList, volumeList = self.splitData(title)
+
+        fig = plt.figure(figsize = (5, 4))
+        fig = fillPlot(avgPriceList, fig, "days into the past", "average price", title, "red", "red")
+        fig.savefig(avgPng)
+        #plt.show()
+        fig.close()
+
+
+
+        fig = plt.figure(figsize = (5, 4))
+        fig = fillPlot(volumeList, fig, "days into the past", "volume of sales", title, "red", "red")
+        fig.savefig(volumePng)
+        #plt.show()
+        fig.close()
+
+
+        """
+        plt.figure(figsize = (5, 4))
+        plt.hist(avgPriceList)
+
+        plt.xlabel("average price")
+        plt.ylabel("number sold")
+        plt.title(title)
+        plt.show()
+        #plt.savefig(avgPng)
+        plt.close()
+        """
+
+    def finishedCollectingListings(self):
+        #print(self)
+        #print("printed self")
+        self.makeListOfPrices()
+        self.statistics()
+        #self.plotHistogram()
+        self.findAveragePrice()

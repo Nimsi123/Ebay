@@ -1,5 +1,5 @@
-from Ebay.ItemOrganization.Product import ProductList
-from Ebay.ItemOrganization.eBayQuery import queryList
+from Ebay.ItemOrganization.ProductList import ProductList
+from Ebay.ItemOrganization.queryList import queryList
 from Ebay.Site_Operations.ebayFunctions_Grand import *
 #aboutALink, getEbayLink
 
@@ -44,8 +44,6 @@ def whack_shit():
         if length < 500:
             print(f"{query.name:<30}{length}")
             count += 1
-
-
 
 def test_export_function(client, totalQueries):
     """

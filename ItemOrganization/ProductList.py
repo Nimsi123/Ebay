@@ -6,21 +6,27 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 import matplotlib.pyplot as plt
 
-from Ebay.ItemOrganization.Item import *
-#Item, ItemList
+from Ebay.ItemOrganization.Item import Item
 
-class ProductList(ItemList):
+class ProductList:
     def __init__(self):
         self.itemList = []
         self.listOfPrices = []
-        self.averagePriceSold = 0
-        self.percentUnderAverage = 0
+        self.averagePriceSold = None
+        self.percentUnderAverage = None
 
     def addItem(self, item):
         """
         Add an Item object to itemList
         """
         self.itemList.append(item)
+
+    def date_sort(self):
+        """
+        Sort the itemList by date. Earliest date in the beginning of the list.
+        """
+
+        self.itemList.sort(key = lambda item: item.date)
 
     def importData(self, dataFile):
         """
@@ -34,16 +40,12 @@ class ProductList(ItemList):
                 date = datetime.datetime(int(d[0:4]), int(d[5:7]), int(d[8:10]))
                 self.itemList.append( Item(line["title"], float(line["price"]), date ) )
 
-    def date_sort(self):
-        """
-        Sort the itemList by date. Earliest date in the beginning of the list.
-        """
-        self.itemList.sort(key = lambda item: item.date)
+    """EXPORT CODE"""
 
     def splitData(self, title):
         """
         self.itemList is a list of items.
-        extract three new meaningful lists.
+        extract three new meaningful lists from self.itemList
         --> (dateList, avgPriceList, volumeList)
         """
 
@@ -92,55 +94,67 @@ class ProductList(ItemList):
 
         return (dateList, avgPriceList, volumeList)
 
-    def fillPlot(data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
-        X = np.array( list(range(len(data))) ).reshape(-1, 1)
-        Y = np.array( data ).reshape(-1, 1)
-
-        linear_regressor = LinearRegression()  # create object for the class
-        linear_regressor.fit(X, Y)  # perform linear regression
-        Y_pred = linear_regressor.predict(X)  # make predictions
-
-        ax.scatter(X, Y, c = colScatter, label = labeling)
-        ax.plot(X, Y_pred, color= colLine)
-        ax.set_xlabel(xTitle)
-        ax.set_ylabel(yTitle)
-        ax.set_title(graphTitle)
-
-
-    def graphData(self, title, avgPng, volumePng):
-        #added histogram
-
-        dateList, avgPriceList, volumeList = self.splitData(title)
-
-        fig = plt.figure(figsize = (5, 4))
-        fig = fillPlot(avgPriceList, fig, "days into the past", "average price", title, "red", "red")
-        fig.savefig(avgPng)
-        #plt.show()
-        fig.close()
-
-
-
-        fig = plt.figure(figsize = (5, 4))
-        fig = fillPlot(volumeList, fig, "days into the past", "volume of sales", title, "red", "red")
-        fig.savefig(volumePng)
-        #plt.show()
-        fig.close()
-
-
+    def earliest_date(self):
         """
-        plt.figure(figsize = (5, 4))
-        plt.hist(avgPriceList)
+        Return the date of the earliest sold item collected
+        """
+        
+        if len(self.itemList) == 0:
+            return []
+        else:
+            return self.itemList[-1].date
 
-        plt.xlabel("average price")
-        plt.ylabel("number sold")
-        plt.title(title)
-        plt.show()
-        #plt.savefig(avgPng)
-        plt.close()
+    def list_from_date_to_today(self, date):
+        """
+        Return the part of the item list that has items that are more into the future and equal to this date.
         """
 
+        for i in range(len(self.itemList)):
+            item = self.itemList[i]
+
+            if item.getDate() >= date:
+                return self.itemList[i:]
+        else:
+            return []
+
+    def new_export(self, exportFile, importList):
+
+        importList.importData(exportFile)
+
+        #add new items from self.itemList to importList.itemList
+        earliest_newly_collected_date = self.earliest_date()
+        overlapping_list = importList.list_from_date_to_today( earliest_newly_collected_date )
+        for item_one in self.itemList:
+            member = any([item_one == item_two for item_two in overlapping_list])
+            if not member:
+                importList.addItem(item_one)
+
+        #sort the list before exporting
+        importList.date_sort()
+
+        #export item data to exportFile
+        with open(exportFile, "w", encoding = "utf-8") as ebay_csv:
+            data = ["title", "price", "date"]
+            csv_writer = csv.DictWriter(ebay_csv, fieldnames = data)
+            csv_writer.writeheader()
+
+            for item in importList.itemList:
+                csv_writer.writerow( item.get_dict_data() )
 
     """DATA ANALYSIS CODE"""
+
+    def make_stats(self):
+        self.mean = round(statistics.mean(self.listOfPrices), 2)
+        self.median = round(statistics.median(self.listOfPrices), 2)
+        self.stdev = round(statistics.stdev(self.listOfPrices), 2)
+
+    def plotHistogram(self):
+        prices = self.getListOfPrices()
+        stretch = max(prices) - min(prices)
+        width = int(stretch//5)
+        
+        plt.hist(prices, bins = width)
+        plt.show()
 
     def removePriceOutliers(self, topPrice):
         #make all yuge prices equal to -1
@@ -153,14 +167,6 @@ class ProductList(ItemList):
                 del self.itemList[i]
                 i -= 1
             i+= 1
-
-    def finishedCollectingListings(self):
-        #print(self)
-        #print("printed self")
-        self.makeListOfPrices()
-        self.statistics()
-        #self.plotHistogram()
-        self.findAveragePrice()
 
     def analyzeAveragePrice(self, profit):
         #assume i sell at the averagePriceSold again
@@ -199,3 +205,16 @@ class ProductList(ItemList):
                 totalProfit += (bottom_price - price)
 
         return bottom_price, totalProfit
+
+    def __str__(self):
+        string = ""
+        for item in self.itemList:
+            string += f"{item.getTitle():<100}{item.getPrice():<20}{item.getDate()}\n"
+
+        string += "\n\n\n"
+
+        string += f"Mean: {self.mean} "
+        string += f"Median: {self.median} "
+        string += f"Standard Deviation: {self.stdev}"
+
+        return string
