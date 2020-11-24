@@ -27,27 +27,11 @@ def extract(rawGetFunction, html, elementType, className, cleanFunction):
 	
 	if raw == "nothing found":
 		return None
-	
-	if type(raw) == str:
-		return cleanFunction(raw)
-	
 
-	if type(raw) == bs4.Tag:
-		fruit = raw.contents[0]
+	while type(raw) == bs4.Tag:
+		raw = raw.contents[0] #go deeper in a nest
 
-	if type(fruit) == bs4.Tag:
-		#nested HTML element. item has been sold.
-		#items that have been sold on ebay have an extra span element NESTED
-		fruit = fruit.contents[0]
-	else:
-		#bs4.NavigableString:
-		return cleanFunction(str(fruit))
-
-	if type(fruit) == bs4.Tag:
-		fruit = str(fruit.contents[0]) #commonly done for clean_date
-
-	#turn the fruit from ebay into a usable format for my algorithm
-	return cleanFunction(str(fruit))
+	return cleanFunction(str(raw)) #usable format for my algorithm
 
 def extractNested(rawGetFunction, html, outerElementType, outerClassName, innerElementType, innerClassName, cleanFunction):
 	outerBlock = findElement(html, outerElementType, "class", outerClassName)
