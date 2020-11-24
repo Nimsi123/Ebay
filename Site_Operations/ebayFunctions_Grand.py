@@ -1,9 +1,14 @@
 from Ebay.ItemOrganization.Item import Item
-from Ebay.Site_Operations.cleanEntries import cleanTitle, cleanPrice, cleanShipping, cleanDate, stripComma
-from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink
-
+from Ebay.Site_Operations.cleanEntries import clean_title, clean_price, clean_shipping, clean_date, strip_comma
+from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink_new
+from bs4 import BeautifulSoup
+import bs4
 
 def extract(rawGetFunction, html, elementType, className, cleanFunction):
+	"""
+	
+	"""
+
 	#this function will return algorithm-friendly data that is in the html block
 
 	#use the analogy of the coconut
@@ -21,48 +26,36 @@ def extract(rawGetFunction, html, elementType, className, cleanFunction):
 	raw = rawGetFunction(html, elementType, "class", className)
 	
 	if raw == "nothing found":
-		#bad listing
-		#print(elementType, className)
-		#print("extract none")
 		return None
-	elif type(raw) == str:
-		#raw is in a usable form as is
-		fruit = raw
-	else:
-		fruit = raw.contents
+	
+	if type(raw) == str:
+		return cleanFunction(raw)
+	
 
-	#nested HTML element?
-	try:
-		#this means that the item has been sold
+	if type(raw) == bs4.Tag:
+		fruit = raw.contents[0]
+
+	if type(fruit) == bs4.Tag:
+		#nested HTML element. item has been sold.
 		#items that have been sold on ebay have an extra span element NESTED
+		fruit = fruit.contents[0]
+	else:
+		#bs4.NavigableString:
+		return cleanFunction(fruit)
 
-		fruit = fruit[0].contents
-	except:
-		#the object is a string, and the element's contents are already accessible
-		pass
-
-	if type(fruit) != str:
-		try:
-			fruit = fruit[0]
-		except:
-			print("oops")
-
-	#by this point in the code, fruit is the content of the element
+	if type(fruit) == bs4.Tag:
+		fruit = str(fruit.contents[0]) #commonly done for clean_date
 
 	#turn the fruit from ebay into a usable format for my algorithm
-	data = cleanFunction(fruit)
-
-	return data
+	return cleanFunction(fruit)
 
 def extractNested(rawGetFunction, html, outerElementType, outerClassName, innerElementType, innerClassName, cleanFunction):
 	outerBlock = findElement(html, outerElementType, "class", outerClassName)
 
 	if outerBlock == "nothing found":
-		#bad listing
 		return None
-	else:
-		outerBlock = outerBlock.contents
-
+	
+	outerBlock = outerBlock.contents
 	cleaned_inner = extract(rawGetFunction, outerBlock[0], innerElementType, innerClassName, cleanFunction)
 
 	return cleaned_inner
@@ -95,19 +88,19 @@ def searchListings(html, elementType, classCode, itemCollection, printer_bool_pa
 			
 
 			#extract the title
-			title = extract(findElement, listing, "h3", "s-item__title", cleanTitle)
+			title = extract(findElement, listing, "h3", "s-item__title", clean_title)
 
 			#extract the price
-			price = extract(findElement, listing, "span", "s-item__price", cleanPrice)
+			price = extract(findElement, listing, "span", "s-item__price", clean_price)
 
 			#extract shipping
-			shipping = extract(findElement, listing, "span", "s-item__shipping", cleanShipping)
+			shipping = extract(findElement, listing, "span", "s-item__shipping", clean_shipping)
 
 			#find sale date
 			if key == None:
-				date = extract(findElement, listing, "div", "s-item__title--tagblock", cleanDate)
+				date = extract(findElement, listing, "div", "s-item__title--tagblock", clean_date)
 			else:
-				date = extractNested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, cleanDate)
+				date = extractNested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
 
 			if title == None or price == None or shipping == None or date == None:
@@ -162,13 +155,14 @@ def receive_html(client, link):
 
 
 def aboutALink(client, link, productCollection):
-	printer_bool_product_stats = True
-	printer_bool_page_stats = True
+	printer_bool_product_stats = False
+	printer_bool_page_stats = False
 
 	html = receive_html(client, link)
+	print("link: ", link)
 
-	print("extract: ", extract(findElement, html, "h1", "srp-controls__count-heading", stripComma))
-	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", stripComma))
+	print("extract: ", extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma))
+	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma))
 
 	if total_listings == 0:
 		return

@@ -1,8 +1,9 @@
 import csv
 import matplotlib.pyplot as plt
 
-#from Ebay.ItemOrganization.ProductList import ProductList
+from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.eBayQuery import eBayQuery
+from Ebay.Site_Operations.ebayFunctions_Grand import *
 
 class queryList:
 
@@ -63,7 +64,7 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def data_collection(self, client):
+	def data_collection(self, client, single_search = False):
 	    """
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
@@ -74,7 +75,7 @@ class queryList:
 	        tempList will go out of scope and it will be relieved of its memory usage
 	    """
 
-	    count = 236
+	    count = 0
 	    
 	    for query in self.queryCollection[count:]:
 	        print("collecting: ", query.name)
@@ -93,12 +94,17 @@ class queryList:
 	        tempList.new_export(query.csvProductListAuction, ProductList())
 	        print("\nlength of AUCTION", len(tempList.itemList))
 
+	        if single_search:
+	        	return
+
 	        #data for Buy It Now listings
 	        print(f"\n{query.name} BIN")
 	        tempList = ProductList()
 	        aboutALink(client, query.linkBIN, tempList)
 	        tempList.new_export(query.csvProductListBIN, ProductList())
 	        print("\nlength of BIN", len(tempList.itemList))
+
+
 
 	    print("finished data collection")
 

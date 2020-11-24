@@ -21,7 +21,7 @@ process of importing and displaying the data
 
 from scraper_api import ScraperAPIClient
 #client = ScraperAPIClient('c733663048589db82005534b6739c32e')
-#client = ScraperAPIClient('cbbdd094d7401d8912b09341e37be9b1')
+client = ScraperAPIClient('cbbdd094d7401d8912b09341e37be9b1')
 
 def whack_shit():
     """
@@ -87,6 +87,5 @@ def test_export_function(client, totalQueries):
 
 totalQueries = queryList()
 totalQueries.importData()
-
-#totalQueries.data_collection(client)
+totalQueries.data_collection(client, single_search = True)
 #totalQueries.data_visualization(client)
