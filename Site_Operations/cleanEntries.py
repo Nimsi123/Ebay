@@ -3,15 +3,9 @@ import bs4
 
 #functions to adjust html inputs to work with my algorithms
 def clean_title(entry):
+    assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
+
     return entry
-
-def strip_comma(num_string):
-    """
-    >>> strip_comma("100,000")
-    '100000'
-    """
-
-    return num_string.replace(',', '')
 
 def clean_price(entry):
     """
@@ -20,24 +14,19 @@ def clean_price(entry):
     >>> clean_price("100") #returns None
     >>>
     """
+    assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("$") != -1:
         try:
             return round(float(entry.replace(',', '').strip()[1:]), 2)
         except:
-            print("entry: ", entry)
-            print("bad price")
+            print("bad price: ", entry)
             return None
     else:
         return None
 
 def clean_shipping(entry):
-
-    """
-    if type(entry) == list:
-        print("is this ever a case?")
-        entry = entry[0]
-    """
+    assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry in ["Free shipping", "Shipping not specified", "Freight"] or entry.find("$") == -1:
         return 0
@@ -56,21 +45,10 @@ def clean_date(entry):
     """
     Outputs a datetime object representing the date sold.
     """
-
-    """
-    #coerce entry into a string
-    if type(entry) == bs4.Tag:
-        print("needed to take the extra step again in clean_date")
-        entry = str(entry.contents[0])
-    elif type(entry) == str:
-        pass
-    else:
-        print(f"entry type: {type(entry)}")
-        print("date not able to become a string")
-        return None
-    """
+    assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("Sold") == -1:
+        print("bad date: ", entry)
         return None
 
     date = entry[len("Sold  "):]

@@ -1,5 +1,5 @@
 from Ebay.ItemOrganization.Item import Item
-from Ebay.Site_Operations.cleanEntries import clean_title, clean_price, clean_shipping, clean_date, strip_comma
+from Ebay.Site_Operations.cleanEntries import clean_title, clean_price, clean_shipping, clean_date
 from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink_new
 from bs4 import BeautifulSoup
 import bs4
@@ -41,13 +41,13 @@ def extract(rawGetFunction, html, elementType, className, cleanFunction):
 		fruit = fruit.contents[0]
 	else:
 		#bs4.NavigableString:
-		return cleanFunction(fruit)
+		return cleanFunction(str(fruit))
 
 	if type(fruit) == bs4.Tag:
 		fruit = str(fruit.contents[0]) #commonly done for clean_date
 
 	#turn the fruit from ebay into a usable format for my algorithm
-	return cleanFunction(fruit)
+	return cleanFunction(str(fruit))
 
 def extractNested(rawGetFunction, html, outerElementType, outerClassName, innerElementType, innerClassName, cleanFunction):
 	outerBlock = findElement(html, outerElementType, "class", outerClassName)
@@ -161,6 +161,7 @@ def aboutALink(client, link, productCollection):
 	html = receive_html(client, link)
 	print("link: ", link)
 
+	strip_comma = lambda entry: entry.replace(',', '')
 	print("extract: ", extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma))
 	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma))
 
