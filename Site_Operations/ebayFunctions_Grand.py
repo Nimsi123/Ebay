@@ -4,128 +4,121 @@ from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findK
 from bs4 import BeautifulSoup
 import bs4
 
-def extract(rawGetFunction, html, elementType, className, cleanFunction):
+
+def get_eBay_link(listing_type, search_str):
 	"""
-	
+	Returns a starting link for a search query.
+
+	>>> get_eBay_link("Auction", "Jimi Hendrix Poster")
+	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Jimi Hendrix Poster&LH_Sold=1&LH_Complete=1&rt=nc&LH_Auction=1&_ipg=200'
+	>>> get_eBay_link("Buy It Now", "Cream Disraeli Gears Album")
+	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Cream Disraeli Gears Album&LH_Sold=1&LH_Complete=1&rt=nc&LH_BIN=1&_ipg=200'
+
 	"""
 
-	#this function will return algorithm-friendly data that is in the html block
+	link = "https://www.ebay.com/sch/i.html?_from=R40&_nkw=" + search_str + "&LH_Sold=1&LH_Complete=1"
 
-	#use the analogy of the coconut
-	#html is the entire coconut
-	#the coconut fruit can be described with 'elementType' and 'className'
-	#rawGetFunction peels away all the extra parts of the coconut and, after some work, we get the fruit
-	#cleanFunction will alter the fruit so it is edible
+	if listing_type == "All Listings":
+		pass
+	elif listing_type == "Auction":
+		link += "&rt=nc&LH_Auction=1"
+	elif listing_type == "Buy It Now":
+		link += "&rt=nc&LH_BIN=1"
+	else:
+		print("bad listing_type")
+
+	return link + "&_ipg=200"
 
 
-	#html is a subset of the page's entire html we are examining
+def extract(get_raw_func, html, element_type, class_name, clean_func):
+	"""
+	html -> a block of code representing a single listing
 
-	#the rawGetFunction zooms in even more on this html and extracts a single HTML element of 'elementType' and 'className'
-	#   in the case of finding the sale date, rawGetFunction straight up returns the fruit
-	#print("data in extract: ", elementType, className)
-	raw = rawGetFunction(html, elementType, "class", className)
+	Search the html block for the attribute of an item defined by 'element_type' and 'class_name.'
+	Return the result of calling 'clean_func' on the item's attribute.
+	"""
+
+	raw = get_raw_func(html, element_type, "class", class_name)
 	
 	if raw == "nothing found":
 		return None
 
 	while type(raw) == bs4.Tag:
-		raw = raw.contents[0] #go deeper in a nest
+		#go deeper in a nest
+		raw = raw.contents[0]
 
-	return cleanFunction(str(raw)) #usable format for my algorithm
+	return clean_func(str(raw)) #usable format for my algorithm
 
-def extractNested(rawGetFunction, html, outerElementType, outerClassName, innerElementType, innerClassName, cleanFunction):
-	outerBlock = findElement(html, outerElementType, "class", outerClassName)
+def extract_nested(get_raw_func, html, outer_element_type, outer_class_name, inner_element_type, inner_class_name, clean_func):
+	"""
+	Some attributes are nested within two blocks.
+	Returns the attribute accessed by diving into one block, and then going deeper.
+	"""
 
-	if outerBlock == "nothing found":
+	outer_block = findElement(html, outer_element_type, "class", outer_class_name)
+
+	if outer_block == "nothing found":
 		return None
 	
-	outerBlock = outerBlock.contents
-	cleaned_inner = extract(rawGetFunction, outerBlock[0], innerElementType, innerClassName, cleanFunction)
+	outer_block = outer_block.contents[0]
+	cleaned_inner = extract(get_raw_func, outer_block, inner_element_type, inner_class_name, clean_func)
 
 	return cleaned_inner
 
 
-def searchListings(html, elementType, classCode, itemCollection, printer_bool_page_stats):
-	#find all "elementType" HTML elements
-	#extract data to make Item objects
-	#search all posted listings and make an ProductList object
+def searchListings(html, element_type, class_code, item_collection, printer_bool_page_stats):
+	"""
+	html -> html code for an entire webpage
 
+	Adds new items to item_collection.
+	"""
 
 	#ebay tries to mess with the sale date and my code
-	#right before the code starts, I will find the special className that can be used to find the sale date!
-	key = findKey(html, elementType, ["S", "o", "l", "d"])
+	#right before the code starts, I will find the special class_name that can be used to find the sale date!
+	key = findKey(html, element_type, ["S", "o", "l", "d"])
 
 	count = 0
 	count_skipped_early = 0
 	count_skipped_bad = 0
-	count_skipped_classcode = 0
-	for listing in html.find_all(elementType):
+	count_skipped_class_code = 0
+	for listing in html.find_all(element_type):
 		if listing.get("class") == None:
 			count_skipped_early += 1
 			continue
 		else:
-			className = (listing.get("class"))[0]
+			class_name = (listing.get("class"))[0]
 
-		#the HTML element type is a listing part
-		if className == classCode:
-			#in this block, we extract data from a single listing
-			
+		if class_name == class_code:
+			#extract data from a single listing
 
-			#extract the title
 			title = extract(findElement, listing, "h3", "s-item__title", clean_title)
-
-			#extract the price
 			price = extract(findElement, listing, "span", "s-item__price", clean_price)
-
-			#extract shipping
 			shipping = extract(findElement, listing, "span", "s-item__shipping", clean_shipping)
 
-			#find sale date
 			if key == None:
 				date = extract(findElement, listing, "div", "s-item__title--tagblock", clean_date)
 			else:
-				date = extractNested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
-
+				print("*****need to do extra work to get sale date")
+				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
 			if title == None or price == None or shipping == None or date == None:
-				#bad listing
-				#print(f"title: {title} price: {price} shipping: {shipping} date: {date}")
-				#print("bad listing")
+				print(f"*****bad listing -- title: {title} price: {price} shipping: {shipping} date: {date}")
 				count_skipped_bad += 1
-				continue
-
 			else:
-				#good listing
-
-				#add shipping to price
-				totalCost = round(price+shipping, 2)
-				#print("add item")
+				total_cost = round(price+shipping, 2)
+				item_collection.addItem( Item(title, total_cost, date) )
 				count += 1
-				itemCollection.addItem( Item(title, totalCost, date) )
 		else:
-			count_skipped_classcode += 1
+			count_skipped_class_code += 1
 
 	if printer_bool_page_stats:
 		print("\n")
 		print("PAGE STATS")
-		print(f"num item listings: {len(html.find_all(elementType))}")
+		print(f"num item listings: {len(html.find_all(element_type))}")
 		print(f"count added: {count}")
-		print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_classcode: {count_skipped_classcode}")
+		print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_class_code: {count_skipped_class_code}")
 
-def getEbayLink(listingType, searchString):
 
-	link = "https://www.ebay.com/sch/i.html?_from=R40&_nkw=" + searchString + "&LH_Sold=1&LH_Complete=1"
-
-	if listingType == "All Listings":
-		pass
-	elif listingType == "Auction":
-		link += "&rt=nc&LH_Auction=1"
-	elif listingType == "Buy It Now":
-		link += "&rt=nc&LH_BIN=1"
-	else:
-		print("bad listingType")
-
-	return link + "&_ipg=200"
 
 def receive_html(client, link):
 	"""
@@ -138,7 +131,13 @@ def receive_html(client, link):
 	return html
 
 
-def aboutALink(client, link, productCollection):
+def aboutALink(client, link, product_collection):
+	"""
+	Starting from 'link', make requests to client for webpages' html code. 
+	Populate 'product_collection' with new items listed on the webpage.
+	Continue until we reach the end of the pages with listings.
+	"""
+
 	printer_bool_product_stats = False
 	printer_bool_page_stats = False
 
@@ -162,10 +161,10 @@ def aboutALink(client, link, productCollection):
 	for count in range(max_iteration):
 
 		html = receive_html(client, link)
-		searchListings(html, "li", "s-item", productCollection, printer_bool_page_stats) #search the listings for data. populate the productCollection list
+		searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats) #search the listings for data. populate the product_collection list
 
 		if printer_bool_page_stats:
-			print(f"iter count: {count} ... current itemList length: {len(productCollection.itemList)}")
+			print(f"iter count: {count} ... current itemList length: {len(product_collection.itemList)}")
 			print(f"link: {link}")
 
-		link = findLink_new(link) #get the link for the next page
+		link = findLink_new(link)

@@ -3,7 +3,7 @@ import csv
 import matplotlib.pyplot as plt
 
 from Ebay.ItemOrganization.ProductList import ProductList
-from Ebay.Site_Operations.ebayFunctions_Grand import getEbayLink
+from Ebay.Site_Operations.ebayFunctions_Grand import get_eBay_link
 
 
 class eBayQuery:
@@ -42,7 +42,7 @@ class eBayQuery:
 			self.linkAuction = enlaceAuction
 			self.linkBIN = enlaceBIN
 
-		self.productCollection = ProductList()
+		self.product_collection = ProductList()
 
 	def fileCheck(self):
 		"""
@@ -85,7 +85,7 @@ class eBayQuery:
 
 		#introduce Auction data
 		self.importProductData(self.csvProductListAuction)
-		package = self.productCollection.splitData(self.name)
+		package = self.product_collection.splitData(self.name)
 		if package == False:
 			fig.clf()
 			plt.close()
@@ -98,9 +98,9 @@ class eBayQuery:
 		ProductList.fillPlot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, "lightcoral", "firebrick")
 
 		#introduct BIN data
-		self.productCollection = ProductList()
+		self.product_collection = ProductList()
 		self.importProductData(self.csvProductListBIN)
-		package = self.productCollection.splitData(self.name)
+		package = self.product_collection.splitData(self.name)
 		if package == False:
 			fig.clf()
 			plt.close()

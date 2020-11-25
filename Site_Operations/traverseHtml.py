@@ -1,6 +1,6 @@
 #findElement
 #findAllLetters
-#findClassName
+#findclass_name
 #findKey
 #findLink
 
@@ -26,47 +26,47 @@ def timer(func):
         return value
     return wrapper_timer
 
-def findElement(html, elementType, attributeKey, attributeValue):
+def findElement(html, element_type, attributeKey, attributeValue):
     #given HTML code, return the FIRST element found with the particular class code
 
-    for element in html.find_all(elementType):
+    for element in html.find_all(element_type):
         #print("element: ", element)
         if element.get(attributeKey) == None:
             continue
         else:
-            className = (element.get(attributeKey))[0]
-            #print("className: ", className)
+            class_name = (element.get(attributeKey))[0]
+            #print("class_name: ", class_name)
 
         #html handles classes weirdly
         #an element can have its classes separated by spaces
         #print("attribute: ", attributeKey, attributeValue)
-        #print("class name: ", className, "--", attributeValue)
-        #print("truths: ", className.find(attributeValue), element.contents != None)
-        if className.find(attributeValue) != -1 and element.contents != None:
+        #print("class name: ", class_name, "--", attributeValue)
+        #print("truths: ", class_name.find(attributeValue), element.contents != None)
+        if class_name.find(attributeValue) != -1 and element.contents != None:
             return element
 
     return "nothing found"
 
-def findAllLetters(html, elementType, classCode):
+def findAllLetters(html, element_type, class_code):
     #a modified version of findElement
 
-    #classCode is used to encrypt the letters that make up the sale date string
-    #go through all the elements in the html subset with 'elementType'
-    #   collect all the elements with the proper 'classCode' meanwhile filtering through the fake letters
+    #class_code is used to encrypt the letters that make up the sale date string
+    #go through all the elements in the html subset with 'element_type'
+    #   collect all the elements with the proper 'class_code' meanwhile filtering through the fake letters
     #   at the time of return, the string (ex. "Sold Jun 11, 2020") should be completed
 
 
     saleDate = ""
-    for element in html.find_all(elementType):
+    for element in html.find_all(element_type):
         if element.get("class") == None:
             continue
         else:
-            className = (element.get("class"))[0]
+            class_name = (element.get("class"))[0]
 
         #html handles classes weirdly
         #an element can have its classes separated by spaces
 
-        if className.find(classCode) != -1 and element.contents != None:
+        if class_name.find(class_code) != -1 and element.contents != None:
             try:
                 #add another letter to the string
                 saleDate += element.contents[0]
@@ -84,35 +84,35 @@ def findAllLetters(html, elementType, classCode):
     #to leave from here means that the for loop completed well
     return saleDate
 
-def findClassName(html, elementType, content):
-    #in the 'html' code, there is an element of 'elementType' which has 'content'
-    #if the 'content' matches the element's .contents, then return the class name 'className'
+def findclass_name(html, element_type, content):
+    #in the 'html' code, there is an element of 'element_type' which has 'content'
+    #if the 'content' matches the element's .contents, then return the class name 'class_name'
 
     #USES
-    #this 'className' is what ebay generated for every letter in the date
-    #content is one letter in "Sold". we want to find the className that is common to all letters in "Sold"
+    #this 'class_name' is what ebay generated for every letter in the date
+    #content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
 
-    for element in html.find_all(elementType):
+    for element in html.find_all(element_type):
         if element.get("class") == None:
             continue
         else:
-            className = (element.get("class"))[0]
+            class_name = (element.get("class"))[0]
 
         if len(element.contents) == 0:
             continue
         
         if element.contents[0] == content:
             #the class name is the KEY
-            return className
+            return class_name
 
     return "nothing found"
 
-def findKey(html, elementType, sequence):
-    #ebay changed the className of the element representing the sale date
+def findKey(html, element_type, sequence):
+    #ebay changed the class_name of the element representing the sale date
 
-    #this function will return the class name common to all of the sub elements in 'tagBlock' -- i regard the common className as the "key"
+    #this function will return the class name common to all of the sub elements in 'tagBlock' -- i regard the common class_name as the "key"
 
-    for listing in html.find_all(elementType):
+    for listing in html.find_all(element_type):
         tagBlock = findElement(listing, "div", "class", "s-item__title--tagblock")
 
         if tagBlock == "nothing found":
@@ -124,7 +124,7 @@ def findKey(html, elementType, sequence):
         keys = []
         for letter in sequence:
             #find a key
-            keys.append( findClassName(tagBlock[0], "span", letter) )
+            keys.append( findclass_name(tagBlock[0], "span", letter) )
 
         if len(set(keys)) == 1:
             #all the keys are identical
@@ -140,9 +140,9 @@ def findKey(html, elementType, sequence):
         return None
 
 
-def findLink(html, elementType, classCode):
+def findLink(html, element_type, class_code):
 
-    element = findElement(html, elementType, "class", classCode)
+    element = findElement(html, element_type, "class", class_code)
 
     if element == "nothing found":
         return "nothing found"
@@ -157,8 +157,8 @@ def findLink_new(old_link):
         return old_link[:end] + str((int(old_link[end:]) + 1))
 
 """
-def countListings(html, elementType, classCode):
-    listings = html.find_all(elementType)
+def countListings(html, element_type, class_code):
+    listings = html.find_all(element_type)
     
     count = 0
 
@@ -168,7 +168,7 @@ def countListings(html, elementType, classCode):
         except:
             continue
 
-        if name == classCode:
+        if name == class_code:
             count += 1
 
     return count

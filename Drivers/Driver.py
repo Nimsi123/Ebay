@@ -1,7 +1,7 @@
 #from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.queryList import queryList
-from Ebay.Site_Operations.ebayFunctions_Grand import *
-#aboutALink, getEbayLink
+from Ebay.Site_Operations.ebayFunctions_Grand import aboutALink
+#aboutALink
 
 """
 DESCRIPTION OF HIGH LEVEL OPERATIONS
@@ -20,8 +20,10 @@ process of importing and displaying the data
 #set up the web request client
 
 from scraper_api import ScraperAPIClient
-#client = ScraperAPIClient('c733663048589db82005534b6739c32e')
-client = ScraperAPIClient('cbbdd094d7401d8912b09341e37be9b1')
+#client = ScraperAPIClient('c733663048589db82005534b6739c32e') #nimsi@berkeley.edu
+#client = ScraperAPIClient('cbbdd094d7401d8912b09341e37be9b1') #nimarahmanian8@gmail.com
+client = ScraperAPIClient('bfb3cb210e50c39d09f82432095a5150') #nimarahmanian2020@gmail.com
+
 
 def whack_shit():
     """
@@ -35,10 +37,10 @@ def whack_shit():
         length = 0
 
         query.importProductData(query.csvProductListAuction)
-        length += len(query.productCollection.itemList)
+        length += len(query.product_collection.itemList)
 
         query.importProductData(query.csvProductListBIN)
-        length += len(query.productCollection.itemList)
+        length += len(query.product_collection.itemList)
         #lengthList.append(length)
 
         if length < 500:
