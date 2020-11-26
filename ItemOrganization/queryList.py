@@ -100,8 +100,8 @@ class queryList:
 	        print(f"\n{query.name} AUCTION")
 	        tempList = ProductList()
 	        aboutALink(client, query.linkAuction, tempList)
-	        tempList.new_export(query.csvProductListAuction, ProductList())
-	        print("\nlength of AUCTION", len(tempList.itemList))
+	        tempList.new_export(query.csvProductListAuction)
+	        print("\nlength of AUCTION", len(tempList.item_list))
 
 	        if single_search:
 	        	return
@@ -110,8 +110,8 @@ class queryList:
 	        print(f"\n{query.name} BIN")
 	        tempList = ProductList()
 	        aboutALink(client, query.linkBIN, tempList)
-	        tempList.new_export(query.csvProductListBIN, ProductList())
-	        print("\nlength of BIN", len(tempList.itemList))
+	        tempList.new_export(query.csvProductListBIN)
+	        print("\nlength of BIN", len(tempList.item_list))
 
 	    print("finished data collection")
 

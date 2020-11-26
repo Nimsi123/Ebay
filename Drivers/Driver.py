@@ -36,10 +36,10 @@ def whack_shit():
         length = 0
 
         query.importProductData(query.csvProductListAuction)
-        length += len(query.product_collection.itemList)
+        length += len(query.product_collection.item_list)
 
         query.importProductData(query.csvProductListBIN)
-        length += len(query.product_collection.itemList)
+        length += len(query.product_collection.item_list)
         #lengthList.append(length)
 
         if length < 500:
@@ -65,15 +65,15 @@ def test_export_function(client, totalQueries):
         aboutALink(client, query.linkAuction, tempList)
 
         #after we populate tempList
-        length_of_auction_list.append( len(tempList.itemList) )
+        length_of_auction_list.append( len(tempList.item_list) )
 
-        importList = ProductList()
-        tempList.new_export(query.csvProductListAuction, importList)
+        export_list = ProductList()
+        tempList.new_export(query.csvProductListAuction, export_list)
 
         #after we populate the csv file
-        length_of_csv.append( len(importList.itemList) )
+        length_of_csv.append( len(export_list.item_list) )
 
-        print("length for AUCTION", len(tempList.itemList))
+        print("length for AUCTION", len(tempList.item_list))
 
     print(length_of_auction_list)
     print(length_of_csv)

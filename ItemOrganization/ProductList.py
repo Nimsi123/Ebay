@@ -8,27 +8,27 @@ from Ebay.ItemOrganization.Item import Item
 
 class ProductList:
     def __init__(self):
-        self.itemList = []
+        self.item_list = []
         self.listOfPrices = []
         self.averagePriceSold = None
         self.percentUnderAverage = None
 
     def addItem(self, item):
         """
-        Add an Item object to itemList
+        Add an Item object to item_list
         """
-        self.itemList.append(item)
+        self.item_list.append(item)
 
     def date_sort(self):
         """
-        Sort the itemList by date. Earliest date in the beginning of the list.
+        Sort the item_list by date. Earliest date in the beginning of the list.
         """
 
-        self.itemList.sort(key = lambda item: item.date)
+        self.item_list.sort(key = lambda item: item.date)
 
     def importData(self, dataFile):
         """
-        Open up a csv file that holds individual item data. Populate the itemList with newly created Item objects.
+        Open up a csv file that holds individual item data. Populate the item_list with newly created Item objects.
         """
 
         with open(dataFile, "r", encoding = "utf-8") as csv_file:
@@ -36,97 +36,88 @@ class ProductList:
             for line in csv_reader:
                 d = line["date"]
                 date = datetime.datetime(int(d[0:4]), int(d[5:7]), int(d[8:10]))
-                self.itemList.append( Item(line["title"], float(line["price"]), date ) )
+                self.item_list.append( Item(line["title"], float(line["price"]), date ) )
 
     """EXPORT CODE"""
 
-    def splitData(self):
+    def split_data(self):
         """
-        self.itemList is a list of items.
-        extract three new meaningful lists from self.itemList
+        Returns three new meaningful lists extracted from self.item_list
         --> (dateList, avgPriceList, volumeList)
         """
-
-        #key:value
-        #date (mm/dd/yyyy): list of items
-        reportDictionary = {}
-
-        #put all the sales in a dictionary
-        if len(self.itemList) == 0:
+        if len(self.item_list) == 0:
             return False
 
-        reportDictionary = {}
-        for item in self.itemList:
-            reportDictionary[item.getDate()] = reportDictionary.get(item.getDate(), []) + [item]
-
-
-        #key:value
-        #date: average price sold on this date
-        reportAverageDictionary = {}
-        #date: total sales on this date
-        reportVolumeDictionary = {}
+        #items grouped by date
+        item_dict = {}
+        for item in self.item_list:
+            item_dict[item.getDate()] = item_dict.get(item.getDate(), []) + [item]
 
         dateList, avgPriceList, volumeList = [], [], []
-        #for every date, organize the average price and volume of sales
-        for date, itemSubset in reportDictionary.items():
+        for date, itemSubset in item_dict.items():
             avgPrice = statistics.mean([item.getPrice() for item in itemSubset])
 
-            reportAverageDictionary[date] = avgPrice
-            reportVolumeDictionary[date] = len(itemSubset)
-
-            #make lists for plotting
             dateList.append(date)
             avgPriceList.append(avgPrice)
             volumeList.append( len(itemSubset) )
 
-        return (dateList, avgPriceList, volumeList)
+        return dateList, avgPriceList, volumeList
 
     def earliest_date(self):
         """
-        Return the date of the earliest sold item collected
+        Return the date of the earliest sold item collected. Farthest into the past.
         """
         
-        if len(self.itemList) == 0:
+        if len(self.item_list) == 0:
             return []
         else:
-            return self.itemList[-1].date
+            return self.item_list[-1].date
 
     def list_from_date_to_today(self, date):
         """
         Return the part of the item list that has items that are more into the future and equal to this date.
         """
 
-        for i in range(len(self.itemList)):
-            item = self.itemList[i]
+        for i in range(len(self.item_list)):
+            item = self.item_list[i]
 
             if item.getDate() >= date:
-                return self.itemList[i:]
+                return self.item_list[i:]
         else:
             return []
 
-    def new_export(self, exportFile, importList):
+    def file_write(self, exportFile):
+        """
+        Dumps item data from self.item_list into exportFile.
+        exportFile is written over.
+        """
 
-        importList.importData(exportFile)
-
-        #add new items from self.itemList to importList.itemList
-        earliest_newly_collected_date = self.earliest_date()
-        overlapping_list = importList.list_from_date_to_today( earliest_newly_collected_date )
-        for item_one in self.itemList:
-            member = any([item_one == item_two for item_two in overlapping_list])
-            if not member:
-                importList.addItem(item_one)
-
-        #sort the list before exporting
-        importList.date_sort()
-
-        #export item data to exportFile
         with open(exportFile, "w", encoding = "utf-8") as ebay_csv:
             data = ["title", "price", "date"]
             csv_writer = csv.DictWriter(ebay_csv, fieldnames = data)
             csv_writer.writeheader()
 
-            for item in importList.itemList:
+            for item in self.item_list:
                 csv_writer.writerow( item.get_dict_data() )
+
+    def new_export(self, exportFile):
+        """
+        export_list --> the list holding all the items to export
+        """
+
+        export_list = ProductList()
+        export_list.importData(exportFile) #get all old item data already collected
+
+        earliest_newly_collected_date = self.earliest_date() #Farthest into the past.
+        overlapping_list = export_list.list_from_date_to_today( earliest_newly_collected_date )
+
+        #add new items, not existing items
+        for item_one in self.item_list:
+            if item_one not in overlapping_list:
+                export_list.addItem(item_one)
+
+        export_list.date_sort()
+        export_list.file_write(exportFile)
 
     """DATA ANALYSIS CODE"""
 
@@ -148,10 +139,10 @@ class ProductList:
         #all price functions should be adjusted so prices of -1 are not included in any calculation
 
         i = 0
-        while i < len(self.itemList):
-            if self.itemList[i].getPrice() >= topPrice:
+        while i < len(self.item_list):
+            if self.item_list[i].getPrice() >= topPrice:
                 #delete the item with the outlier price
-                del self.itemList[i]
+                del self.item_list[i]
                 i -= 1
             i+= 1
 
@@ -195,7 +186,7 @@ class ProductList:
 
     def __str__(self):
         string = ""
-        for item in self.itemList:
+        for item in self.item_list:
             string += f"{item.getTitle():<100}{item.getPrice():<20}{item.getDate()}\n"
 
         string += "\n\n\n"

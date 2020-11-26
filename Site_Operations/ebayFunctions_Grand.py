@@ -164,7 +164,7 @@ def aboutALink(client, link, product_collection):
 		searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats) #search the listings for data. populate the product_collection list
 
 		if printer_bool_page_stats:
-			print(f"iter count: {count} ... current itemList length: {len(product_collection.itemList)}")
+			print(f"iter count: {count} ... current item_list length: {len(product_collection.item_list)}")
 			print(f"link: {link}")
 
 		link = findLink_new(link)

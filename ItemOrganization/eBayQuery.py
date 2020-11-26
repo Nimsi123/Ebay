@@ -107,7 +107,7 @@ class eBayQuery:
 		#introduce data
 		self.product_collection = ProductList()
 		self.product_collection.importData(csv_file)
-		package = self.product_collection.splitData()
+		package = self.product_collection.split_data()
 
 		if package == False:
 			fig.clf()
