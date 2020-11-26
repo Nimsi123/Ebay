@@ -1,12 +1,22 @@
 import os
 import csv
+
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter
+from matplotlib.dates import (YEARLY, DateFormatter,
+                              rrulewrapper, RRuleLocator, drange)
+
+import datetime
+
+
 import numpy as np
 from sklearn.linear_model import LinearRegression
 
 from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.Site_Operations.ebayFunctions_Grand import get_eBay_link
 
+import sys
 
 class eBayQuery:
 
@@ -29,7 +39,7 @@ class eBayQuery:
 		partial = eBayQuery.pngDirectory + self.name.replace(" ", "_")
 		self.pngAveragePrice = partial + "_avgPrice.png"
 		self.pngVolume = partial + "_volume.png"
-		self.pngCombo = partial + "_combo.png"
+		self.png_combo = partial + "_combo.png"
 
 		self.file_check()
 
@@ -52,30 +62,39 @@ class eBayQuery:
 		New files are opened if none exist.
 		"""
 
-		#for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN, self.pngAveragePrice, self.pngVolume, self.pngCombo]:
+		#for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN, self.pngAveragePrice, self.pngVolume, self.png_combo]:
 		for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN]:
 			if not os.path.isfile(path):
 				with open(path, "w") as file:
 					pass
 
-	def fill_plot(data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
+	def fill_plot(dates, data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
 		"""
 		Helper function to graph_from_csv.
 		Given 'data' (list of numbers), fill the axes 'ax.'
 		"""
 
-		X = np.array( list(range(len(data))) ).reshape(-1, 1)
+		ax.set(
+			xlabel = xTitle,
+			ylabel = yTitle,
+			title = graphTitle
+			)
+
+		#scatter plot
+		ax.plot_date(dates, data, c = colScatter, label = labeling)
+		formatter = DateFormatter('%m/%d/%y')
+		ax.xaxis.set_major_formatter(formatter)
+		ax.xaxis.set_tick_params(rotation=30, labelsize=10)
+
+		#linear regression
+		X = np.array( list(range(len(dates))) ).reshape(-1, 1)
 		Y = np.array( data ).reshape(-1, 1)
 
 		linear_regressor = LinearRegression()  # create object for the class
 		linear_regressor.fit(X, Y)  # perform linear regression
 		Y_pred = linear_regressor.predict(X)  # make predictions
 
-		ax.scatter(X, Y, c = colScatter, label = labeling)
-		ax.plot(X, Y_pred, color= colLine)
-		ax.set_xlabel(xTitle)
-		ax.set_ylabel(yTitle)
-		ax.set_title(graphTitle)
+		ax.plot(dates, Y_pred, color= colLine) #prediction line
 
 	def graph_from_csv(self, csv_file, fig, avgPriceAx, volumeAx, color_one, color_two, listing_type):
 		"""
@@ -99,11 +118,9 @@ class eBayQuery:
 			(dateList, avgPriceList, volumeList) = package
 
 		#plot data
-		avgPriceList = list(reversed(avgPriceList))
-		volumeList = list(reversed(volumeList))
 
-		eBayQuery.fill_plot(avgPriceList, avgPriceAx, "days into the past", "average price", self.name, color_one, color_two, listing_type)
-		eBayQuery.fill_plot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, color_one, color_two)
+		eBayQuery.fill_plot(dateList, avgPriceList, avgPriceAx, "date", "average price", self.name, color_one, color_two, listing_type)
+		eBayQuery.fill_plot(dateList, volumeList, volumeAx, "date", "volume of sales", self.name, color_one, color_two)
 
 		return True
 
@@ -113,21 +130,20 @@ class eBayQuery:
 		In this method, since we have data across different search queries, like Auctions and BIN, we can overlap graphs from Auction and BIN.
 		"""
 
-		#create the fig
 		fig, (avgPriceAx, volumeAx) = plt.subplots(1, 2, figsize=(12,15))
 
 		rv = self.graph_from_csv(self.csvProductListAuction, fig, avgPriceAx, volumeAx, "lightcoral", "firebrick", "Auction")
 		if not rv:
 			return False
+
 		rv = self.graph_from_csv(self.csvProductListBIN, fig, avgPriceAx, volumeAx, "aquamarine", "teal", "Buy It Now")
 		if not rv:
 			return False
 
 		fig.legend(loc = "upper right")
-		#export the fig
-		fig.savefig(self.pngCombo)
 
-		#close out
+		fig.savefig(self.png_combo)
+
 		fig.clf()
 		plt.close()
 

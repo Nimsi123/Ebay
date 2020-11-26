@@ -55,18 +55,10 @@ class ProductList:
         if len(self.itemList) == 0:
             return False
 
-        before_date = self.itemList[0].getDate()
-        itemSubset = []
+        reportDictionary = {}
         for item in self.itemList:
-            if item.getDate() not in reportDictionary:
-                #we have moved onto a new month
-                reportDictionary[before_date] = itemSubset
-                before_date = item.getDate() #update before_date
-                itemSubset = [] #make a new list for the next day
+            reportDictionary[item.getDate()] = reportDictionary.get(item.getDate(), []) + [item]
 
-            itemSubset.append(item)
-        #for the last entry (it wont enter the last if block)
-        reportDictionary[before_date] = itemSubset
 
         #key:value
         #date: average price sold on this date
@@ -74,9 +66,7 @@ class ProductList:
         #date: total sales on this date
         reportVolumeDictionary = {}
 
-        dateList = []
-        avgPriceList = []
-        volumeList = []
+        dateList, avgPriceList, volumeList = [], [], []
         #for every date, organize the average price and volume of sales
         for date, itemSubset in reportDictionary.items():
             avgPrice = statistics.mean([item.getPrice() for item in itemSubset])

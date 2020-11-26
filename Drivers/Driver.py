@@ -16,7 +16,6 @@ process of importing and displaying the data
    per ProductList() object, graph its contents
    print all the graphs into a single pdf sheet
 """
-
 #set up the web request client
 
 from scraper_api import ScraperAPIClient

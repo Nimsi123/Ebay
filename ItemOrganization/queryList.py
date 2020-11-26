@@ -125,7 +125,4 @@ class queryList:
 
 	        query.graph_combo()
 
-	        #does this line really do anything?
-	        del query #don't want to be storing the query in memory
-
 	    print("visualize finished")
