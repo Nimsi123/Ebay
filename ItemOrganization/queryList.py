@@ -15,6 +15,15 @@ class queryList:
 		self.queryCollection = []
 		self.exportDirectory = r"..\\ItemOrganization\\queryListExport.csv"
 
+	def find_count(self, search_name):
+		"""
+		Returns the index of the query in queryCollection that has the title query_name.
+		"""
+
+		for i in range(len(self.queryCollection)):
+			if self.queryCollection[i].name == search_name:
+				return i
+
 	def addQuery(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
 		"""
 		Adds an eBayQuery object to self.queryCollection
@@ -36,7 +45,7 @@ class queryList:
 				csv_writer = csv.DictWriter(file, fieldnames = data)
 
 				for query in self.queryCollection:
-					csv_writer.writerow(self.get_dict_data())
+					csv_writer.writerow(query.get_dict_data())
 		else:
 			with open(self.exportDirectory, "w", encoding = "utf-8") as file:
 				data = ["name", "queryDataDirectory", "productListDirectory", "AveragePriceDirectory", "VolumeDirectory", "AllListingsLink", "AuctionLink", "BuyItNowLink"]
@@ -64,7 +73,7 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def data_collection(self, client, single_search = False):
+	def data_collection(self, client, start_index = 0, single_search = False):
 	    """
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
@@ -75,7 +84,7 @@ class queryList:
 	        tempList will go out of scope and it will be relieved of its memory usage
 	    """
 
-	    count = 0
+	    count = start_index
 	    
 	    for query in self.queryCollection[count:]:
 	        print("collecting: ", query.name)
@@ -104,8 +113,6 @@ class queryList:
 	        tempList.new_export(query.csvProductListBIN, ProductList())
 	        print("\nlength of BIN", len(tempList.itemList))
 
-
-
 	    print("finished data collection")
 
 	def data_visualization(self):
@@ -116,7 +123,7 @@ class queryList:
 	    for query in self.queryCollection:
 	        print(query.name)
 
-	        query.graphCombination()
+	        query.graph_combo()
 
 	        #does this line really do anything?
 	        del query #don't want to be storing the query in memory

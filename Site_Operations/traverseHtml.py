@@ -27,34 +27,30 @@ def timer(func):
     return wrapper_timer
 
 def findElement(html, element_type, attributeKey, attributeValue):
-    #given HTML code, return the FIRST element found with the particular class code
+    """
+    Returns the FIRST element found with the particular class code in the html code block.
+    """
 
     for element in html.find_all(element_type):
-        #print("element: ", element)
         if element.get(attributeKey) == None:
             continue
         else:
             class_name = (element.get(attributeKey))[0]
-            #print("class_name: ", class_name)
 
-        #html handles classes weirdly
-        #an element can have its classes separated by spaces
-        #print("attribute: ", attributeKey, attributeValue)
-        #print("class name: ", class_name, "--", attributeValue)
-        #print("truths: ", class_name.find(attributeValue), element.contents != None)
         if class_name.find(attributeValue) != -1 and element.contents != None:
             return element
 
     return "nothing found"
 
 def findAllLetters(html, element_type, class_code):
-    #a modified version of findElement
+    """
+    Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
 
-    #class_code is used to encrypt the letters that make up the sale date string
-    #go through all the elements in the html subset with 'element_type'
-    #   collect all the elements with the proper 'class_code' meanwhile filtering through the fake letters
-    #   at the time of return, the string (ex. "Sold Jun 11, 2020") should be completed
+    Why?
+        --> class_code is used to encrypt the letters that make up the sale date string
 
+    Should return something like "Sold Jun 11, 2020"
+    """
 
     saleDate = ""
     for element in html.find_all(element_type):
@@ -62,9 +58,6 @@ def findAllLetters(html, element_type, class_code):
             continue
         else:
             class_name = (element.get("class"))[0]
-
-        #html handles classes weirdly
-        #an element can have its classes separated by spaces
 
         if class_name.find(class_code) != -1 and element.contents != None:
             try:
@@ -77,20 +70,21 @@ def findAllLetters(html, element_type, class_code):
                 if saleDate.find("Sold") == -1:
                     return "nothing found"
                 else:
-                    #enters this block if element.contents[0] fails, but the date is complete in string
                     return saleDate
 
-    #print("leaving here")
-    #to leave from here means that the for loop completed well
     return saleDate
 
 def findclass_name(html, element_type, content):
-    #in the 'html' code, there is an element of 'element_type' which has 'content'
-    #if the 'content' matches the element's .contents, then return the class name 'class_name'
+    """
+    in the 'html' code, there is an element of 'element_type' which has 'content'
+    if the 'content' matches the element's .contents, then return the class name 'class_name'
 
-    #USES
-    #this 'class_name' is what ebay generated for every letter in the date
-    #content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
+    Why?
+        --> helper method to findKey
+
+    this 'class_name' is what ebay generated for every letter in the date
+    content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
+    """
 
     for element in html.find_all(element_type):
         if element.get("class") == None:
@@ -108,38 +102,42 @@ def findclass_name(html, element_type, content):
     return "nothing found"
 
 def findKey(html, element_type, sequence):
-    #ebay changed the class_name of the element representing the sale date
+    """
+    Returns the class name, or 'key', common to all sub elements in 'tag_block.'
 
-    #this function will return the class name common to all of the sub elements in 'tagBlock' -- i regard the common class_name as the "key"
+    Why?
+        --> ebay changed the class_name of the element representing the sale date
+    """
 
     for listing in html.find_all(element_type):
         tagBlock = findElement(listing, "div", "class", "s-item__title--tagblock")
 
         if tagBlock == "nothing found":
-            #bad listing
             continue
-        else:
-            tagBlock = tagBlock.contents
-        
+
+        tagBlock = tagBlock.contents[0]
+
         keys = []
         for letter in sequence:
-            #find a key
-            keys.append( findclass_name(tagBlock[0], "span", letter) )
+            keys.append( findclass_name(tagBlock, "span", letter) )
 
         if len(set(keys)) == 1:
             #all the keys are identical
-            
-            if keys[0] == "nothing found":
-                #print("returning keys none: ")
-                return None
-            else:
-                #print("returning keys: ", keys[0])
+            if keys[0] != "nothing found":
                 return keys[0]
+
+def findLink_new(old_link):
+    """
+    Given an old link to an eBay page, returns a link to the next page.
+    """
+
+    if old_link.find("&_pgn=") == -1:
+        return old_link + "&_pgn=2"
     else:
-        #print("returning keys none: ")
-        return None
+        end = old_link.find("&_pgn=") + len("&_pgn=")
+        return old_link[:end] + str((int(old_link[end:]) + 1))
 
-
+"""
 def findLink(html, element_type, class_code):
 
     element = findElement(html, element_type, "class", class_code)
@@ -149,14 +147,6 @@ def findLink(html, element_type, class_code):
     else:
         return element.get("href")
 
-def findLink_new(old_link):
-    if old_link.find("&_pgn=") == -1:
-        return old_link + "&_pgn=2"
-    else:
-        end = old_link.find("&_pgn=") + len("&_pgn=")
-        return old_link[:end] + str((int(old_link[end:]) + 1))
-
-"""
 def countListings(html, element_type, class_code):
     listings = html.find_all(element_type)
     

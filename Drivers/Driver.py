@@ -1,7 +1,7 @@
 #from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.queryList import queryList
 from Ebay.Site_Operations.ebayFunctions_Grand import aboutALink
-#aboutALink
+from name_collection import deviceNames, cameraNames, gpu
 
 """
 DESCRIPTION OF HIGH LEVEL OPERATIONS
@@ -88,6 +88,7 @@ def test_export_function(client, totalQueries):
 
 
 totalQueries = queryList()
+#totalQueries.add_new_queries(gpu)
 totalQueries.importData()
-totalQueries.data_collection(client, single_search = True)
-#totalQueries.data_visualization(client)
+#totalQueries.data_collection(client, start_index = 283)
+totalQueries.data_visualization()

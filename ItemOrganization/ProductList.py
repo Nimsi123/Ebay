@@ -2,9 +2,7 @@ import csv
 import statistics
 import datetime
 
-import numpy as np
-#from sklearn.linear_model import LinearRegression
-import matplotlib.pyplot as plt
+
 
 from Ebay.ItemOrganization.Item import Item
 
@@ -42,7 +40,7 @@ class ProductList:
 
     """EXPORT CODE"""
 
-    def splitData(self, title):
+    def splitData(self):
         """
         self.itemList is a list of items.
         extract three new meaningful lists from self.itemList
@@ -55,7 +53,6 @@ class ProductList:
 
         #put all the sales in a dictionary
         if len(self.itemList) == 0:
-            print("nothing for :", title)
             return False
 
         before_date = self.itemList[0].getDate()

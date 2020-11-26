@@ -1,6 +1,8 @@
 import os
 import csv
 import matplotlib.pyplot as plt
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.Site_Operations.ebayFunctions_Grand import get_eBay_link
@@ -17,26 +19,26 @@ class eBayQuery:
 	pngDirectory = r"..\ImageDisplay\PNG" + "\\"
 
 	def __init__(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
-		self.name = nombre.replace(" ", "_")
+		self.name = nombre
 
-		partial = eBayQuery.csvDirectory + self.name
+		partial = eBayQuery.csvDirectory + self.name.replace(" ", "_")
 		self.csvProductList = partial + ".csv"
 		self.csvProductListAuction = partial + "_Auction.csv"
 		self.csvProductListBIN = partial + "_BIN.csv"
 
-		partial = eBayQuery.pngDirectory + self.name
+		partial = eBayQuery.pngDirectory + self.name.replace(" ", "_")
 		self.pngAveragePrice = partial + "_avgPrice.png"
 		self.pngVolume = partial + "_volume.png"
 		self.pngCombo = partial + "_combo.png"
 
-		self.fileCheck()
+		self.file_check()
 
 		#links are either all there, or not at all
 		#after passing through the constructor, the links will all be present
 		if enlaceAll == None or enlaceAuction == None or enlaceBIN == None:
-			self.linkAll = getEbayLink("All Listings", self.name)
-			self.linkAuction = getEbayLink("Auction", self.name)
-			self.linkBIN = getEbayLink("Buy It Now", self.name)
+			self.linkAll = get_eBay_link("All Listings", self.name)
+			self.linkAuction = get_eBay_link("Auction", self.name)
+			self.linkBIN = get_eBay_link("Buy It Now", self.name)
 		else:
 			self.linkAll = enlaceAll
 			self.linkAuction = enlaceAuction
@@ -44,7 +46,7 @@ class eBayQuery:
 
 		self.product_collection = ProductList()
 
-	def fileCheck(self):
+	def file_check(self):
 		"""
 		Ensures that all of the files related to the eBay query are available to be written to.
 		New files are opened if none exist.
@@ -56,9 +58,10 @@ class eBayQuery:
 				with open(path, "w") as file:
 					pass
 
-	def fillPlot(data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
+	def fill_plot(data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
 		"""
-		Helper function to graphCombination.
+		Helper function to graph_from_csv.
+		Given 'data' (list of numbers), fill the axes 'ax.'
 		"""
 
 		X = np.array( list(range(len(data))) ).reshape(-1, 1)
@@ -74,7 +77,37 @@ class eBayQuery:
 		ax.set_ylabel(yTitle)
 		ax.set_title(graphTitle)
 
-	def graphCombination(self):
+	def graph_from_csv(self, csv_file, fig, avgPriceAx, volumeAx, color_one, color_two, listing_type):
+		"""
+		Given a csv_file to draw item data from, and two axes, 'avgPriceAx' and 'volumeAx,' graphs the data for the csv file to both axes.
+		Returns a boolean value, indicating whether a csv_file had any data to plot.
+			--> True: plotted some data
+			--> False: did not plot data
+		"""
+
+		#introduce data
+		self.product_collection = ProductList()
+		self.product_collection.importData(csv_file)
+		package = self.product_collection.splitData()
+
+		if package == False:
+			fig.clf()
+			plt.close()
+			print("nothing for ", self.name)
+			return False
+		else:
+			(dateList, avgPriceList, volumeList) = package
+
+		#plot data
+		avgPriceList = list(reversed(avgPriceList))
+		volumeList = list(reversed(volumeList))
+
+		eBayQuery.fill_plot(avgPriceList, avgPriceAx, "days into the past", "average price", self.name, color_one, color_two, listing_type)
+		eBayQuery.fill_plot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, color_one, color_two)
+
+		return True
+
+	def graph_combo(self):
 		"""
 		Graph the data associated with the eBay query.
 		In this method, since we have data across different search queries, like Auctions and BIN, we can overlap graphs from Auction and BIN.
@@ -83,34 +116,12 @@ class eBayQuery:
 		#create the fig
 		fig, (avgPriceAx, volumeAx) = plt.subplots(1, 2, figsize=(12,15))
 
-		#introduce Auction data
-		self.importProductData(self.csvProductListAuction)
-		package = self.product_collection.splitData(self.name)
-		if package == False:
-			fig.clf()
-			plt.close()
+		rv = self.graph_from_csv(self.csvProductListAuction, fig, avgPriceAx, volumeAx, "lightcoral", "firebrick", "Auction")
+		if not rv:
 			return False
-		else:
-			(dateList, avgPriceList, volumeList) = package
-
-		#plot Auction data
-		ProductList.fillPlot(avgPriceList, avgPriceAx, "days into the past", "average price", self.name, "lightcoral", "firebrick", "Auction")
-		ProductList.fillPlot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, "lightcoral", "firebrick")
-
-		#introduct BIN data
-		self.product_collection = ProductList()
-		self.importProductData(self.csvProductListBIN)
-		package = self.product_collection.splitData(self.name)
-		if package == False:
-			fig.clf()
-			plt.close()
+		rv = self.graph_from_csv(self.csvProductListBIN, fig, avgPriceAx, volumeAx, "aquamarine", "teal", "Buy It Now")
+		if not rv:
 			return False
-		else:
-			(dateList, avgPriceList, volumeList) = package
-
-		#plot BIN data
-		ProductList.fillPlot(avgPriceList, avgPriceAx, "days into the past", "average price", self.name, "aquamarine", "teal", "Buy It Now")
-		ProductList.fillPlot(volumeList, volumeAx, "days into the past", "volume of sales", self.name, "aquamarine", "teal")
 
 		fig.legend(loc = "upper right")
 		#export the fig
@@ -125,7 +136,7 @@ class eBayQuery:
 		Returns a dictionary representation of self.
 		"""
 
-		return {"name": query.name, "AllListingsLink": query.linkAll, "AuctionLink": query.linkAuction, "BuyItNowLink": query.linkBIN}
+		return {"name": self.name, "AllListingsLink": self.linkAll, "AuctionLink": self.linkAuction, "BuyItNowLink": self.linkBIN}
 
 	def __str__(self):
 		"""
