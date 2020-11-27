@@ -75,15 +75,19 @@ class queryList:
 		"""
 		Helper function to data_collection.
 		Populates a ProductList object with item data scraped from the 'link'. Export the data to 'csv_file.'
+
+	    Note:
+	        we don't want to be storing all that ProductList() data!
+	        tempList will go out of scope and it will be relieved of its memory usage
 		"""
 
-	    print(f"\n{name} {listing_type}")
+		print(f"\n{name} {listing_type}")
 
-	    tempList = ProductList()
-	    aboutALink(client, link, tempList)
-	    tempList.export_item_data(csv_file)
+		tempList = ProductList()
+		aboutALink(client, link, tempList)
+		tempList.export_item_data(csv_file)
 
-	    print(f"\nlength of {listing_type}", len(tempList.item_list))
+		print(f"\nlength of {listing_type}", len(tempList.item_list))
 
 
 	def data_collection(self, client, start_index = 0, single_search = False):
@@ -91,10 +95,6 @@ class queryList:
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
 	    Export this data to every query's respective csv file.
-
-	    Note:
-	        we don't want to be storing all that ProductList() data!
-	        tempList will go out of scope and it will be relieved of its memory usage
 	    """
 
 	    count = start_index
@@ -105,13 +105,13 @@ class queryList:
 	        count += 1
 
 	        #data for All listings
-	        #queryList.collection_helper(client, query.name, query.linkAll, query.csvProductList, "ALL LISTINGS")
+	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
 
 	        #data for Auction listings
-	        queryList.collection_helper(client, query.name, query.linkAuction, query.csvProductListAuction, "AUCTION")
+	        queryList.collection_helper(client, query.name, query.linkAuction, query.csv_Auction, "AUCTION")
 
 	        #data for Buy It Now listings
-	        queryList.collection_helper(client, query.name, query.linkBIN, query.csvProductListBIN, "BIN")
+	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN")
 
 	        if single_search:
 	        	return

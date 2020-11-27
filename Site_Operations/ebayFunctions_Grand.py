@@ -1,20 +1,21 @@
 from Ebay.ItemOrganization.Item import Item
 from Ebay.Site_Operations.cleanEntries import clean_title, clean_price, clean_shipping, clean_date
-from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink_new
+from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink
 from bs4 import BeautifulSoup
 import bs4
 
 
-def get_eBay_link(listing_type, search_str):
+def make_eBay_link(listing_type, search_str):
 	"""
 	Returns a starting link for a search query.
 
-	>>> get_eBay_link("Auction", "Jimi Hendrix Poster")
+	>>> make_eBay_link("Auction", "Jimi Hendrix Poster")
 	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Jimi Hendrix Poster&LH_Sold=1&LH_Complete=1&rt=nc&LH_Auction=1&_ipg=200'
-	>>> get_eBay_link("Buy It Now", "Cream Disraeli Gears")
+	>>> make_eBay_link("Buy It Now", "Cream Disraeli Gears")
 	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Cream Disraeli Gears&LH_Sold=1&LH_Complete=1&rt=nc&LH_BIN=1&_ipg=200'
 
 	"""
+	assert listing_type in ["All Listings", "Auction", "Buy It Now"], "not a valid listing type. Must be one of 'All Listings', 'Auction', or 'Buy It Now'"
 
 	link = "https://www.ebay.com/sch/i.html?_from=R40&_nkw=" + search_str + "&LH_Sold=1&LH_Complete=1"
 
@@ -24,8 +25,6 @@ def get_eBay_link(listing_type, search_str):
 		link += "&rt=nc&LH_Auction=1"
 	elif listing_type == "Buy It Now":
 		link += "&rt=nc&LH_BIN=1"
-	else:
-		print("bad listing_type")
 
 	return link + "&_ipg=200"
 
@@ -66,7 +65,7 @@ def extract_nested(get_raw_func, html, outer_element_type, outer_class_name, inn
 	return cleaned_inner
 
 
-def searchListings(html, element_type, class_code, item_collection, printer_bool_page_stats):
+def searchListings(html, element_type, class_code, item_collection, printer_bool_page_stats = False):
 	"""
 	html -> html code for an entire webpage
 
@@ -77,10 +76,8 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 	#right before the code starts, I will find the special class_name that can be used to find the sale date!
 	key = findKey(html, element_type, ["S", "o", "l", "d"])
 
-	count = 0
-	count_skipped_early = 0
-	count_skipped_bad = 0
-	count_skipped_class_code = 0
+	count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code = 0, 0, 0, 0
+
 	for listing in html.find_all(element_type):
 		if listing.get("class") == None:
 			count_skipped_early += 1
@@ -101,24 +98,19 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 				#print("*****need to do extra work to get sale date")
 				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
-			if title == None or price == None or shipping == None or date == None:
-				#print(f"*****bad listing -- title: {title} price: {price} shipping: {shipping} date: {date}")
-				count_skipped_bad += 1
-			else:
+			if all([title, price, shipping, date]):
 				total_cost = round(price+shipping, 2)
 				item_collection.addItem( Item(title, total_cost, date) )
-				count += 1
+				count_added += 1
+			else:
+				#print(f"*****bad listing -- title: {title} price: {price} shipping: {shipping} date: {date}")
+				count_skipped_bad += 1
+
 		else:
 			count_skipped_class_code += 1
 
 	if printer_bool_page_stats:
-		print("\n")
-		print("PAGE STATS")
-		print(f"num item listings: {len(html.find_all(element_type))}")
-		print(f"count added: {count}")
-		print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_class_code: {count_skipped_class_code}")
-
-
+		printer_page_stats_one(len(html.find_all(element_type)), count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code)
 
 def receive_html(client, link):
 	"""
@@ -130,16 +122,28 @@ def receive_html(client, link):
 
 	return html
 
+def printer_product_stats(total_listings, max_iteration):
+	print("\nPRODUCT STATS")
+	print("total_listings: ", total_listings)
+	print("max_iteration", max_iteration)
 
-def aboutALink(client, link, product_collection):
+def printer_page_stats_one(num_item_listings, count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code):
+	print("\n")
+	print("PAGE STATS")
+	print(f"num item listings: {num_item_listings}")
+	print(f"count added: {count_added}")
+	print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_class_code: {count_skipped_class_code}")
+
+def printer_page_stats_two(count, item_list_length, link):
+	print(f"iter count: {count} ... current item_list length: {item_list_length}")
+	print(f"link: {link}")
+
+def aboutALink(client, link, product_collection, printer_bool_product_stats = True, printer_bool_page_stats = True):
 	"""
 	Starting from 'link', make requests to client for webpages' html code. 
 	Populate 'product_collection' with new items listed on the webpage.
 	Continue until we reach the end of the pages with listings.
 	"""
-
-	printer_bool_product_stats = False
-	printer_bool_page_stats = False
 
 	html = receive_html(client, link)
 	print("link: ", link)
@@ -154,9 +158,7 @@ def aboutALink(client, link, product_collection):
 	max_iteration = min(50, int(total_listings/200 +1)) #ebay won't show us more that 10,000 items from their page even though there might be more to look at
 
 	if printer_bool_product_stats:
-		print("\nPRODUCT STATS")
-		print("total_listings: ", total_listings)
-		print("max_iteration", max_iteration)
+		printer_product_stats(total_listings, max_iteration)
 
 	for count in range(max_iteration):
 
@@ -164,7 +166,6 @@ def aboutALink(client, link, product_collection):
 		searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats) #search the listings for data. populate the product_collection list
 
 		if printer_bool_page_stats:
-			print(f"iter count: {count} ... current item_list length: {len(product_collection.item_list)}")
-			print(f"link: {link}")
+			printer_page_stats_two(count, len(product_collection.item_list), link)
 
-		link = findLink_new(link)
+		link = findLink(link)

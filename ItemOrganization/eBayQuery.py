@@ -10,7 +10,7 @@ from sklearn.linear_model import LinearRegression
 import datetime
 
 from Ebay.ItemOrganization.ProductList import ProductList
-from Ebay.Site_Operations.ebayFunctions_Grand import get_eBay_link
+from Ebay.Site_Operations.ebayFunctions_Grand import make_eBay_link
 
 class eBayQuery:
 
@@ -26,13 +26,13 @@ class eBayQuery:
 		self.name = nombre
 
 		partial = eBayQuery.csvDirectory + self.name.replace(" ", "_")
-		self.csvProductList = partial + ".csv"
-		self.csvProductListAuction = partial + "_Auction.csv"
-		self.csvProductListBIN = partial + "_BIN.csv"
+		self.csv_All = partial + ".csv"
+		self.csv_Auction = partial + "_Auction.csv"
+		self.csv_BIN = partial + "_BIN.csv"
 
 		partial = eBayQuery.pngDirectory + self.name.replace(" ", "_")
-		self.pngAveragePrice = partial + "_avgPrice.png"
-		self.pngVolume = partial + "_volume.png"
+		self.png_avg_price = partial + "_avgPrice.png"
+		self.png_volume = partial + "_volume.png"
 		self.png_combo = partial + "_combo.png"
 
 		self.file_check()
@@ -40,9 +40,9 @@ class eBayQuery:
 		#links are either all there, or not at all
 		#after passing through the constructor, the links will all be present
 		if enlaceAll == None or enlaceAuction == None or enlaceBIN == None:
-			self.linkAll = get_eBay_link("All Listings", self.name)
-			self.linkAuction = get_eBay_link("Auction", self.name)
-			self.linkBIN = get_eBay_link("Buy It Now", self.name)
+			self.linkAll = make_eBay_link("All Listings", self.name)
+			self.linkAuction = make_eBay_link("Auction", self.name)
+			self.linkBIN = make_eBay_link("Buy It Now", self.name)
 		else:
 			self.linkAll = enlaceAll
 			self.linkAuction = enlaceAuction
@@ -56,8 +56,8 @@ class eBayQuery:
 		New files are opened if none exist.
 		"""
 
-		#for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN, self.pngAveragePrice, self.pngVolume, self.png_combo]:
-		for path in [self.csvProductList, self.csvProductListAuction, self.csvProductListBIN]:
+		#for path in [self.csv_All, self.csv_Auction, self.csv_BIN, self.png_avg_price, self.png_volume, self.png_combo]:
+		for path in [self.csv_All, self.csv_Auction, self.csv_BIN]:
 			if not os.path.isfile(path):
 				with open(path, "w") as file:
 					pass
@@ -125,11 +125,11 @@ class eBayQuery:
 
 		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
 
-		rv = self.graph_from_csv(self.csvProductListAuction, fig, avg_price_axes, volume_axes, "lightcoral", "firebrick", "Auction")
+		rv = self.graph_from_csv(self.csv_Auction, fig, avg_price_axes, volume_axes, "lightcoral", "firebrick", "Auction")
 		if not rv:
 			return False
 
-		rv = self.graph_from_csv(self.csvProductListBIN, fig, avg_price_axes, volume_axes, "aquamarine", "teal", "Buy It Now")
+		rv = self.graph_from_csv(self.csv_BIN, fig, avg_price_axes, volume_axes, "aquamarine", "teal", "Buy It Now")
 		if not rv:
 			return False
 
@@ -154,9 +154,9 @@ class eBayQuery:
 
 		message = ""
 		message += f"{self.name}\n"
-		message += f"{self.csvProductList}\n"
-		message += f"{self.pngAveragePrice}\n"
-		message += f"{self.pngVolume}\n"
+		message += f"{self.csv_All}\n"
+		message += f"{self.png_avg_price}\n"
+		message += f"{self.png_volume}\n"
 		message += f"{self.linkAll}\n"
 		message += f"{self.linkAuction}\n"
 		message += f"{self.linkBIN}\n"

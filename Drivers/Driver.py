@@ -35,10 +35,10 @@ def whack_shit():
     for query in totalQueries.queryCollection:
         length = 0
 
-        query.importProductData(query.csvProductListAuction)
+        query.importProductData(query.csv_Auction)
         length += len(query.product_collection.item_list)
 
-        query.importProductData(query.csvProductListBIN)
+        query.importProductData(query.csv_BIN)
         length += len(query.product_collection.item_list)
         #lengthList.append(length)
 
@@ -68,7 +68,7 @@ def test_export_function(client, totalQueries):
         length_of_auction_list.append( len(tempList.item_list) )
 
         export_list = ProductList()
-        tempList.export_item_data(query.csvProductListAuction, export_list)
+        tempList.export_item_data(query.csv_Auction, export_list)
 
         #after we populate the csv file
         length_of_csv.append( len(export_list.item_list) )

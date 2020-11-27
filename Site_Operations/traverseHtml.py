@@ -126,7 +126,7 @@ def findKey(html, element_type, sequence):
             if keys[0] != "nothing found":
                 return keys[0]
 
-def findLink_new(old_link):
+def findLink(old_link):
     """
     Given an old link to an eBay page, returns a link to the next page.
     """
@@ -136,30 +136,3 @@ def findLink_new(old_link):
     else:
         end = old_link.find("&_pgn=") + len("&_pgn=")
         return old_link[:end] + str((int(old_link[end:]) + 1))
-
-"""
-def findLink(html, element_type, class_code):
-
-    element = findElement(html, element_type, "class", class_code)
-
-    if element == "nothing found":
-        return "nothing found"
-    else:
-        return element.get("href")
-
-def countListings(html, element_type, class_code):
-    listings = html.find_all(element_type)
-    
-    count = 0
-
-    for listing in listings:
-        try:
-            name = (listing.get("class"))[0]
-        except:
-            continue
-
-        if name == class_code:
-            count += 1
-
-    return count
-"""
