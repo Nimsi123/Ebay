@@ -95,4 +95,4 @@ totalQueries = queryList()
 #[print(query.name) for query in totalQueries.queryCollection[320:]]
 #print(totalQueries.find_count("The Beatles With the Beatles"))
 #totalQueries.data_collection(client, start_index = 346, single_search = True)
-#totalQueries.data_visualization(start_index = 320, single_graph = True)
+totalQueries.data_visualization(start_index = 0, single_graph = True)

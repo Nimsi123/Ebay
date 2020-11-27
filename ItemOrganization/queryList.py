@@ -81,6 +81,7 @@ class queryList:
 		Imports all of the data to do with individual queries from self.exportDirectory
 		Populates self.queryCollection with stored queryData.
 		"""
+		assert len(self.queryCollection) == 0, "You should not be importing if len(self.queryCollection) is not 0. There is a risk of importing overlaps."
 
 		with open(self.exportDirectory, "r", encoding = "utf-8") as file:
 			csv_reader = csv.DictReader(file)
@@ -127,13 +128,9 @@ class queryList:
 	        print("count: ", count)
 	        count += 1
 
-	        #data for All listings
+	        #data for All listings, Auction listings, and Buy It Now listings
 	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
-
-	        #data for Auction listings
 	        queryList.collection_helper(client, query.name, query.linkAuction, query.csv_Auction, "AUCTION")
-
-	        #data for Buy It Now listings
 	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN")
 
 	        if single_search:

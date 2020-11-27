@@ -125,11 +125,15 @@ class eBayQuery:
 
 		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
 
-		rv = self.graph_from_csv(self.csv_Auction, fig, avg_price_axes, volume_axes, "lightcoral", "firebrick", "Auction")
+		graph_collection = (fig, avg_price_axes, volume_axes)
+		auction_colors = ("lightcoral", "firebrick")
+		bin_colors = ("aquamarine", "teal")
+
+		rv = self.graph_from_csv(self.csv_Auction, *graph_collection, *auction_colors, "Auction")
 		if not rv:
 			return False
 
-		rv = self.graph_from_csv(self.csv_BIN, fig, avg_price_axes, volume_axes, "aquamarine", "teal", "Buy It Now")
+		rv = self.graph_from_csv(self.csv_BIN, *graph_collection, *bin_colors, "Buy It Now")
 		if not rv:
 			return False
 
