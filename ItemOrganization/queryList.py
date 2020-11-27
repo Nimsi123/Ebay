@@ -15,6 +15,8 @@ class queryList:
 		self.queryCollection = []
 		self.exportDirectory = r"..\\ItemOrganization\\queryListExport.csv"
 
+		self.import_query_data()
+
 	def find_count(self, search_name):
 		"""
 		Returns the index of the query in queryCollection that has the title query_name.
@@ -33,12 +35,35 @@ class queryList:
 		self.queryCollection.append( eBayQuery(nombre, enlaceAll, enlaceAuction, enlaceBIN) )
 
 	def add_new_queries(self, list_of_names):
+		"""
+		Adds names from a list of new search queries to track to the csv file holding data for tracked items.
+		"""
+		existing_query_names = [query.name for query in self.queryCollection]
+
 		for name in list_of_names:
-			self.addQuery(name)
+			if name not in existing_query_names:
+				self.addQuery(name)
 
-		self.export_query_data(append = True)
+		self.queryCollection.sort(key = lambda query: query.name)
+		self.export_query_data()
 
-	def export_query_data(self, append):
+	def remove_old_queries(self, list_of_names):
+		"""
+		Removes names from a list of existing search queries from the csv file holding data for tracked items.
+		"""
+
+		i = 0
+		while i < len(self.queryCollection):
+			query = self.queryCollection[i]
+			if query.name in list_of_names:
+				del self.queryCollection[i]
+				continue
+			i += 1
+
+		self.queryCollection.sort(key = lambda query: query.name)
+		self.export_query_data()
+
+	def export_query_data(self):
 		"""
 		Export the data associated with eBayQuery objects to a csv file.
 		"""
@@ -46,9 +71,7 @@ class queryList:
 		with open(self.exportDirectory, "w", encoding = "utf-8") as file:
 			data = ["name", "queryDataDirectory", "productListDirectory", "AveragePriceDirectory", "VolumeDirectory", "AllListingsLink", "AuctionLink", "BuyItNowLink"]
 			csv_writer = csv.DictWriter(file, fieldnames = data)
-
-			if not append:
-				csv_writer.writeheader()
+			csv_writer.writeheader()
 
 			for query in self.queryCollection:
 				csv_writer.writerow( query.get_dict_data() )
