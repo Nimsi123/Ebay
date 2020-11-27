@@ -26,7 +26,7 @@ class ProductList:
 
         self.item_list.sort(key = lambda item: item.date)
 
-    def importData(self, dataFile):
+    def import_item_data(self, dataFile):
         """
         Open up a csv file that holds individual item data. Populate the item_list with newly created Item objects.
         """
@@ -43,25 +43,26 @@ class ProductList:
     def split_data(self):
         """
         Returns three new meaningful lists extracted from self.item_list
-        --> (dateList, avgPriceList, volumeList)
+        --> (date_list, avg_price_list, volume_list)
         """
+        
         if len(self.item_list) == 0:
             return False
 
         #items grouped by date
         item_dict = {}
         for item in self.item_list:
-            item_dict[item.getDate()] = item_dict.get(item.getDate(), []) + [item]
+            item_dict[item.get_date()] = item_dict.get(item.get_date(), []) + [item]
 
-        dateList, avgPriceList, volumeList = [], [], []
+        date_list, avg_price_list, volume_list = [], [], []
         for date, itemSubset in item_dict.items():
-            avgPrice = statistics.mean([item.getPrice() for item in itemSubset])
+            avgPrice = statistics.mean([item.get_price() for item in itemSubset])
 
-            dateList.append(date)
-            avgPriceList.append(avgPrice)
-            volumeList.append( len(itemSubset) )
+            date_list.append(date)
+            avg_price_list.append(avgPrice)
+            volume_list.append( len(itemSubset) )
 
-        return dateList, avgPriceList, volumeList
+        return date_list, avg_price_list, volume_list
 
     def earliest_date(self):
         """
@@ -69,7 +70,7 @@ class ProductList:
         """
         
         if len(self.item_list) == 0:
-            return []
+            return False
         else:
             return self.item_list[-1].date
 
@@ -81,18 +82,18 @@ class ProductList:
         for i in range(len(self.item_list)):
             item = self.item_list[i]
 
-            if item.getDate() >= date:
+            if item.get_date() >= date:
                 return self.item_list[i:]
         else:
             return []
 
-    def file_write(self, exportFile):
+    def file_write(self, export_file):
         """
-        Dumps item data from self.item_list into exportFile.
-        exportFile is written over.
+        Dumps item data from self.item_list into export_file.
+        export_file is written over.
         """
 
-        with open(exportFile, "w", encoding = "utf-8") as ebay_csv:
+        with open(export_file, "w", encoding = "utf-8") as ebay_csv:
             data = ["title", "price", "date"]
             csv_writer = csv.DictWriter(ebay_csv, fieldnames = data)
             csv_writer.writeheader()
@@ -100,13 +101,16 @@ class ProductList:
             for item in self.item_list:
                 csv_writer.writerow( item.get_dict_data() )
 
-    def new_export(self, exportFile):
+    def export_item_data(self, export_file):
         """
         export_list --> the list holding all the items to export
         """
 
         export_list = ProductList()
-        export_list.importData(exportFile) #get all old item data already collected
+        export_list.import_item_data(export_file) #get all old item data already collected
+
+        if len(self.item_list) == 0:
+            return False
 
         earliest_newly_collected_date = self.earliest_date() #Farthest into the past.
         overlapping_list = export_list.list_from_date_to_today( earliest_newly_collected_date )
@@ -117,7 +121,7 @@ class ProductList:
                 export_list.addItem(item_one)
 
         export_list.date_sort()
-        export_list.file_write(exportFile)
+        export_list.file_write(export_file)
 
     """DATA ANALYSIS CODE"""
 
@@ -140,7 +144,7 @@ class ProductList:
 
         i = 0
         while i < len(self.item_list):
-            if self.item_list[i].getPrice() >= topPrice:
+            if self.item_list[i].get_price() >= topPrice:
                 #delete the item with the outlier price
                 del self.item_list[i]
                 i -= 1
@@ -187,7 +191,7 @@ class ProductList:
     def __str__(self):
         string = ""
         for item in self.item_list:
-            string += f"{item.getTitle():<100}{item.getPrice():<20}{item.getDate()}\n"
+            string += f"{item.get_title():<100}{item.get_price():<20}{item.get_date()}\n"
 
         string += "\n\n\n"
 

@@ -20,7 +20,7 @@ def clean_price(entry):
         try:
             return round(float(entry.replace(',', '').strip()[1:]), 2)
         except:
-            print("bad price: ", entry)
+            #print("bad price: ", entry)
             return None
     else:
         return None
@@ -38,7 +38,7 @@ def clean_shipping(entry):
             else:
                 return round(float(message), 2)
         except:
-            print("bad shipping: ", entry)
+            #print("bad shipping: ", entry)
             return None
 
 def clean_date(entry):
@@ -48,7 +48,7 @@ def clean_date(entry):
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("Sold") == -1:
-        print("bad date: ", entry)
+        #print("bad date: ", entry)
         return None
 
     date = entry[len("Sold  "):]

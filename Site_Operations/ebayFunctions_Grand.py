@@ -11,8 +11,8 @@ def get_eBay_link(listing_type, search_str):
 
 	>>> get_eBay_link("Auction", "Jimi Hendrix Poster")
 	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Jimi Hendrix Poster&LH_Sold=1&LH_Complete=1&rt=nc&LH_Auction=1&_ipg=200'
-	>>> get_eBay_link("Buy It Now", "Cream Disraeli Gears Album")
-	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Cream Disraeli Gears Album&LH_Sold=1&LH_Complete=1&rt=nc&LH_BIN=1&_ipg=200'
+	>>> get_eBay_link("Buy It Now", "Cream Disraeli Gears")
+	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Cream Disraeli Gears&LH_Sold=1&LH_Complete=1&rt=nc&LH_BIN=1&_ipg=200'
 
 	"""
 
@@ -98,11 +98,11 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 			if key == None:
 				date = extract(findElement, listing, "div", "s-item__title--tagblock", clean_date)
 			else:
-				print("*****need to do extra work to get sale date")
+				#print("*****need to do extra work to get sale date")
 				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
 			if title == None or price == None or shipping == None or date == None:
-				print(f"*****bad listing -- title: {title} price: {price} shipping: {shipping} date: {date}")
+				#print(f"*****bad listing -- title: {title} price: {price} shipping: {shipping} date: {date}")
 				count_skipped_bad += 1
 			else:
 				total_cost = round(price+shipping, 2)

@@ -1,7 +1,7 @@
 #from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.queryList import queryList
 from Ebay.Site_Operations.ebayFunctions_Grand import aboutALink
-from name_collection import deviceNames, cameraNames, gpu
+from name_collection import *
 
 """
 DESCRIPTION OF HIGH LEVEL OPERATIONS
@@ -48,7 +48,7 @@ def whack_shit():
 
 def test_export_function(client, totalQueries):
     """
-    Does the new_export function work as intended?
+    Does the export_item_data function work as intended?
     """
 
 
@@ -68,7 +68,7 @@ def test_export_function(client, totalQueries):
         length_of_auction_list.append( len(tempList.item_list) )
 
         export_list = ProductList()
-        tempList.new_export(query.csvProductListAuction, export_list)
+        tempList.export_item_data(query.csvProductListAuction, export_list)
 
         #after we populate the csv file
         length_of_csv.append( len(export_list.item_list) )
@@ -87,7 +87,10 @@ def test_export_function(client, totalQueries):
 
 
 totalQueries = queryList()
-#totalQueries.add_new_queries(gpu)
-totalQueries.importData()
-#totalQueries.data_collection(client, start_index = 283)
-totalQueries.data_visualization()
+#totalQueries.add_new_queries(The_Beatles)
+#totalQueries.add_new_queries(Cream)
+totalQueries.import_query_data()
+#[print(query.name) for query in totalQueries.queryCollection[320:]]
+#print(totalQueries.find_count("The Beatles With the Beatles"))
+totalQueries.data_collection(client, start_index = 346, single_search = True)
+totalQueries.data_visualization(start_index = 320, single_graph = True)

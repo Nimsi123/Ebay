@@ -63,6 +63,42 @@ cameraNames = ["Canon EOS 5D Mark II", "Canon EOS 5D Mark III", "Canon EOS 6D", 
                  "Kodak EasyShare", "Kodak PIXPRO", "Canon PowerShot", "Kodak DC", 
                  "Samsung NX", "Samsung Galaxy Camera", "Samsung Smart Camera", "Samsung WB Series", "Samsung SL Series", "Samsung ST Series"]
 
+new_devices = ["PlayStation 5"]
+
+The_Beatles = [
+                "The Beatles Please Please Me",
+                "The Beatles With the Beatles",
+                "The Beatles Introducing... The Beatles",
+                "The Beatles Meet the Beatles!",
+                "The Beatles Twist and Shout",
+                "The Beatles The Beatles' Second",
+                "The Beatles The Beatles' Long Tall Sally",
+                "The Beatles A Hard Day's Night",
+                "The Beatles Something New",
+                "The Beatles Beatles for Sale",
+                "The Beatles Beatles '65",
+                "The Beatles Beatles VI",
+                "The Beatles Help!",
+                "The Beatles Rubber Soul",
+                "The Beatles Yesterday and Today",
+                "The Beatles Revolver",
+                "The Beatles Sgt. Pepper's Lonely Hearts Club Band",
+                "The Beatles Magical Mystery Tour",
+                "The Beatles The Beatles ('The White')",
+                "The Beatles Yellow Submarine",
+                "The Beatles Abbey Road",
+                "The Beatles Let It Be"]
+
+Cream = ["Cream Fresh Cream",
+                "Cream Disraeli Gears",
+                "Cream Wheels of Fire",
+                "Cream Goodbye",
+                "Cream Live Cream",
+                "Cream Live Cream Volume II",
+                "Cream BBC Sessions",
+                "Cream Royal Albert Hall London May 2-3-5-6, 2005"
+]
+
 gpu = [
     "RTX 3090",
     "RTX 3080",
@@ -100,4 +136,10 @@ gpu = [
     "Vega 64",
     "Vega 56",
     "Radeon VII"
+]
+
+gpu = [
+    "RTX 3090", "RTX 3080", "RTX 3070", "RTX 2080 Ti", "RTX 2080", "RTX 2080 Super", "RTX 2070", "RTX 2070 Super", "RTX 2060 Super", "RTX 2060", "RTX 1660", "RTX 1660 Ti", "RTX 1660 Super", "RTX 1650",
+    "RTX 1650 Super", "RTX 1080 Ti", "RTX 1080", "RTX 1070 ", "RTX 1070 Ti", "RTX 1060", "RTX 1050 Ti", "RTX 1050", "RX 6800 XT", "RX 6800", "RX 5700 XT", "RX 5700", "RX 5600 XT", "RX 5500 XT",
+    "RX 590", "RX 580", "RX 570", "RX 480", "RX 470", "Vega 64", "Vega 56", "Radeon VII"
 ]

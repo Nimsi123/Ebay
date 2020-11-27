@@ -3,20 +3,14 @@ import csv
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
-from matplotlib.dates import DateFormatter
 from matplotlib.dates import (YEARLY, DateFormatter,
                               rrulewrapper, RRuleLocator, drange)
-
-import datetime
-
-
 import numpy as np
 from sklearn.linear_model import LinearRegression
+import datetime
 
 from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.Site_Operations.ebayFunctions_Grand import get_eBay_link
-
-import sys
 
 class eBayQuery:
 
@@ -96,9 +90,9 @@ class eBayQuery:
 
 		ax.plot(dates, Y_pred, color= colLine) #prediction line
 
-	def graph_from_csv(self, csv_file, fig, avgPriceAx, volumeAx, color_one, color_two, listing_type):
+	def graph_from_csv(self, csv_file, fig, avg_price_axes, volume_axes, color_one, color_two, listing_type):
 		"""
-		Given a csv_file to draw item data from, and two axes, 'avgPriceAx' and 'volumeAx,' graphs the data for the csv file to both axes.
+		Given a csv_file to draw item data from, and two axes, 'avg_price_axes' and 'volume_axes,' graphs the data for the csv file to both axes.
 		Returns a boolean value, indicating whether a csv_file had any data to plot.
 			--> True: plotted some data
 			--> False: did not plot data
@@ -106,7 +100,7 @@ class eBayQuery:
 
 		#introduce data
 		self.product_collection = ProductList()
-		self.product_collection.importData(csv_file)
+		self.product_collection.import_item_data(csv_file)
 		package = self.product_collection.split_data()
 
 		if package == False:
@@ -115,12 +109,11 @@ class eBayQuery:
 			print("nothing for ", self.name)
 			return False
 		else:
-			(dateList, avgPriceList, volumeList) = package
+			date_list, avg_price_list, volume_list = package
 
 		#plot data
-
-		eBayQuery.fill_plot(dateList, avgPriceList, avgPriceAx, "date", "average price", self.name, color_one, color_two, listing_type)
-		eBayQuery.fill_plot(dateList, volumeList, volumeAx, "date", "volume of sales", self.name, color_one, color_two)
+		eBayQuery.fill_plot(date_list, avg_price_list, avg_price_axes, "date", "average price", self.name, color_one, color_two, listing_type)
+		eBayQuery.fill_plot(date_list, volume_list, volume_axes, "date", "volume of sales", self.name, color_one, color_two)
 
 		return True
 
@@ -130,13 +123,13 @@ class eBayQuery:
 		In this method, since we have data across different search queries, like Auctions and BIN, we can overlap graphs from Auction and BIN.
 		"""
 
-		fig, (avgPriceAx, volumeAx) = plt.subplots(1, 2, figsize=(12,15))
+		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
 
-		rv = self.graph_from_csv(self.csvProductListAuction, fig, avgPriceAx, volumeAx, "lightcoral", "firebrick", "Auction")
+		rv = self.graph_from_csv(self.csvProductListAuction, fig, avg_price_axes, volume_axes, "lightcoral", "firebrick", "Auction")
 		if not rv:
 			return False
 
-		rv = self.graph_from_csv(self.csvProductListBIN, fig, avgPriceAx, volumeAx, "aquamarine", "teal", "Buy It Now")
+		rv = self.graph_from_csv(self.csvProductListBIN, fig, avg_price_axes, volume_axes, "aquamarine", "teal", "Buy It Now")
 		if not rv:
 			return False
 
