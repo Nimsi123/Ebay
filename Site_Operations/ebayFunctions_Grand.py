@@ -167,10 +167,9 @@ def aboutALink(client, link, product_collection, date_stored = None, printer_boo
 
 		#if the last element appended to product_collection is at or later than the most recent date in storage, quit
 
-		date_appended = None
-		if product_collection.item_list:
-			date_appended = product_collection.item_list[-1].date
-			print(date_appended)
+		date_appended = product_collection.earliest_date()
+		print("EARLIEST DATE: ", date_appended)
+
 		if (date_stored and date_appended) and (date_appended < date_stored):
 			print("**********************Broken the loop*************************")
 			print(date_appended)

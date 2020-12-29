@@ -94,5 +94,5 @@ totalQueries = queryList()
 
 #[print(query.name) for query in totalQueries.queryCollection[320:]]
 #print(totalQueries.find_count("PlayStation 5"))
-totalQueries.data_collection(client, start_index = 0, single_search = False)
+totalQueries.data_collection(client, start_index = 7, single_search = False)
 #totalQueries.data_visualization(start_index = 0, single_graph = True)

@@ -2,8 +2,6 @@ import csv
 import statistics
 import datetime
 
-
-
 from Ebay.ItemOrganization.Item import Item
 
 class ProductList:
@@ -14,24 +12,26 @@ class ProductList:
         self.percentUnderAverage = None
 
     def addItem(self, item):
-        """
-        Add an Item object to item_list
+        """Add an Item object to self.item_list.
+
+        :param item: The Item object
+        :type item: :class:`Item`
         """
         self.item_list.append(item)
 
     def date_sort(self):
-        """
-        Sort the item_list by date. Earliest date in the beginning of the list.
-        """
-
+        """Sorts self.item_list by date. The earliest date is in the beginning of the list."""
         self.item_list.sort(key = lambda item: item.date)
 
-    def import_item_data(self, dataFile):
-        """
-        Open up a csv file that holds individual item data. Populate the item_list with newly created Item objects.
+    def import_item_data(self, data_file):
+        """Populates self.item_list with Item objects found in data_file.
+
+        :param data_file: The csv_file holding Item object data.
+        :type data_file: str
+        :rtype: None
         """
 
-        with open(dataFile, "r", encoding = "utf-8") as csv_file:
+        with open(data_file, "r", encoding = "utf-8") as csv_file:
             csv_reader = csv.DictReader(csv_file)
             for line in csv_reader:
                 d = line["date"]
@@ -41,9 +41,12 @@ class ProductList:
     """EXPORT CODE"""
 
     def split_data(self):
-        """
-        Returns three new meaningful lists extracted from self.item_list
-        --> (date_list, avg_price_list, volume_list)
+        """Extracts data from self.item_list
+
+        :returns:   Element 0 (date_list) is a ``list`` of ``datetime.datetime`` objects. 
+                    Element 1 (avg_price_list) is a ``list`` of average prices for an item on a date. 
+                    Element 2 (volume_list) is a ``list`` of the number of sales on a date.
+        :rtype: tuple
         """
         
         if len(self.item_list) == 0:
@@ -65,18 +68,23 @@ class ProductList:
         return date_list, avg_price_list, volume_list
 
     def earliest_date(self):
-        """
-        Return the date of the earliest sold item collected. Farthest into the past.
+        """Returns the date farthest into the past.
+
+        :rtype: None or ``datetime.datetime``
         """
         
         if len(self.item_list) == 0:
-            return False
+            return None
         else:
             return self.item_list[-1].date
 
     def list_from_date_to_today(self, date):
-        """
-        Return the part of the item list that has items that are more into the future and equal to this date.
+        """Return a slice of self.item_list.
+
+        :param date: The date to compare items in self.item_list with.
+        :type date: ``datetime.datetime``
+        :returns: A list of items, possibly empty, for which items are closer to the present or equal to date.
+        :rtype: list
         """
 
         for i in range(len(self.item_list)):
@@ -88,9 +96,10 @@ class ProductList:
             return []
 
     def file_write(self, export_file):
-        """
-        Dumps item data from self.item_list into export_file.
-        export_file is written over.
+        """Overwrites export_file with item data from self.item_list
+        
+        :param export_file: The csv_file to dump the item data.
+        :type export_file: str
         """
 
         with open(export_file, "w", encoding = "utf-8") as ebay_csv:
@@ -102,9 +111,14 @@ class ProductList:
                 csv_writer.writerow( item.get_dict_data() )
 
     def export_item_data(self, export_file):
+        """Exports the items in self.item_list. Makes sure not to add items that were already collected.
+
+        :param export_file: The csv_file to dump the item data.
+        :type export_file: str
+        :returns: Returns False if self.item_list is an empty list and True otherwise.
+        :rtype: bool
         """
-        export_list --> the list holding all the items to export
-        """
+        assert type(export_file) == str
 
         export_list = ProductList()
         export_list.import_item_data(export_file) #get all old item data already collected
@@ -122,6 +136,8 @@ class ProductList:
 
         export_list.date_sort()
         export_list.file_write(export_file)
+
+        return True
 
     """DATA ANALYSIS CODE"""
 
