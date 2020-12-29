@@ -51,10 +51,7 @@ class eBayQuery:
 		self.product_collection = ProductList()
 
 	def file_check(self):
-		"""
-		Ensures that all of the files related to the eBay query are available to be written to.
-		New files are opened if none exist.
-		"""
+		"""Ensures that all of the files related to the eBay query exist. New files are opened if one does not exist."""
 
 		#for path in [self.csv_All, self.csv_Auction, self.csv_BIN, self.png_avg_price, self.png_volume, self.png_combo]:
 		for path in [self.csv_All, self.csv_Auction, self.csv_BIN]:
@@ -62,20 +59,18 @@ class eBayQuery:
 				with open(path, "w") as file:
 					pass
 
-	def fill_plot(dates, data, ax, xTitle, yTitle, graphTitle, colScatter, colLine, labeling = None):
-		"""
-		Helper function to graph_from_csv.
-		Given 'data' (list of numbers), fill the axes 'ax.'
+	def fill_plot(dates, data, ax, x_title, y_title, graph_title, color_scatter, color_line, labeling = None):
+		"""Helper function to graph_from_csv. Given 'data' (list of numbers), fill the axes 'ax.'
 		"""
 
 		ax.set(
-			xlabel = xTitle,
-			ylabel = yTitle,
-			title = graphTitle
+			xlabel = x_title,
+			ylabel = y_title,
+			title = graph_title
 			)
 
 		#scatter plot
-		ax.plot_date(dates, data, c = colScatter, label = labeling)
+		ax.plot_date(dates, data, c = color_scatter, label = labeling)
 		formatter = DateFormatter('%m/%d/%y')
 		ax.xaxis.set_major_formatter(formatter)
 		ax.xaxis.set_tick_params(rotation=30, labelsize=10)
@@ -88,14 +83,27 @@ class eBayQuery:
 		linear_regressor.fit(X, Y)  # perform linear regression
 		Y_pred = linear_regressor.predict(X)  # make predictions
 
-		ax.plot(dates, Y_pred, color= colLine) #prediction line
+		ax.plot(dates, Y_pred, color= color_line) #prediction line
 
-	def graph_from_csv(self, csv_file, fig, avg_price_axes, volume_axes, color_one, color_two, listing_type):
-		"""
-		Given a csv_file to draw item data from, and two axes, 'avg_price_axes' and 'volume_axes,' graphs the data for the csv file to both axes.
-		Returns a boolean value, indicating whether a csv_file had any data to plot.
-			--> True: plotted some data
-			--> False: did not plot data
+	def graph_from_csv(self, csv_file, fig, avg_price_axes, volume_axes, color_scatter, color_line, listing_type):
+		"""Helper method to self.graph_combo.
+
+		:param csv_file: address of a csv file that stores item data.
+		:type csv_file: str
+		:param fig: ?
+		:type fig: ?
+		:param avg_price_axes: Axis for average price data
+		:type avg_price_axes: ?
+		:param volume_axes: Axis for volume of sales data
+		:type volume_axes: ?
+		:param color_scatter: The color for the scatter points
+		:type color_scatter: str
+		:param color_line: The color for the regression line
+		:type color_line: str
+		:param listing_type: The search query type. Either "Auction" or "Buy It Now"
+		:type listing_type: str
+		:returns: True if there was data to plot and False otherwise
+		:rtype: bool
 		"""
 
 		#introduce data
@@ -112,15 +120,22 @@ class eBayQuery:
 			date_list, avg_price_list, volume_list = package
 
 		#plot data
-		eBayQuery.fill_plot(date_list, avg_price_list, avg_price_axes, "date", "average price", self.name, color_one, color_two, listing_type)
-		eBayQuery.fill_plot(date_list, volume_list, volume_axes, "date", "volume of sales", self.name, color_one, color_two)
+		graph_colors = (color_scatter, color_line)
+
+		x_y_data = (date_list, avg_price_list)
+		graph_labels = ("date", "average price", self.name)
+		eBayQuery.fill_plot(*x_y_data, avg_price_axes, *graph_labels, *graph_colors, listing_type)
+
+		x_y_data = (date_list, volume_list)
+		graph_labels = ("date", "volume of sales",self.name)
+		eBayQuery.fill_plot(*x_y_data, volume_axes, *graph_labels, *graph_colors)
 
 		return True
 
 	def graph_combo(self):
-		"""
-		Graph the data associated with the eBay query.
-		In this method, since we have data across different search queries, like Auctions and BIN, we can overlap graphs from Auction and BIN.
+		"""Graphs the data associated with the eBay query. 
+		We overlap the graphs of data from different search queries, like Auction and BIN.
+		We make two graphs per query: one for average prices, and one for volume of sales.
 		"""
 
 		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
@@ -145,24 +160,18 @@ class eBayQuery:
 		plt.close()
 
 	def get_dict_data(self):
-		"""
-		Returns a dictionary representation of self.
-		"""
+		"""Returns a dictionary representation of self."""
 
 		return {"name": self.name, "AllListingsLink": self.linkAll, "AuctionLink": self.linkAuction, "BuyItNowLink": self.linkBIN}
 
 	def __str__(self):
-		"""
-		Returns a string representation of self.
-		"""
 
-		message = ""
-		message += f"{self.name}\n"
-		message += f"{self.csv_All}\n"
-		message += f"{self.png_avg_price}\n"
-		message += f"{self.png_volume}\n"
-		message += f"{self.linkAll}\n"
-		message += f"{self.linkAuction}\n"
-		message += f"{self.linkBIN}\n"
+		message = f"""{self.name}
+		{self.csv_All}
+		{self.png_avg_price}
+		{self.png_volume}
+		{self.linkAll}
+		{self.linkAuction}
+		{self.linkBIN}"""
 
 		return message
