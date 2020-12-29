@@ -1,5 +1,11 @@
+import datetime
+
 class Item:
     def __init__(self, t, p, d):
+        assert type(t) == str
+        assert type(p) in [int, float]
+        assert type(d) == datetime.datetime
+
         self.title = t
         self.price = p
         self.date = d

@@ -61,19 +61,19 @@ def test_export_function(client, totalQueries):
 
         #data for Auction listings
         print(f"\n{query.name} AUCTION")
-        tempList = ProductList()
-        aboutALink(client, query.linkAuction, tempList)
+        temp_list = ProductList()
+        aboutALink(client, query.linkAuction, temp_list)
 
-        #after we populate tempList
-        length_of_auction_list.append( len(tempList.item_list) )
+        #after we populate temp_list
+        length_of_auction_list.append( len(temp_list.item_list) )
 
         export_list = ProductList()
-        tempList.export_item_data(query.csv_Auction, export_list)
+        temp_list.export_item_data(query.csv_Auction, export_list)
 
         #after we populate the csv file
         length_of_csv.append( len(export_list.item_list) )
 
-        print("length for AUCTION", len(tempList.item_list))
+        print("length for AUCTION", len(temp_list.item_list))
 
     print(length_of_auction_list)
     print(length_of_csv)
@@ -93,6 +93,6 @@ totalQueries = queryList()
 #totalQueries.remove_old_queries(Cream)
 
 #[print(query.name) for query in totalQueries.queryCollection[320:]]
-#print(totalQueries.find_count("The Beatles With the Beatles"))
-#totalQueries.data_collection(client, start_index = 346, single_search = True)
-totalQueries.data_visualization(start_index = 0, single_graph = True)
+#print(totalQueries.find_count("PlayStation 5"))
+totalQueries.data_collection(client, start_index = 0, single_search = False)
+#totalQueries.data_visualization(start_index = 0, single_graph = True)

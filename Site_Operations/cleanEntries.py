@@ -3,12 +3,25 @@ import bs4
 
 #functions to adjust html inputs to work with my algorithms
 def clean_title(entry):
+    """Cleans the title entry.
+
+    :param entry: The title
+    :type entry: str
+    :returns: The cleaned title
+    :rtype: str
+    """
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     return entry
 
 def clean_price(entry):
-    """
+    """Cleans the price entry.
+
+    :param entry: The price entry string.
+    :type entry: str
+    :returns: The price
+    :rtype: float
+
     >>> clean_price("$100,000")
     100000
     >>> clean_price("100") #returns None
@@ -26,6 +39,13 @@ def clean_price(entry):
         return None
 
 def clean_shipping(entry):
+    """Cleans the shipping entry.
+
+    :param entry: The shipping entry string.
+    :type entry: str
+    :returns: The shipping
+    :rtype: float
+    """
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry in ["Free shipping", "Shipping not specified", "Freight"] or entry.find("$") == -1:
@@ -42,8 +62,12 @@ def clean_shipping(entry):
             return None
 
 def clean_date(entry):
-    """
-    Outputs a datetime object representing the date sold.
+    """Cleans the date entry.
+
+    :param entry: The date entry.
+    :type entry: str
+    :returns: A ``datetime`` object representing the date sold.
+    :rtype: ``datetime``
     """
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
@@ -69,7 +93,8 @@ def clean_date(entry):
         "AUG": 8,
         "SEP": 9,
         "OCT": 10,
-        "NOV": 11
+        "NOV": 11,
+        "DEC": 12
     }
 
     return datetime.datetime(int(year), month_dict[month.upper()], int(day))

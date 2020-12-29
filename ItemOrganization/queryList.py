@@ -95,23 +95,30 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def collection_helper(client, name, link, csv_file, listing_type):
+	def collection_helper(client, name, link, csv_file, listing_type, date_stored = None):
 		"""
 		Helper function to data_collection.
 		Populates a ProductList object with item data scraped from the 'link'. Export the data to 'csv_file.'
 
 	    Note:
 	        we don't want to be storing all that ProductList() data!
-	        tempList will go out of scope and it will be relieved of its memory usage
+	        temp_list will go out of scope and it will be relieved of its memory usage
 		"""
 
 		print(f"\n{name} {listing_type}")
 
-		tempList = ProductList()
-		aboutALink(client, link, tempList)
-		tempList.export_item_data(csv_file)
+		temp_list = ProductList()
+		aboutALink(client, link, temp_list, date_stored)
+		temp_list.export_item_data(csv_file)
 
-		print(f"\nlength of {listing_type}", len(tempList.item_list))
+		print(f"\nlength of {listing_type}", len(temp_list.item_list))
+
+	def get_date_stored(csv_file):
+		temp_list = ProductList()
+		temp_list.import_item_data(csv_file)
+		if temp_list.item_list:
+			return temp_list.item_list[-1].date
+		return None
 
 
 	def data_collection(self, client, start_index = 0, single_search = False):
@@ -128,10 +135,14 @@ class queryList:
 	        print("count: ", count)
 	        count += 1
 
-	        #data for All listings, Auction listings, and Buy It Now listings
+
+
 	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
-	        queryList.collection_helper(client, query.name, query.linkAuction, query.csv_Auction, "AUCTION")
-	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN")
+	        date_stored = queryList.get_date_stored(query.csv_Auction)
+	        queryList.collection_helper(client, query.name, query.linkAuction, query.csv_Auction, "AUCTION", date_stored)
+
+	        date_stored = queryList.get_date_stored(query.csv_BIN)
+	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN", date_stored)
 
 	        if single_search:
 	        	return

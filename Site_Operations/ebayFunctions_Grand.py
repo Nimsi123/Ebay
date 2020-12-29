@@ -98,12 +98,12 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 				#print("*****need to do extra work to get sale date")
 				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
-			if all([title, price, shipping, date]):
+			if all([title, price, date]) and shipping is not None:
 				total_cost = round(price+shipping, 2)
 				item_collection.addItem( Item(title, total_cost, date) )
 				count_added += 1
 			else:
-				#print(f"*****bad listing -- title: {title} price: {price} shipping: {shipping} date: {date}")
+				#print(f"BAD LISTING -- title: {title} price: {price} shipping: {shipping} date: {date}")
 				count_skipped_bad += 1
 
 		else:
@@ -138,7 +138,7 @@ def printer_page_stats_two(count, item_list_length, link):
 	print(f"iter count: {count} ... current item_list length: {item_list_length}")
 	print(f"link: {link}")
 
-def aboutALink(client, link, product_collection, printer_bool_product_stats = True, printer_bool_page_stats = True):
+def aboutALink(client, link, product_collection, date_stored = None, printer_bool_product_stats = True, printer_bool_page_stats = True):
 	"""
 	Starting from 'link', make requests to client for webpages' html code. 
 	Populate 'product_collection' with new items listed on the webpage.
@@ -163,7 +163,20 @@ def aboutALink(client, link, product_collection, printer_bool_product_stats = Tr
 	for count in range(max_iteration):
 
 		html = receive_html(client, link)
-		searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats) #search the listings for data. populate the product_collection list
+		searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats)
+
+		#if the last element appended to product_collection is at or later than the most recent date in storage, quit
+
+		date_appended = None
+		if product_collection.item_list:
+			date_appended = product_collection.item_list[-1].date
+			print(date_appended)
+		if (date_stored and date_appended) and (date_appended < date_stored):
+			print("**********************Broken the loop*************************")
+			print(date_appended)
+			print("**************************************************************")
+			break
+		
 
 		if printer_bool_page_stats:
 			printer_page_stats_two(count, len(product_collection.item_list), link)
