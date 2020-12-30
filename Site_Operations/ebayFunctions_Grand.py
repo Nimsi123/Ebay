@@ -83,7 +83,7 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 			count_skipped_early += 1
 			continue
 		else:
-			class_name = (listing.get("class"))[0]
+			class_name = listing.get("class")[0]
 
 		if class_name == class_code:
 			#extract data from a single listing
@@ -95,10 +95,10 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 			if key == None:
 				date = extract(findElement, listing, "div", "s-item__title--tagblock", clean_date)
 			else:
-				#print("*****need to do extra work to get sale date")
+				print("*****need to do extra work to get sale date********MANDOLORIAN")
 				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
-			if all([title, price, date]) and shipping is not None:
+			if all([attr is not None for attr in [title, price, date, shipping]])
 				total_cost = round(price+shipping, 2)
 				item_collection.addItem( Item(title, total_cost, date) )
 				count_added += 1
@@ -132,14 +132,26 @@ def printer_page_stats_one(num_item_listings, count_added, count_skipped_early, 
 	print("\nPAGE STATS")
 	print("{0:30}: {1}".format("num item listings", num_item_listings))
 	print("{0:30}: {1}".format("count added", count_added))
+	print("----")
 	print("{0:30}: {1}".format("count_skipped_early", count_skipped_early))
 	print("{0:30}: {1}".format("count_skipped_bad", count_skipped_bad))
 	print("{0:30}: {1}".format("count_skipped_class_code", count_skipped_class_code))
+	print("----")
 
-def printer_page_stats_two(count, item_list_length, link):
-	print("{0:30}: {1}".format("iter count", count))
+def printer_page_stats_two(count, item_list_length, link, date_appended):
 	print("{0:30}: {1}".format("current item_list length", item_list_length))
+	print("{0:30}: {1}".format("iter count", count))
 	print("{0:30}: {1}".format("link", link))
+	print("{0:30}: {1}".format("EARLIEST DATE", date_appended))
+	print("--------")
+
+def is_overlapping(date_stored, date_appended):
+	if (date_stored and date_appended) and (date_appended < date_stored):
+		print("\n")
+		print("**********************Broken the loop*************************")
+		print(date_appended)
+		print("**************************************************************")
+		return True
 
 def aboutALink(client, link, product_collection, date_stored = None, printer_bool_product_stats = True, printer_bool_page_stats = True):
 	"""
@@ -172,19 +184,12 @@ def aboutALink(client, link, product_collection, date_stored = None, printer_boo
 		html = receive_html(client, link)
 		searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats)
 
-		#if the last element appended to product_collection is at or later than the most recent date in storage, quit
-
 		date_appended = product_collection.earliest_date()
-		print("{0:30}: {1}".format("EARLIEST DATE", date_appended))
-
+		
 		if printer_bool_page_stats:
-			printer_page_stats_two(count, len(product_collection.item_list), link)
+			printer_page_stats_two(count, len(product_collection.item_list), link, date_appended)
 
-		if (date_stored and date_appended) and (date_appended < date_stored):
-			print("\n")
-			print("**********************Broken the loop*************************")
-			print(date_appended)
-			print("**************************************************************")
+		if is_overlapping(date_stored, date_appended):
 			break
 
 		link = findLink(link)

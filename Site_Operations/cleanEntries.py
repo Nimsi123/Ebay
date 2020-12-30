@@ -16,6 +16,7 @@ def clean_title(entry):
 
 def clean_price(entry):
     """Cleans the price entry.
+    Returns None if bad entry.
 
     :param entry: The price entry string.
     :type entry: str
@@ -40,6 +41,7 @@ def clean_price(entry):
 
 def clean_shipping(entry):
     """Cleans the shipping entry.
+    Returns None if bad entry.
 
     :param entry: The shipping entry string.
     :type entry: str
@@ -63,6 +65,7 @@ def clean_shipping(entry):
 
 def clean_date(entry):
     """Cleans the date entry.
+    Returns None if bad entry.
 
     :param entry: The date entry.
     :type entry: str
