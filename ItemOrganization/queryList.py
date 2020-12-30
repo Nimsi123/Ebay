@@ -108,7 +108,14 @@ class queryList:
 		print(f"\n{name} {listing_type}")
 
 		temp_list = ProductList()
-		aboutALink(client, link, temp_list, date_stored)
+		try:
+			aboutALink(client, link, temp_list, date_stored)
+		except Exception as e:
+			print("********************************************************************x86")
+			print(e)
+			print("********************************************************************x86")
+			queryList.collection_helper(client, name, link, csv_file, listing_type, date_stored)
+
 		temp_list.export_item_data(csv_file)
 
 		print(f"\nlength of {listing_type}", len(temp_list.item_list))
@@ -131,11 +138,9 @@ class queryList:
 	    count = start_index
 	    
 	    for query in self.queryCollection[count:]:
-	        print("collecting: ", query.name)
-	        print("count: ", count)
+	        print("{0:20}: {1}".format("COLLECTING", query.name))
+	        print("{0:20}: {1}".format("COUNT INDEX", count))
 	        count += 1
-
-
 
 	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
 	        date_stored = queryList.get_date_stored(query.csv_Auction)

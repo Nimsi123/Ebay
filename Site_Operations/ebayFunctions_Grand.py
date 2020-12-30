@@ -124,19 +124,22 @@ def receive_html(client, link):
 
 def printer_product_stats(total_listings, max_iteration):
 	print("\nPRODUCT STATS")
-	print("total_listings: ", total_listings)
-	print("max_iteration", max_iteration)
+	print("{0:30}: {1}".format("total_listings", total_listings))
+	print("{0:30}: {1}".format("max_iteration", max_iteration))
+	print("\n")
 
 def printer_page_stats_one(num_item_listings, count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code):
-	print("\n")
-	print("PAGE STATS")
-	print(f"num item listings: {num_item_listings}")
-	print(f"count added: {count_added}")
-	print(f"count_skipped_early: {count_skipped_early} ... count_skipped_bad: {count_skipped_bad} ... count_skipped_class_code: {count_skipped_class_code}")
+	print("\nPAGE STATS")
+	print("{0:30}: {1}".format("num item listings", num_item_listings))
+	print("{0:30}: {1}".format("count added", count_added))
+	print("{0:30}: {1}".format("count_skipped_early", count_skipped_early))
+	print("{0:30}: {1}".format("count_skipped_bad", count_skipped_bad))
+	print("{0:30}: {1}".format("count_skipped_class_code", count_skipped_class_code))
 
 def printer_page_stats_two(count, item_list_length, link):
-	print(f"iter count: {count} ... current item_list length: {item_list_length}")
-	print(f"link: {link}")
+	print("{0:30}: {1}".format("iter count", count))
+	print("{0:30}: {1}".format("current item_list length", item_list_length))
+	print("{0:30}: {1}".format("link", link))
 
 def aboutALink(client, link, product_collection, date_stored = None, printer_bool_product_stats = True, printer_bool_page_stats = True):
 	"""
@@ -146,11 +149,15 @@ def aboutALink(client, link, product_collection, date_stored = None, printer_boo
 	"""
 
 	html = receive_html(client, link)
-	print("link: ", link)
 
 	strip_comma = lambda entry: entry.replace(',', '')
-	print("extract: ", extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma))
-	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma))
+	temp_num = extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma)
+	
+	print("\naboutALink")
+	print("{0:30}: {1}".format("link", link))
+	print("{0:30}: {1}".format("extract", temp_num))
+	
+	total_listings = int(temp_num)
 
 	if total_listings == 0:
 		return
@@ -168,16 +175,16 @@ def aboutALink(client, link, product_collection, date_stored = None, printer_boo
 		#if the last element appended to product_collection is at or later than the most recent date in storage, quit
 
 		date_appended = product_collection.earliest_date()
-		print("EARLIEST DATE: ", date_appended)
+		print("{0:30}: {1}".format("EARLIEST DATE", date_appended))
+
+		if printer_bool_page_stats:
+			printer_page_stats_two(count, len(product_collection.item_list), link)
 
 		if (date_stored and date_appended) and (date_appended < date_stored):
+			print("\n")
 			print("**********************Broken the loop*************************")
 			print(date_appended)
 			print("**************************************************************")
 			break
-		
-
-		if printer_bool_page_stats:
-			printer_page_stats_two(count, len(product_collection.item_list), link)
 
 		link = findLink(link)
