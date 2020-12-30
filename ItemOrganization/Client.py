@@ -32,7 +32,7 @@ class Client:
 		Client.counter = 0
 
 	def get(url):
-		print("{0:30}: {1}".format("CLIENT COUNTER", Client.counter))
+		print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
 		if Client.counter > Client.counter_limit:
 			Client.next()
 		else:

@@ -98,7 +98,7 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 				print("*****need to do extra work to get sale date********MANDOLORIAN")
 				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
-			if all([attr is not None for attr in [title, price, date, shipping]])
+			if all([attr is not None for attr in [title, price, date, shipping]]):
 				total_cost = round(price+shipping, 2)
 				item_collection.addItem( Item(title, total_cost, date) )
 				count_added += 1
@@ -123,13 +123,14 @@ def receive_html(client, link):
 	return html
 
 def printer_product_stats(total_listings, max_iteration):
-	print("\nPRODUCT STATS")
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+	print("PRODUCT STATS")
 	print("{0:30}: {1}".format("total_listings", total_listings))
 	print("{0:30}: {1}".format("max_iteration", max_iteration))
-	print("\n")
+	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
 
 def printer_page_stats_one(num_item_listings, count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code):
-	print("\nPAGE STATS")
+	print("PAGE STATS")
 	print("{0:30}: {1}".format("num item listings", num_item_listings))
 	print("{0:30}: {1}".format("count added", count_added))
 	print("----")
@@ -143,14 +144,13 @@ def printer_page_stats_two(count, item_list_length, link, date_appended):
 	print("{0:30}: {1}".format("iter count", count))
 	print("{0:30}: {1}".format("link", link))
 	print("{0:30}: {1}".format("EARLIEST DATE", date_appended))
-	print("--------")
+	print("--------\n")
 
 def is_overlapping(date_stored, date_appended):
 	if (date_stored and date_appended) and (date_appended < date_stored):
-		print("\n")
 		print("**********************Broken the loop*************************")
 		print(date_appended)
-		print("**************************************************************")
+		print("**************************************************************\n")
 		return True
 
 def aboutALink(client, link, product_collection, date_stored = None, printer_bool_product_stats = True, printer_bool_page_stats = True):
@@ -165,9 +165,8 @@ def aboutALink(client, link, product_collection, date_stored = None, printer_boo
 	strip_comma = lambda entry: entry.replace(',', '')
 	temp_num = extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma)
 	
-	print("\naboutALink")
-	print("{0:30}: {1}".format("link", link))
-	print("{0:30}: {1}".format("extract", temp_num))
+	
+	#print("{0:30}: {1}\n".format("extract", temp_num))
 	
 	total_listings = int(temp_num)
 

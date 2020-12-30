@@ -105,7 +105,7 @@ class queryList:
 	        temp_list will go out of scope and it will be relieved of its memory usage
 		"""
 
-		print(f"\n{name} {listing_type}")
+		print(f"{name} {listing_type}\n")
 
 		temp_list = ProductList()
 		try:
@@ -118,7 +118,7 @@ class queryList:
 
 		temp_list.export_item_data(csv_file)
 
-		print(f"\nlength of {listing_type}", len(temp_list.item_list))
+		print(f"length of {listing_type}", len(temp_list.item_list), "\n")
 
 	def get_date_stored(csv_file):
 		temp_list = ProductList()
@@ -138,8 +138,10 @@ class queryList:
 	    count = start_index
 	    
 	    for query in self.queryCollection[count:]:
+	        print("###############New Query#####################")
 	        print("{0:20}: {1}".format("COLLECTING", query.name))
 	        print("{0:20}: {1}".format("COUNT INDEX", count))
+	        print("#############################################\n")
 	        count += 1
 
 	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
