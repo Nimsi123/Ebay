@@ -12,6 +12,8 @@ import datetime
 from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.Site_Operations.ebayFunctions_Grand import make_eBay_link
 
+from Ebay.ItemOrganization.timer import timer
+
 class eBayQuery:
 
 	"""
@@ -132,6 +134,7 @@ class eBayQuery:
 
 		return True
 
+	@timer
 	def graph_combo(self):
 		"""Graphs the data associated with the eBay query. 
 		We overlap the graphs of data from different search queries, like Auction and BIN.

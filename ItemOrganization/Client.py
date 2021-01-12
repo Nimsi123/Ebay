@@ -30,12 +30,15 @@ class Client:
 
 	df = pd.read_csv("Client.csv")
 
-	current_index = 1
+	current_index = 2
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
-	counter_limit = 4950
+	counter_limit = 1000
 
-	def next():
+	def next_client():
+		"""Once an api key has run out of free requests, switch clients by mutating class variables.
+		"""
+
 		Client.current_index += 1
 		if Client.current_index == len(Client.api_keys):
 			print("ran out of api requests.")
@@ -47,13 +50,22 @@ class Client:
 
 	@timer
 	def get(url):
-		print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
-		if Client.counter > Client.counter_limit:
-			Client.next()
-		else:
-			Client.counter += 1
-			Client.df.at[Client.current_index, "counter"] = Client.counter
-			Client.df.to_csv("Client.csv")
+		"""Essentially a wrapper function to client.get(url). If the counter exceedes the counter_limit, use the next available client.
 
-			return Client.current_client.get(url)
+		:param url: Downloads the HTML at the url.
+		:type url: str
+		:returns: The page's HTML
+		:rtype: requests.models.Response
+		"""
+
+		print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
+
+		if Client.counter > Client.counter_limit:
+			Client.next_client()
+
+		Client.counter += 1
+		Client.df.at[Client.current_index, "counter"] = Client.counter
+		Client.df.to_csv("Client.csv")
+
+		return Client.current_client.get(url)
 

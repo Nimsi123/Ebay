@@ -6,6 +6,8 @@ from Ebay.ItemOrganization.eBayQuery import eBayQuery
 from Ebay.Site_Operations.ebayFunctions_Grand import *
 from Ebay.Drivers.fast_download import fast_download
 
+from Ebay.ItemOrganization.timer import timer
+
 class queryList:
 
 	"""
@@ -161,9 +163,11 @@ class queryList:
 
 	    print("finished data collection")
 
+	@timer
 	def data_visualization(self, start_index, single_graph = False):
-	    """
-		Make a graph for every eBay query.
+	    """Makes a graph for every eBay query.
+
+	    :rtype: None
 	    """
 
 	    for query in self.queryCollection[start_index:]:
@@ -175,3 +179,15 @@ class queryList:
 	        	return
 
 	    print("visualize finished")
+
+	'''
+	def sql_export():
+	# Larger example that inserts many records at a time
+
+		c.execute("""CREATE TABLE products (name, type, date, price)""")
+
+		for query in self.queryCollection:
+			for listing_type in ["Auction", "BIN"]:
+			data = [query.name, "Auction"]	
+		c.executemany('INSERT INTO stocks VALUES (?,?,?,?)', purchases)
+	'''
