@@ -4,6 +4,7 @@ from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findK
 from bs4 import BeautifulSoup
 import bs4
 
+from Ebay.ItemOrganization.timer import timer
 
 def make_eBay_link(listing_type, search_str):
 	"""
@@ -64,7 +65,7 @@ def extract_nested(get_raw_func, html, outer_element_type, outer_class_name, inn
 
 	return cleaned_inner
 
-
+@timer
 def searchListings(html, element_type, class_code, item_collection, printer_bool_page_stats = False):
 	"""
 	html -> html code for an entire webpage
@@ -149,7 +150,8 @@ def printer_page_stats_two(count, item_list_length, link, date_appended):
 def is_overlapping(date_stored, date_appended):
 	if (date_stored and date_appended) and (date_appended < date_stored):
 		print("**********************Broken the loop*************************")
-		print(date_appended)
+		print("appended: ", date_appended)
+		print("stored: ", date_stored)
 		print("**************************************************************\n")
 		return True
 

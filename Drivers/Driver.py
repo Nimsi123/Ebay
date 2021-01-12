@@ -16,13 +16,13 @@ process of importing and displaying the data
    print all the graphs into a single pdf sheet
 """
 client = Client
+print("client counter: ", client.counter)
 
 
 #totalQueries = data_import()
 #data_collection(client, totalQueries)
 #test_export_function(client, totalQueries)
 #data_visualization(totalQueries)
-
 
 totalQueries = queryList()
 
@@ -32,5 +32,5 @@ totalQueries = queryList()
 
 #[print(query.name) for query in totalQueries.queryCollection[320:]]
 #print(totalQueries.find_count("PlayStation 5"))
-#totalQueries.data_collection(client, start_index = 370, single_search = True)
-totalQueries.data_visualization(start_index = 0, single_graph = False)
+totalQueries.data_collection(client, start_index = 0, end_index = 10, single_search = False)
+#totalQueries.data_visualization(start_index = 0, single_graph = False)

@@ -89,6 +89,7 @@ def clean_date(entry):
     year = date[endDay + len(", "):]
 
     month_dict = {
+        "JAN": 1,
         "APR": 4,
         "MAY": 5,
         "JUN": 6,

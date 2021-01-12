@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.eBayQuery import eBayQuery
 from Ebay.Site_Operations.ebayFunctions_Grand import *
+from Ebay.Drivers.fast_download import fast_download
 
 class queryList:
 
@@ -108,13 +109,17 @@ class queryList:
 		print(f"{name} {listing_type}\n")
 
 		temp_list = ProductList()
+
 		try:
-			aboutALink(client, link, temp_list, date_stored)
+			
+			#aboutALink(client, link, temp_list, date_stored)
+			fast_download(client, temp_list, link, date_stored)
 		except Exception as e:
 			print("********************************************************************x86")
 			print(e)
 			print("********************************************************************x86")
 			queryList.collection_helper(client, name, link, csv_file, listing_type, date_stored)
+
 
 		temp_list.export_item_data(csv_file)
 
@@ -128,7 +133,7 @@ class queryList:
 		return None
 
 
-	def data_collection(self, client, start_index = 0, single_search = False):
+	def data_collection(self, client, start_index = 0, end_index = 999, single_search = False):
 	    """
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
@@ -151,7 +156,7 @@ class queryList:
 	        date_stored = queryList.get_date_stored(query.csv_BIN)
 	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN", date_stored)
 
-	        if single_search:
+	        if single_search or count > end_index:
 	        	return
 
 	    print("finished data collection")
