@@ -171,7 +171,7 @@ class queryList:
 	    print("finished data collection")
 
 	@timer
-	def data_visualization(self, start_index, single_graph = False):
+	def data_visualization(self, start_index = 0, single_graph = False):
 	    """Makes a graph for every eBay query.
 
 	    :rtype: None

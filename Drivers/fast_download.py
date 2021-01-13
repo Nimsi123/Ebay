@@ -32,10 +32,9 @@ def fast_download(client, product_collection, link, date_stored, printer_bool_pr
 	count = 0
 	while count < min(MAX_PAGES, page_count):
 
-		#"""
 		sub_c = 0
+		#run threads and download html
 		with ThreadPoolExecutor(max_workers=THREAD_LIMIT) as executor:
-
 			while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
 				executor.submit(html_download, client, link, count)
 				time.sleep(REQUEST_WAIT)
@@ -43,43 +42,8 @@ def fast_download(client, product_collection, link, date_stored, printer_bool_pr
 				link = next_link(link)
 				sub_c += 1
 				count += 1
-		#digest
-		#"""
 
-		"""
-		# cut ****
-		sub_c = 0
-		thread_list = []
-
-		#make and start threads
-		while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
-			thread = Thread(target = html_download, args = (client, link, count))
-			thread.start()
-			thread_list.append( thread )
-			time.sleep(REQUEST_WAIT)
-
-			link = next_link(link)
-			sub_c += 1
-			count += 1
-
-		time.sleep(JOIN_WAIT) #don't join just yet
-
-		#join threads -- blocking
-		for thread in thread_list:
-			thread.join()
-		# cut ****
-		"""
-
-		"""
-		#digest
-		for i in range(count - sub_c, count):
-			with open(f"../HTML_Store/scrape_{i}.txt", "r", encoding = "utf-8") as raw:
-				overlap = fast_digest(raw.read(), product_collection, date_stored)
-				if overlap and not deep_scrape:
-					return
-		"""
-
-		#digest
+		#digest html
 		for i in range(count - sub_c, count):
 			#receive and parse html from text file
 			with open(f"../HTML_Store/scrape_{i}.txt", "r", encoding = "utf-8") as raw_html:
@@ -105,27 +69,6 @@ def html_download(client, url, i):
 
 	with open(f"../HTML_Store/scrape_{i}.txt", "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
-
-def fast_digest(raw_html, product_collection, date_stored, printer_bool_page_stats = False, count = None, link = ""):
-	"""Extract Item data stored in raw_html and populate product_collection.
-
-	:param raw_html: text previously stored in a text file.
-	:type raw_html: str
-	:param product_collection: A :class:`ProductList` object to store the Item data.
-	:type product_collection: :class:`ProductList`
-	:returns: True if we have reached an overlap point
-	:rtype: bool
-	"""
-
-	html = BeautifulSoup(raw_html, 'html.parser')
-
-	searchListings(html, "li", "s-item", product_collection, printer_bool_page_stats)
-
-	date_appended = product_collection.earliest_date()
-	if printer_bool_page_stats:
-		printer_page_stats_two(count, len(product_collection.item_list), link, date_appended)
-
-	return is_overlapping(date_stored, date_appended)
 
 def next_link(old_link):
     """Given an old link to an eBay page, returns a link to the next page.

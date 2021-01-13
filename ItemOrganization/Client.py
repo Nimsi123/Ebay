@@ -74,7 +74,8 @@ class Client:
 			Client.next_client()
 
 		Client.counter += 1
-		Client.df.at[Client.current_index, "counter"] = Client.counter
-		Client.df.to_csv(Client.csv_file)
+		df = pd.read_csv(Client.csv_file)
+		df.at[Client.current_index, "counter"] = Client.counter
+		df.to_csv(Client.csv_file)
 
 		return Client.current_client.get(url)
