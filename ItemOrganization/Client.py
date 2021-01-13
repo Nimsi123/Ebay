@@ -2,12 +2,14 @@ from scraper_api import ScraperAPIClient
 import pandas as pd
 from Ebay.ItemOrganization.timer import timer
 """
-city = pd.DataFrame([	['bfb3cb210e50c39d09f82432095a5150', 0], 
-						['cbbdd094d7401d8912b09341e37be9b1', 0],
-						['c733663048589db82005534b6739c32e', 0],
-						['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
-						['81d0339948cd0596cf05a03df5b32288', 0]], columns= ["api_key", "counter"])
-city.to_csv(r'Client.csv')
+df_api_keys = pd.DataFrame([
+	['bfb3cb210e50c39d09f82432095a5150', 0], 
+	['cbbdd094d7401d8912b09341e37be9b1', 0],
+	['c733663048589db82005534b6739c32e', 0],
+	['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
+	['81d0339948cd0596cf05a03df5b32288', 0]
+	], columns= ["api_key", "counter"])
+df_api_keys.to_csv(r'Client.csv')
 """
 
 
@@ -76,6 +78,6 @@ class Client:
 		Client.counter += 1
 		df = pd.read_csv(Client.csv_file)
 		df.at[Client.current_index, "counter"] = Client.counter
-		df.to_csv(Client.csv_file)
+		df.to_csv(Client.csv_file, index = False)
 
 		return Client.current_client.get(url)
