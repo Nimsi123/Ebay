@@ -8,6 +8,12 @@ from Ebay.Drivers.fast_download import fast_download
 
 from Ebay.ItemOrganization.timer import timer
 
+def new_query_printer(name, count):
+	print("###############New Query#####################")
+	print("{0:20}: {1}".format("COLLECTING", name))
+	print("{0:20}: {1}".format("COUNT INDEX", count))
+	print("#############################################\n")
+
 class queryList:
 
 	"""
@@ -34,8 +40,9 @@ class queryList:
 		Adds an eBayQuery object to self.queryCollection
 		Can be used to add new items to track.
 		"""
-
-		self.queryCollection.append( eBayQuery(nombre, enlaceAll, enlaceAuction, enlaceBIN) )
+		new_query = eBayQuery(nombre, enlaceAll, enlaceAuction, enlaceBIN)
+		if new_query not in self.queryCollection:
+			self.queryCollection.append( new_query )
 
 	def add_new_queries(self, list_of_names):
 		"""
@@ -145,19 +152,19 @@ class queryList:
 	    count = start_index
 	    
 	    for query in self.queryCollection[count:]:
-	        print("###############New Query#####################")
-	        print("{0:20}: {1}".format("COLLECTING", query.name))
-	        print("{0:20}: {1}".format("COUNT INDEX", count))
-	        print("#############################################\n")
+	        new_query_printer(query.name, count)
+
 	        count += 1
 
 	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
+	        
 	        date_stored = queryList.get_date_stored(query.csv_Auction)
 	        queryList.collection_helper(client, query.name, query.linkAuction, query.csv_Auction, "AUCTION", date_stored)
 
 	        date_stored = queryList.get_date_stored(query.csv_BIN)
 	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN", date_stored)
 
+	        #					exclusive
 	        if single_search or count > end_index:
 	        	return
 

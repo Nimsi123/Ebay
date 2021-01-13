@@ -5,35 +5,45 @@ from Ebay.ItemOrganization.timer import timer
 city = pd.DataFrame([	['bfb3cb210e50c39d09f82432095a5150', 0], 
 						['cbbdd094d7401d8912b09341e37be9b1', 0],
 						['c733663048589db82005534b6739c32e', 0],
-						['10c2e4d0fef8e45470a5b43b84f15ec0', 0]], columns= ["api_key", "counter"])
-city.to_csv('Client.csv')
+						['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
+						['81d0339948cd0596cf05a03df5b32288', 0]], columns= ["api_key", "counter"])
+city.to_csv(r'Client.csv')
 """
 
-api_keys = [
-	'bfb3cb210e50c39d09f82432095a5150', #nimarahmanian2020@gmail.com
-	'cbbdd094d7401d8912b09341e37be9b1', #nimarahmanian8@gmail.com
-	'c733663048589db82005534b6739c32e', #nimsi@berkeley.edu
-	'10c2e4d0fef8e45470a5b43b84f15ec0', #oxaxe7@gmail.com
-]
 
 """
-with open("Client.csv", "w", encoding = "utf-8") as file:
-	data = ["api_key", "counter"]
-	csv_writer = csv.DictWriter(file, fieldnames = data)
-	csv_writer.writeheader()
+SOME STATS
+fast_download is hitting roughly 130 api requests every 10 minutes.
 
-	for key in api_keys:
-		csv_writer.writerow({"api_key": key, })
+Threads | Average API Request time
+
+5  | 2.4
+10 | 1.4
+15 | 1.1
+20 | 1.4
+
+Timing before
+?
+
 """
 
 class Client:
 
-	df = pd.read_csv("Client.csv")
+	api_keys = [
+		'bfb3cb210e50c39d09f82432095a5150', #nimarahmanian2020@gmail.com
+		'cbbdd094d7401d8912b09341e37be9b1', #nimarahmanian8@gmail.com
+		'c733663048589db82005534b6739c32e', #nimsi@berkeley.edu
+		'10c2e4d0fef8e45470a5b43b84f15ec0', #oxaxe7@gmail.com
+		'81d0339948cd0596cf05a03df5b32288', #rahmanian.arya2356@gmail.com
+	]
+	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 
-	current_index = 2
+	df = pd.read_csv(csv_file)
+	
+	current_index = 4
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
-	counter_limit = 1000
+	counter_limit = 5000
 
 	def next_client():
 		"""Once an api key has run out of free requests, switch clients by mutating class variables.
@@ -65,7 +75,6 @@ class Client:
 
 		Client.counter += 1
 		Client.df.at[Client.current_index, "counter"] = Client.counter
-		Client.df.to_csv("Client.csv")
+		Client.df.to_csv(Client.csv_file)
 
 		return Client.current_client.get(url)
-

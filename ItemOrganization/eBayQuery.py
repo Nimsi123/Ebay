@@ -178,3 +178,10 @@ class eBayQuery:
 		{self.linkBIN}"""
 
 		return message
+
+	def __eq__(self, other):
+		"""Returns whether two eBay query objects are equivalent. 
+		Since all attributes other than self.name are in fact derived from self.name, 
+		checking for equality is as simple as checking whether two .name attributes are equal."""
+
+		return self.name == other.name
