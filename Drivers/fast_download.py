@@ -1,9 +1,10 @@
-from threading import Thread
 from concurrent.futures.thread import ThreadPoolExecutor
 import time
-
 from bs4 import BeautifulSoup
-from Ebay.Site_Operations.ebayFunctions_Grand import searchListings, extract, findElement, printer_product_stats, printer_page_stats_two, is_overlapping
+
+from Ebay.SiteOperations.ebayFunctions_Grand import searchListings, extract, find_element, printer_product_stats, printer_page_stats_two, is_overlapping
+from Ebay.SiteOperations.traverseHtml import next_link
+
 
 THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5 # 0.5 seconds is optimal
@@ -20,7 +21,7 @@ def fast_download(client, product_collection, link, date_stored, printer_bool_pr
 
 	#calculate page_count
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
-	total_listings = int(extract(findElement, html, "h1", "srp-controls__count-heading", lambda entry: entry.replace(',', '')))
+	total_listings = int(extract(find_element, html, "h1", "srp-controls__count-heading", lambda entry: entry.replace(',', '')))
 	page_count = int(total_listings/ITEM_PER_PAGE +1)
 
 	if total_listings == 0:
@@ -69,18 +70,3 @@ def html_download(client, url, i):
 
 	with open(f"../HTML_Store/scrape_{i}.txt", "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
-
-def next_link(old_link):
-    """Given an old link to an eBay page, returns a link to the next page.
-
-    :param old_link: The previous link
-    :type old_link: str
-    :returns: The next link.
-    :rtype: str
-    """
-
-    if old_link.find("&_pgn=") == -1:
-        return old_link + "&_pgn=2"
-    else:
-        end = old_link.find("&_pgn=") + len("&_pgn=")
-        return old_link[:end] + str((int(old_link[end:]) + 1))

@@ -1,50 +1,33 @@
-#findElement
-#findAllLetters
-#findclass_name
-#findKey
-#findLink
+from Ebay.SiteOperations.timer import timer
 
-import time
-import functools
+def find_element(html, element_type, attr_key, attr_value):
+    """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
 
-globalTimeTotal = 0
-globalTimeCounter = 0
-
-def timer(func):
-    @functools.wraps(func)
-    def wrapper_timer(*args, **kwargs):
-        global globalTimeTotal, globalTimeCounter
-        tic = time.perf_counter()
-        value = func(*args, **kwargs)
-        toc = time.perf_counter()
-        elapsed_time = toc - tic
-
-        globalTimeTotal += elapsed_time
-        globalTimeCounter += 1
-        print("average elapsed time: ", globalTimeTotal/globalTimeCounter)
-        #print(f"Elapsed time: {elapsed_time:0.8f} seconds")
-        return value
-    return wrapper_timer
-
-def findElement(html, element_type, attributeKey, attributeValue):
-    """
-    Returns the FIRST element found with the particular class code in the html code block.
+    :param html: The HTML block to search.
+    :type html: 
+    :param element_type: The HTML tag to search for.
+    :type element_type: str
+    :param attr_key: The key of an element's attribute.
+    :type attr_key: str
+    :param attr_val: If the element's value at key equals attr_value, we have our match.
+    :type attr_val: str
+    :returns: An HTML element within `html` that satisfies the condition. Returns None if an element is not found.
+    :rtype: bs4.element.Tag or None
     """
 
     for element in html.find_all(element_type):
-        if element.get(attributeKey) == None:
+        if element.get(attr_key) == None:
             continue
         else:
-            class_name = (element.get(attributeKey))[0]
+            class_name = (element.get(attr_key))[0]
 
-        if class_name.find(attributeValue) != -1 and element.contents != None:
+        if class_name.find(attr_value) != -1 and element.contents != None:
             return element
 
-    return "nothing found"
+    return None
 
-def findAllLetters(html, element_type, class_code):
-    """
-    Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
+def find_letters(html, element_type, class_code):
+    """Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
 
     Why?
         --> class_code is used to encrypt the letters that make up the sale date string
@@ -68,19 +51,19 @@ def findAllLetters(html, element_type, class_code):
                 #code enters this block if element.contents[0] fails
                 #   this means we have come to an end of all the letters and we much reach a verdict: either we got the right letters, or we didn't
                 if saleDate.find("Sold") == -1:
-                    return "nothing found"
+                    return None
                 else:
                     return saleDate
 
     return saleDate
 
-def findclass_name(html, element_type, content):
+def find_class_name(html, element_type, content):
     """
     in the 'html' code, there is an element of 'element_type' which has 'content'
     if the 'content' matches the element's .contents, then return the class name 'class_name'
 
     Why?
-        --> helper method to findKey
+        --> helper method to find_key
 
     this 'class_name' is what ebay generated for every letter in the date
     content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
@@ -99,9 +82,9 @@ def findclass_name(html, element_type, content):
             #the class name is the KEY
             return class_name
 
-    return "nothing found"
+    return None
 
-def findKey(html, element_type, sequence):
+def find_key(html, element_type, sequence):
     """
     Returns the class name, or 'key', common to all sub elements in 'tag_block.'
 
@@ -110,25 +93,29 @@ def findKey(html, element_type, sequence):
     """
 
     for listing in html.find_all(element_type):
-        tagBlock = findElement(listing, "div", "class", "s-item__title--tagblock")
+        tagBlock = find_element(listing, "div", "class", "s-item__title--tagblock")
 
-        if tagBlock == "nothing found":
+        if tagBlock == None:
             continue
 
         tagBlock = tagBlock.contents[0]
 
         keys = []
         for letter in sequence:
-            keys.append( findclass_name(tagBlock, "span", letter) )
+            keys.append( find_class_name(tagBlock, "span", letter) )
 
         if len(set(keys)) == 1:
             #all the keys are identical
-            if keys[0] != "nothing found":
+            if keys[0] != None:
                 return keys[0]
 
-def findLink(old_link):
-    """
-    Given an old link to an eBay page, returns a link to the next page.
+def next_link(old_link):
+    """Given an old link to an eBay page, returns a link to the next page.
+
+    :param old_link: The previous link
+    :type old_link: str
+    :returns: The next link.
+    :rtype: str
     """
 
     if old_link.find("&_pgn=") == -1:

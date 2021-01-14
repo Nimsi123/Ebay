@@ -7,7 +7,8 @@ df_api_keys = pd.DataFrame([
 	['cbbdd094d7401d8912b09341e37be9b1', 0],
 	['c733663048589db82005534b6739c32e', 0],
 	['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
-	['81d0339948cd0596cf05a03df5b32288', 0]
+	['81d0339948cd0596cf05a03df5b32288', 0], 
+	['042d872c6185752c4b3db850014bace1', 0]
 	], columns= ["api_key", "counter"])
 df_api_keys.to_csv(r'Client.csv')
 """
@@ -37,6 +38,7 @@ class Client:
 		'c733663048589db82005534b6739c32e', #nimsi@berkeley.edu
 		'10c2e4d0fef8e45470a5b43b84f15ec0', #oxaxe7@gmail.com
 		'81d0339948cd0596cf05a03df5b32288', #rahmanian.arya2356@gmail.com
+		'042d872c6185752c4b3db850014bace1', #nikolas-cacerces
 	]
 	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 

@@ -1,6 +1,6 @@
 from Ebay.ItemOrganization.Item import Item
-from Ebay.Site_Operations.cleanEntries import clean_title, clean_price, clean_shipping, clean_date
-from Ebay.Site_Operations.traverseHtml import findElement, findAllLetters, findKey, findLink
+from Ebay.SiteOperations.cleanEntries import clean_title, clean_price, clean_shipping, clean_date
+from Ebay.SiteOperations.traverseHtml import find_element, find_letters, find_key
 from bs4 import BeautifulSoup
 import bs4
 
@@ -40,7 +40,7 @@ def extract(get_raw_func, html, element_type, class_name, clean_func):
 
 	raw = get_raw_func(html, element_type, "class", class_name)
 	
-	if raw == "nothing found":
+	if raw == None:
 		return None
 
 	while type(raw) == bs4.Tag:
@@ -55,9 +55,9 @@ def extract_nested(get_raw_func, html, outer_element_type, outer_class_name, inn
 	Returns the attribute accessed by diving into one block, and then going deeper.
 	"""
 
-	outer_block = findElement(html, outer_element_type, "class", outer_class_name)
+	outer_block = find_element(html, outer_element_type, "class", outer_class_name)
 
-	if outer_block == "nothing found":
+	if outer_block == None:
 		return None
 	
 	outer_block = outer_block.contents[0]
@@ -75,7 +75,7 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 
 	#ebay tries to mess with the sale date and my code
 	#right before the code starts, I will find the special class_name that can be used to find the sale date!
-	key = findKey(html, element_type, ["S", "o", "l", "d"])
+	key = find_key(html, element_type, ["S", "o", "l", "d"])
 
 	count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code = 0, 0, 0, 0
 
@@ -89,15 +89,15 @@ def searchListings(html, element_type, class_code, item_collection, printer_bool
 		if class_name == class_code:
 			#extract data from a single listing
 
-			title = extract(findElement, listing, "h3", "s-item__title", clean_title)
-			price = extract(findElement, listing, "span", "s-item__price", clean_price)
-			shipping = extract(findElement, listing, "span", "s-item__shipping", clean_shipping)
+			title = extract(find_element, listing, "h3", "s-item__title", clean_title)
+			price = extract(find_element, listing, "span", "s-item__price", clean_price)
+			shipping = extract(find_element, listing, "span", "s-item__shipping", clean_shipping)
 
 			if key == None:
-				date = extract(findElement, listing, "div", "s-item__title--tagblock", clean_date)
+				date = extract(find_element, listing, "div", "s-item__title--tagblock", clean_date)
 			else:
 				print("*****need to do extra work to get sale date********MANDOLORIAN")
-				date = extract_nested(findAllLetters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
+				date = extract_nested(find_letters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
 
 			if all([attr is not None for attr in [title, price, date, shipping]]):
 				total_cost = round(price+shipping, 2)
@@ -165,7 +165,7 @@ def aboutALink(client, link, product_collection, date_stored = None, printer_boo
 	html = receive_html(client, link)
 
 	strip_comma = lambda entry: entry.replace(',', '')
-	temp_num = extract(findElement, html, "h1", "srp-controls__count-heading", strip_comma)
+	temp_num = extract(find_element, html, "h1", "srp-controls__count-heading", strip_comma)
 	
 	
 	#print("{0:30}: {1}\n".format("extract", temp_num))

@@ -3,7 +3,7 @@ from Ebay.ItemOrganization.Client import Client
 from name_collection import items
 
 client = Client
-print("client counter: ", client.counter)
+#print("client counter: ", client.counter)
 
 totalQueries = queryList()
 
