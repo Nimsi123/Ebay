@@ -3,16 +3,11 @@ import matplotlib.pyplot as plt
 
 from Ebay.ItemOrganization.ProductList import ProductList
 from Ebay.ItemOrganization.eBayQuery import eBayQuery
-from Ebay.Site_Operations.ebayFunctions_Grand import *
+from Ebay.SiteOperations.about_a_link import about_a_link
 from Ebay.Drivers.fast_download import fast_download
 
 from Ebay.ItemOrganization.timer import timer
-
-def new_query_printer(name, count):
-	print("###############New Query#####################")
-	print("{0:20}: {1}".format("COLLECTING", name))
-	print("{0:20}: {1}".format("COUNT INDEX", count))
-	print("#############################################\n")
+from Ebay.SiteOperations import printer
 
 class queryList:
 
@@ -105,7 +100,7 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def collection_helper(client, name, link, csv_file, listing_type, date_stored = None):
+	def collection_helper(client, name, link, csv_file, listing_type, date_stored, fast):
 		"""
 		Helper function to data_collection.
 		Populates a ProductList object with item data scraped from the 'link'. Export the data to 'csv_file.'
@@ -120,9 +115,10 @@ class queryList:
 		temp_list = ProductList()
 
 		try:
-			
-			#aboutALink(client, link, temp_list, date_stored)
-			fast_download(client, temp_list, link, date_stored)
+			if fast:
+				fast_download(client, temp_list, link, date_stored)
+			else:
+				about_a_link(client, link, temp_list, date_stored)
 		except Exception as e:
 			print("********************************************************************x86")
 			print(e)
@@ -142,7 +138,7 @@ class queryList:
 		return None
 
 
-	def data_collection(self, client, start_index = 0, end_index = 999, single_search = False):
+	def data_collection(self, client, start_index = 0, end_index = 999, single_search = False, fast = True):
 	    """
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
@@ -152,17 +148,19 @@ class queryList:
 	    count = start_index
 	    
 	    for query in self.queryCollection[count:]:
-	        new_query_printer(query.name, count)
+	        printer.new_query(query.name, count)
 
 	        count += 1
 
 	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
 	        
 	        date_stored = queryList.get_date_stored(query.csv_Auction)
-	        queryList.collection_helper(client, query.name, query.linkAuction, query.csv_Auction, "AUCTION", date_stored)
+	        query_data = (query.name, query.linkAuction, query.csv_Auction)
+	        queryList.collection_helper(client, *query_data, "AUCTION", date_stored, fast)
 
 	        date_stored = queryList.get_date_stored(query.csv_BIN)
-	        queryList.collection_helper(client, query.name, query.linkBIN, query.csv_BIN, "BIN", date_stored)
+	        query_data = (query.name, query.linkBIN, query.csv_BIN)
+	        queryList.collection_helper(client, *query_data, "BIN", date_stored, fast)
 
 	        #					exclusive
 	        if single_search or count > end_index:
