@@ -100,7 +100,7 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def collection_helper(client, name, link, csv_file, listing_type, date_stored, fast):
+	def collection_helper(client, name, link, csv_file, listing_type, date_stored, fast, print_stats, deep_scrape):
 		"""
 		Helper function to data_collection.
 		Populates a ProductList object with item data scraped from the 'link'. Export the data to 'csv_file.'
@@ -116,7 +116,7 @@ class queryList:
 
 		try:
 			if fast:
-				fast_download(client, temp_list, link, date_stored)
+				fast_download(client, temp_list, link, date_stored, print_stats, deep_scrape)
 			else:
 				about_a_link(client, link, temp_list, date_stored)
 		except Exception as e:
@@ -138,7 +138,7 @@ class queryList:
 		return None
 
 
-	def data_collection(self, client, start_index = 0, end_index = 999, single_search = False, fast = True):
+	def data_collection(self, client, start_index = 0, end_index = 999, single_search = False, fast = True, print_stats = False, deep_scrape = False):
 	    """
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
@@ -156,11 +156,11 @@ class queryList:
 	        
 	        date_stored = queryList.get_date_stored(query.csv_Auction)
 	        query_data = (query.name, query.linkAuction, query.csv_Auction)
-	        queryList.collection_helper(client, *query_data, "AUCTION", date_stored, fast)
+	        queryList.collection_helper(client, *query_data, "AUCTION", date_stored, fast, print_stats, deep_scrape)
 
 	        date_stored = queryList.get_date_stored(query.csv_BIN)
 	        query_data = (query.name, query.linkBIN, query.csv_BIN)
-	        queryList.collection_helper(client, *query_data, "BIN", date_stored, fast)
+	        queryList.collection_helper(client, *query_data, "BIN", date_stored, fast, print_stats, deep_scrape)
 
 	        #					exclusive
 	        if single_search or count > end_index:

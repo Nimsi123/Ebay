@@ -23,7 +23,7 @@ def html_download(client, url, i):
 	with open(f"../HTML_Store/scrape_{i}.txt", "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
 
-def fast_download(client, product_collection, link, date_stored, printer_bool_product_stats = True, printer_bool_page_stats = True, deep_scrape = False):
+def fast_download(client, product_collection, link, date_stored, print_stats, deep_scrape):
 	"""
 	This function is called once for every query.
 	Until we reach an overlap point or page_count, iterate through the query's eBay pages and populate product_collection with Item data.
@@ -36,7 +36,7 @@ def fast_download(client, product_collection, link, date_stored, printer_bool_pr
 	if total_listings is None and max_iteration is None:
 		return
 
-	if printer_bool_product_stats:
+	if print_stats:
 		printer.product_stats(total_listings, page_count)
 
 	count = 0
@@ -59,10 +59,10 @@ def fast_download(client, product_collection, link, date_stored, printer_bool_pr
 			with open(f"../HTML_Store/scrape_{i}.txt", "r", encoding = "utf-8") as raw_html:
 				html = BeautifulSoup(raw_html, 'html.parser')
 
-			search_listings(html, "li", "s-item", product_collection, printer_bool_page_stats)
+			search_listings(html, "li", "s-item", product_collection, print_stats)
 
 			date_appended = product_collection.earliest_date()
-			if printer_bool_page_stats:
+			if print_stats:
 				printer.page_stats_two(count, len(product_collection.item_list), link, date_appended)
 
 			if is_overlapping(date_stored, date_appended) and not deep_scrape:

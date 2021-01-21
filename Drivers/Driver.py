@@ -1,3 +1,5 @@
+import sys
+
 from Ebay.ItemOrganization.queryList import queryList
 from Ebay.ItemOrganization.Client import Client
 from name_collection import items
@@ -9,10 +11,10 @@ this line indicates that eBay is fucking with us, and that we need to take extra
 *****need to do extra work to get sale date********MANDOLORIAN
 """
 
-client = Client
+#client = Client
 #print("client counter: ", client.counter)
 
-totalQueries = queryList()
+#totalQueries = queryList()
 # import sys
 # sys.exit()
 #totalQueries.add_new_queries(items)
@@ -30,5 +32,16 @@ totalQueries = queryList()
 
 
 if __name__ == "__main__":
-	totalQueries.data_collection(client)
-	totalQueries.data_visualization()
+	cmd_vals = {
+		"-p": False, #print_stats
+		"-d": False, #deep_scrape
+	}
+
+	not_cmd = [cmd for cmd in sys.argv[1:] if cmd not in cmd_vals]
+	assert not_cmd == [], "Invalid argument: " + str(not_cmd) + ". Choose from: " + str(list(cmd_vals.keys()))
+	
+	for cmd in sys.argv[1:]:
+		cmd_vals[cmd] = True
+
+	#totalQueries.data_collection(client, *cmd_vals.values())
+	#totalQueries.data_visualization()
