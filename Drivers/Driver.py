@@ -29,19 +29,25 @@ this line indicates that eBay is fucking with us, and that we need to take extra
 #totalQueries.data_collection(client, start_index = 1, single_search = True)
 #totalQueries.data_visualization(start_index = 1, single_graph = True)
 
-
+def test(print_stats = False, deep_scrape = True):
+	print(print_stats, deep_scrape)
 
 if __name__ == "__main__":
 	cmd_vals = {
-		"-p": False, #print_stats
-		"-d": False, #deep_scrape
+		("print_stats", "-p"): False,
+		("deep_scrape", "-d"): False,
 	}
 
-	not_cmd = [cmd for cmd in sys.argv[1:] if cmd not in cmd_vals]
-	assert not_cmd == [], "Invalid argument: " + str(not_cmd) + ". Choose from: " + str(list(cmd_vals.keys()))
-	
-	for cmd in sys.argv[1:]:
-		cmd_vals[cmd] = True
+	possible_args = [key[1] for key in cmd_vals.keys()]
 
-	#totalQueries.data_collection(client, *cmd_vals.values())
+	not_cmd = [cmd for cmd in sys.argv[1:] if cmd not in possible_args]
+	assert not_cmd == [], "Invalid argument: " + str(not_cmd) + ". Choose from: " + str(possible_args)
+	
+	for kwarg, cmd in cmd_vals:
+		if cmd in sys.argv[1:]:
+			cmd_vals[(kwarg, cmd)] = True
+
+	kwargs = dict([(kwarg, val) for (kwarg, _), val in cmd_vals.items()])
+
+	#totalQueries.data_collection(client, **kwargs)
 	#totalQueries.data_visualization()
