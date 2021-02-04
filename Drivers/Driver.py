@@ -11,7 +11,7 @@ this line indicates that eBay is fucking with us, and that we need to take extra
 *****need to do extra work to get sale date********MANDOLORIAN
 """
 
-#[print(query.name) for query in totalQueries.queryCollection[320:]]
+#[print(query.name) for query in totalQueries.query_collection[320:]]
 #print(totalQueries.find_count("PlayStation 5"))
 #totalQueries.data_collection(client, start_index = 1, single_search = True)
 #totalQueries.data_visualization(start_index = 1, single_graph = True)
@@ -41,10 +41,11 @@ def get_kwargs(user_args):
 
 	kwargs = dict([(kwarg, val) for (kwarg, _), val in cmd_vals.items()])
 
-import sys
-sys.exit()
+
 totalQueries = queryList()
 totalQueries.update_queries(d)
+import sys
+sys.exit()
 totalQueries.data_collection(Client, single_oper = True, deep_scrape = True)
 
 if __name__ == "__main__" and False:

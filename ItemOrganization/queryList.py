@@ -10,103 +10,13 @@ from Ebay.ItemOrganization.timer import timer
 from Ebay.SiteOperations import printer
 
 class queryList:
-
 	"""
 	Represents all of the eBay queries we are keeping track of.
 	"""
+	exportDirectory = r"..\\ItemOrganization\\queryListExport.csv"
 
 	def __init__(self):
-		self.queryCollection = []
-		self.exportDirectory = r"..\\ItemOrganization\\queryListExport.csv"
-
-	def find_count(self, search_name):
-		"""
-		Returns the index of the query in queryCollection that has the title query_name.
-		"""
-
-		for i in range(len(self.queryCollection)):
-			if self.queryCollection[i].name == search_name:
-				return i
-
-	def addQuery(self, *grouping):
-		"""
-		Adds an eBayQuery object to self.queryCollection
-		Can be used to add new items to track.
-		"""
-		new_query = eBayQuery(*grouping)
-		if new_query not in self.queryCollection:
-			self.queryCollection.append( new_query )
-
-	def add_new_queries(self, list_of_names):
-		"""
-		Adds names from a list of new search queries to track to the csv file holding data for tracked items.
-		"""
-		existing_query_names = [query.name for query in self.queryCollection]
-
-		for name in list_of_names:
-			if name not in existing_query_names:
-				self.addQuery(name)
-
-		self.queryCollection.sort(key = lambda query: query.name)
-		self.export_query_data()
-
-	#mark for deletion
-	def remove_old_queries(self, list_of_names):
-		"""
-		Removes names from a list of existing search queries from the csv file holding data for tracked items.
-		"""
-
-		i = 0
-		while i < len(self.queryCollection):
-			query = self.queryCollection[i]
-			if query.name in list_of_names:
-				del self.queryCollection[i]
-				continue
-			i += 1
-
-		self.queryCollection.sort(key = lambda query: query.name)
-		self.export_query_data()
-
-	def export_query_data(self):
-		"""
-		Export the data associated with eBayQuery objects to a csv file.
-		"""
-
-		with open(self.exportDirectory, "w", encoding = "utf-8") as file:
-			data = ["groupA", "groupB", "groupC"]
-			csv_writer = csv.DictWriter(file, fieldnames = data)
-			csv_writer.writeheader()
-
-			for query in self.queryCollection:
-				csv_writer.writerow( query.get_dict_data() )
-
-	#mark for deletion
-	def import_query_data(self):
-		"""
-		Imports all of the data to do with individual queries from self.exportDirectory
-		Populates self.queryCollection with stored queryData.
-		"""
-		assert len(self.queryCollection) == 0, "You should not be importing if len(self.queryCollection) is not 0. There is a risk of importing overlaps."
-
-		with open(self.exportDirectory, "r", encoding = "utf-8") as file:
-			csv_reader = csv.DictReader(file)
-			for line in csv_reader:
-				grouping = (line["groupA"], line["groupB"], line["groupC"])
-				self.addQuery(*grouping)
-
-	def __str__(self):
-		"""
-		Returns a string represention of self
-		"""
-
-		return "\n".join([str(query) for query in self.queryCollection])
-
-	def get_date_stored(csv_file):
-		temp_list = ProductList()
-		temp_list.import_item_data(csv_file)
-		if temp_list.item_list:
-			return temp_list.item_list[-1].date
-		return None
+		self.query_collection = []			
 
 	def data_collection(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 	    """
@@ -119,7 +29,7 @@ class queryList:
 
 	    count = start_index
 	    
-	    for query in self.queryCollection[count:]:
+	    for query in self.query_collection[count:]:
 	        printer.new_query(query.name, count)
 	        query.scrape(client, *cmdline_args)
 
@@ -137,7 +47,7 @@ class queryList:
 	    :rtype: None
 	    """
 
-	    for query in self.queryCollection[start_index:]:
+	    for query in self.query_collection[start_index:]:
 	        print(query.name)
 	        query.graph_combo()
 
@@ -148,16 +58,17 @@ class queryList:
 
 	'''
 	def sql_export():
-	# Larger example that inserts many records at a time
+		# Larger example that inserts many records at a time
 
 		c.execute("""CREATE TABLE products (name, type, date, price)""")
 
-		for query in self.queryCollection:
+		for query in self.query_collection:
 			for listing_type in ["Auction", "BIN"]:
 			data = [query.name, "Auction"]	
 		c.executemany('INSERT INTO stocks VALUES (?,?,?,?)', purchases)
 	'''
 
+	""" 	JSON -> eBayQuery 	"""
 	def split_helper(json, groupA = None):
 	    #helper method to split
 	    for key, value in json.items():
@@ -184,4 +95,64 @@ class queryList:
 		:rtype: None
 		"""
 		for groups in queryList.split(json):
-			self.addQuery(*groups)
+			self.query_collection.append( eBayQuery(*groups) )
+
+	""" 	Miscellaneous 	"""
+	def __str__(self):
+		"""
+		Returns a string represention of self
+		"""
+
+		return "\n".join([str(query) for query in self.query_collection])
+
+	def find_count(self, search_name):
+		"""
+		Returns the index of the query in query_collection that has the title query_name.
+		"""
+
+		for i in range(len(self.query_collection)):
+			if self.query_collection[i].name == search_name:
+				return i
+
+	""" 	Mark for Deletion 	"""
+	def import_query_data(self):
+		"""
+		Imports all of the data to do with individual queries from self.exportDirectory
+		Populates self.query_collection with stored queryData.
+		"""
+		assert len(self.query_collection) == 0, "You should not be importing if len(self.query_collection) is not 0. There is a risk of importing overlaps."
+
+		with open(self.exportDirectory, "r", encoding = "utf-8") as file:
+			csv_reader = csv.DictReader(file)
+			for line in csv_reader:
+				grouping = (line["groupA"], line["groupB"], line["groupC"])
+				self.addQuery(*grouping)
+
+	def export_query_data(self):
+		"""
+		Export the data associated with eBayQuery objects to a csv file.
+		"""
+
+		with open(self.exportDirectory, "w", encoding = "utf-8") as file:
+			data = ["groupA", "groupB", "groupC"]
+			csv_writer = csv.DictWriter(file, fieldnames = data)
+			csv_writer.writeheader()
+
+			for query in self.query_collection:
+				csv_writer.writerow( query.get_dict_data() )
+
+	def remove_old_queries(self, list_of_names):
+		"""
+		Removes names from a list of existing search queries from the csv file holding data for tracked items.
+		"""
+
+		i = 0
+		while i < len(self.query_collection):
+			query = self.query_collection[i]
+			if query.name in list_of_names:
+				del self.query_collection[i]
+				continue
+			i += 1
+
+		self.query_collection.sort(key = lambda query: query.name)
+		self.export_query_data()
