@@ -90,6 +90,7 @@ def clean_date(entry):
 
     month_dict = {
         "JAN": 1,
+        "FEB": 2,
         "APR": 4,
         "MAY": 5,
         "JUN": 6,

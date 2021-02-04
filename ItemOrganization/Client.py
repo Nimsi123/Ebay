@@ -44,10 +44,10 @@ class Client:
 
 	df = pd.read_csv(csv_file)
 	
-	current_index = 4
+	current_index = 1
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
-	counter_limit = 5000
+	counter_limit = 1000
 
 	def next_client():
 		"""Once an api key has run out of free requests, switch clients by mutating class variables.

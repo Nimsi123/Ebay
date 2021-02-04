@@ -101,43 +101,12 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def collection_helper(client, name, link, csv_file, listing_type, date_stored, synchronous_scrape, print_stats, deep_scrape):
-		"""
-		Helper function to data_collection.
-		Populates a ProductList object with item data scraped from the 'link'. Export the data to 'csv_file.'
-
-	    Note:
-	        we don't want to be storing all that ProductList() data!
-	        temp_list will go out of scope and it will be relieved of its memory usage
-		"""
-
-		print(f"{name} {listing_type}\n")
-
-		temp_list = ProductList()
-
-		try:
-			if not synchronous_scrape:
-				fast_download(client, temp_list, link, date_stored, print_stats, deep_scrape)
-			else:
-				about_a_link(client, link, temp_list, date_stored)
-		except Exception as e:
-			print("********************************************************************x86")
-			print(e)
-			print("********************************************************************x86")
-			queryList.collection_helper(client, name, link, csv_file, listing_type, date_stored)
-
-
-		temp_list.export_item_data(csv_file)
-
-		print(f"length of {listing_type}", len(temp_list.item_list), "\n")
-
 	def get_date_stored(csv_file):
 		temp_list = ProductList()
 		temp_list.import_item_data(csv_file)
 		if temp_list.item_list:
 			return temp_list.item_list[-1].date
 		return None
-
 
 	def data_collection(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 	    """
@@ -152,19 +121,9 @@ class queryList:
 	    
 	    for query in self.queryCollection[count:]:
 	        printer.new_query(query.name, count)
+	        query.scrape(client, *cmdline_args)
 
 	        count += 1
-
-	        #queryList.collection_helper(client, query.name, query.linkAll, query.csv_All, "ALL LISTINGS")
-	        
-	        date_stored = queryList.get_date_stored(query.csv_Auction)
-	        query_data = (query.name, query.linkAuction, query.csv_Auction)
-	        queryList.collection_helper(client, *query_data, "AUCTION", date_stored, *cmdline_args)
-
-	        date_stored = queryList.get_date_stored(query.csv_BIN)
-	        query_data = (query.name, query.linkBIN, query.csv_BIN)
-	        queryList.collection_helper(client, *query_data, "BIN", date_stored, *cmdline_args)
-
 	        #					exclusive
 	        if single_oper or count > end_index:
 	        	return
@@ -180,7 +139,6 @@ class queryList:
 
 	    for query in self.queryCollection[start_index:]:
 	        print(query.name)
-
 	        query.graph_combo()
 
 	        if single_oper:

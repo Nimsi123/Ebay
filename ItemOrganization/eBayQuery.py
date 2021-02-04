@@ -11,6 +11,10 @@ import datetime
 
 from Ebay.ItemOrganization.ProductList import ProductList
 
+from Ebay.SiteOperations.about_a_link import about_a_link
+from Ebay.Drivers.fast_download import fast_download
+from Ebay.SiteOperations import printer
+
 from Ebay.ItemOrganization.timer import timer
 
 def make_eBay_link(listing_type, search_str):
@@ -49,7 +53,7 @@ class eBayQuery:
 		self.groupA = groupA
 		self.groupB = groupB
 		self.groupC = groupC
-		
+
 		self.name = groupC
 
 		partial = eBayQuery.csvDirectory + self.name.replace(" ", "_")
@@ -70,15 +74,47 @@ class eBayQuery:
 
 		self.product_collection = ProductList()
 
-	def file_check(self):
-		"""Ensures that all of the files related to the eBay query exist. New files are opened if one does not exist."""
+	"""		Scraper 	"""
+	def get_date_stored(csv_file):
+		temp_list = ProductList()
+		temp_list.import_item_data(csv_file)
+		if temp_list.item_list:
+			return temp_list.item_list[-1].date
+		return None
 
-		#for path in [self.csv_All, self.csv_Auction, self.csv_BIN, self.png_avg_price, self.png_volume, self.png_combo]:
-		for path in [self.csv_All, self.csv_Auction, self.csv_BIN]:
-			if not os.path.isfile(path):
-				with open(path, "w") as file:
-					pass
+	def scrape_helper(self, client, link, csv_file, listing_type, date_stored, *cmdline_args):
+		print(f"{self.name} {listing_type}\n")
+		synchronous_scrape, print_stats, deep_scrape = cmdline_args
 
+		temp_list = ProductList()
+
+		try:
+			if synchronous_scrape:
+				about_a_link(client, link, temp_list, date_stored)
+			else:
+				fast_download(client, temp_list, link, date_stored, print_stats, deep_scrape)
+		except Exception as e:
+			printer.error(e)
+
+			if type(e) == NameError:
+				import sys
+				sys.exit()
+			
+			self.scrape_helper(client, link, csv_file, listing_type, date_stored, *cmdline_args)
+
+		temp_list.export_item_data(csv_file)
+
+		print(f"length of {listing_type}", len(temp_list.item_list), "\n")
+
+	def scrape(self, client, *cmdline_args):
+
+		date_stored = eBayQuery.get_date_stored(self.csv_Auction)
+		self.scrape_helper(client, self.linkAuction, self.csv_Auction, "AUCTION", date_stored, *cmdline_args)
+
+		date_stored = eBayQuery.get_date_stored(self.csv_BIN)
+		self.scrape_helper(client, self.linkBIN, self.csv_BIN, "BIN", date_stored, *cmdline_args)
+
+	""" 	Grapher 	"""
 	def fill_plot(dates, data, ax, x_title, y_title, graph_title, color_scatter, color_line, labeling = None):
 		"""Helper function to graph_from_csv. Given 'data' (list of numbers), fill the axes 'ax.'
 		"""
@@ -179,6 +215,18 @@ class eBayQuery:
 
 		fig.clf()
 		plt.close()
+
+
+	""" 	Miscellaneous 	"""
+
+	def file_check(self):
+		"""Ensures that all of the files related to the eBay query exist. New files are opened if one does not exist."""
+
+		#for path in [self.csv_All, self.csv_Auction, self.csv_BIN, self.png_avg_price, self.png_volume, self.png_combo]:
+		for path in [self.csv_All, self.csv_Auction, self.csv_BIN]:
+			if not os.path.isfile(path):
+				with open(path, "w") as file:
+					pass
 
 	def get_dict_data(self):
 		"""Returns a dictionary representation of self."""

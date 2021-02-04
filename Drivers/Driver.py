@@ -41,6 +41,11 @@ def get_kwargs(user_args):
 
 	kwargs = dict([(kwarg, val) for (kwarg, _), val in cmd_vals.items()])
 
+import sys
+sys.exit()
+totalQueries = queryList()
+totalQueries.update_queries(d)
+totalQueries.data_collection(Client, single_oper = True, deep_scrape = True)
 
 if __name__ == "__main__" and False:
 
