@@ -8,6 +8,8 @@ calculator = [
     ]
 items.extend(calculator)
 
+print(calculator.__name__)
+
 samsung_galaxy = [
     "Samsung Galaxy s4", 
     "Samsung Galaxy s5", 

@@ -45,8 +45,12 @@ class eBayQuery:
 	csvDirectory = r".." + "\\CSV_Collection\\"
 	pngDirectory = r"..\ImageDisplay\PNG" + "\\"
 
-	def __init__(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
-		self.name = nombre
+	def __init__(self, groupA, groupB, groupC):
+		self.groupA = groupA
+		self.groupB = groupB
+		self.groupC = groupC
+		
+		self.name = groupC
 
 		partial = eBayQuery.csvDirectory + self.name.replace(" ", "_")
 		self.csv_All = partial + ".csv"
@@ -60,16 +64,9 @@ class eBayQuery:
 
 		self.file_check()
 
-		#links are either all there, or not at all
-		#after passing through the constructor, the links will all be present
-		if enlaceAll == None or enlaceAuction == None or enlaceBIN == None:
-			self.linkAll = make_eBay_link("All Listings", self.name)
-			self.linkAuction = make_eBay_link("Auction", self.name)
-			self.linkBIN = make_eBay_link("Buy It Now", self.name)
-		else:
-			self.linkAll = enlaceAll
-			self.linkAuction = enlaceAuction
-			self.linkBIN = enlaceBIN
+		self.linkAll = make_eBay_link("All Listings", self.name)
+		self.linkAuction = make_eBay_link("Auction", self.name)
+		self.linkBIN = make_eBay_link("Buy It Now", self.name)
 
 		self.product_collection = ProductList()
 
@@ -186,7 +183,11 @@ class eBayQuery:
 	def get_dict_data(self):
 		"""Returns a dictionary representation of self."""
 
-		return {"name": self.name, "AllListingsLink": self.linkAll, "AuctionLink": self.linkAuction, "BuyItNowLink": self.linkBIN}
+		return {
+			"groupA": self.groupA,
+			"groupB": self.groupB,
+			"groupC": self.groupC,
+			}
 
 	def __str__(self):
 

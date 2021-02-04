@@ -19,8 +19,6 @@ class queryList:
 		self.queryCollection = []
 		self.exportDirectory = r"..\\ItemOrganization\\queryListExport.csv"
 
-		self.import_query_data()
-
 	def find_count(self, search_name):
 		"""
 		Returns the index of the query in queryCollection that has the title query_name.
@@ -30,12 +28,12 @@ class queryList:
 			if self.queryCollection[i].name == search_name:
 				return i
 
-	def addQuery(self, nombre, enlaceAll = None, enlaceAuction = None, enlaceBIN = None):
+	def addQuery(self, *grouping):
 		"""
 		Adds an eBayQuery object to self.queryCollection
 		Can be used to add new items to track.
 		"""
-		new_query = eBayQuery(nombre, enlaceAll, enlaceAuction, enlaceBIN)
+		new_query = eBayQuery(*grouping)
 		if new_query not in self.queryCollection:
 			self.queryCollection.append( new_query )
 
@@ -52,6 +50,7 @@ class queryList:
 		self.queryCollection.sort(key = lambda query: query.name)
 		self.export_query_data()
 
+	#mark for deletion
 	def remove_old_queries(self, list_of_names):
 		"""
 		Removes names from a list of existing search queries from the csv file holding data for tracked items.
@@ -74,13 +73,14 @@ class queryList:
 		"""
 
 		with open(self.exportDirectory, "w", encoding = "utf-8") as file:
-			data = ["name", "queryDataDirectory", "productListDirectory", "AveragePriceDirectory", "VolumeDirectory", "AllListingsLink", "AuctionLink", "BuyItNowLink"]
+			data = ["groupA", "groupB", "groupC"]
 			csv_writer = csv.DictWriter(file, fieldnames = data)
 			csv_writer.writeheader()
 
 			for query in self.queryCollection:
 				csv_writer.writerow( query.get_dict_data() )
 
+	#mark for deletion
 	def import_query_data(self):
 		"""
 		Imports all of the data to do with individual queries from self.exportDirectory
@@ -91,7 +91,8 @@ class queryList:
 		with open(self.exportDirectory, "r", encoding = "utf-8") as file:
 			csv_reader = csv.DictReader(file)
 			for line in csv_reader:
-				self.addQuery(line["name"], line["AllListingsLink"], line["AuctionLink"], line["BuyItNowLink"])
+				grouping = (line["groupA"], line["groupB"], line["groupC"])
+				self.addQuery(*grouping)
 
 	def __str__(self):
 		"""
@@ -100,7 +101,7 @@ class queryList:
 
 		return "\n".join([str(query) for query in self.queryCollection])
 
-	def collection_helper(client, name, link, csv_file, listing_type, date_stored, fast, print_stats, deep_scrape):
+	def collection_helper(client, name, link, csv_file, listing_type, date_stored, synchronous_scrape, print_stats, deep_scrape):
 		"""
 		Helper function to data_collection.
 		Populates a ProductList object with item data scraped from the 'link'. Export the data to 'csv_file.'
@@ -115,7 +116,7 @@ class queryList:
 		temp_list = ProductList()
 
 		try:
-			if fast:
+			if not synchronous_scrape:
 				fast_download(client, temp_list, link, date_stored, print_stats, deep_scrape)
 			else:
 				about_a_link(client, link, temp_list, date_stored)
@@ -138,12 +139,14 @@ class queryList:
 		return None
 
 
-	def data_collection(self, client, start_index = 0, end_index = 999, single_search = False, fast = True, print_stats = False, deep_scrape = False):
+	def data_collection(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 	    """
 	    Iterate through queries in self.totalQueries. 
 	    For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
 	    Export this data to every query's respective csv file.
 	    """
+
+	    cmdline_args = (synchronous_scrape, print_stats, deep_scrape)
 
 	    count = start_index
 	    
@@ -156,20 +159,20 @@ class queryList:
 	        
 	        date_stored = queryList.get_date_stored(query.csv_Auction)
 	        query_data = (query.name, query.linkAuction, query.csv_Auction)
-	        queryList.collection_helper(client, *query_data, "AUCTION", date_stored, fast, print_stats, deep_scrape)
+	        queryList.collection_helper(client, *query_data, "AUCTION", date_stored, *cmdline_args)
 
 	        date_stored = queryList.get_date_stored(query.csv_BIN)
 	        query_data = (query.name, query.linkBIN, query.csv_BIN)
-	        queryList.collection_helper(client, *query_data, "BIN", date_stored, fast, print_stats, deep_scrape)
+	        queryList.collection_helper(client, *query_data, "BIN", date_stored, *cmdline_args)
 
 	        #					exclusive
-	        if single_search or count > end_index:
+	        if single_oper or count > end_index:
 	        	return
 
 	    print("finished data collection")
 
 	@timer
-	def data_visualization(self, start_index = 0, single_graph = False):
+	def data_visualization(self, start_index = 0, single_oper = False):
 	    """Makes a graph for every eBay query.
 
 	    :rtype: None
@@ -180,7 +183,7 @@ class queryList:
 
 	        query.graph_combo()
 
-	        if single_graph:
+	        if single_oper:
 	        	return
 
 	    print("visualize finished")
@@ -196,3 +199,31 @@ class queryList:
 			data = [query.name, "Auction"]	
 		c.executemany('INSERT INTO stocks VALUES (?,?,?,?)', purchases)
 	'''
+
+	def split_helper(json, groupA = None):
+	    #helper method to split
+	    for key, value in json.items():
+	        if type(value) == list:
+	            if not groupA:
+	                groupA = key
+	            for sub in value:
+	                yield (groupA, key, sub)
+	        else:
+	            yield from queryList.split_helper(value, key)
+
+	def split(json):
+		"""
+		:param json: a json-like dict that holds query information regarding its category
+		:type json: dict
+		:yields: A tuple consisting of (groupA, groupB, groupC) -- groups that the query falls into.
+		:ytype: tuple
+		"""
+		yield from queryList.split_helper(json)
+
+	def update_queries(self, json):
+		"""Ensures that self is up to date with all of the queries to be tracked
+		:param json: 
+		:rtype: None
+		"""
+		for groups in queryList.split(json):
+			self.addQuery(*groups)

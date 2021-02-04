@@ -54,6 +54,8 @@ d = {
     ]
 }
 
-import json
-with open("json.js", "w") as file:
-    file.write("var d = " + json.dumps(d) + ";")
+
+def to_js_json():
+    import json
+    with open("json.js", "w") as file:
+        file.write("var d = " + json.dumps(d) + ";")
