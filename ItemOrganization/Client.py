@@ -1,17 +1,19 @@
 from scraper_api import ScraperAPIClient
 import pandas as pd
 from Ebay.ItemOrganization.timer import timer
-"""
-df_api_keys = pd.DataFrame([
-	['bfb3cb210e50c39d09f82432095a5150', 0], 
-	['cbbdd094d7401d8912b09341e37be9b1', 0],
-	['c733663048589db82005534b6739c32e', 0],
-	['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
-	['81d0339948cd0596cf05a03df5b32288', 0], 
-	['042d872c6185752c4b3db850014bace1', 0]
-	], columns= ["api_key", "counter"])
-df_api_keys.to_csv(r'Client.csv')
-"""
+
+if 0:
+	df_api_keys = pd.DataFrame([
+		['bfb3cb210e50c39d09f82432095a5150', 0], 
+		['cbbdd094d7401d8912b09341e37be9b1', 0],
+		['c733663048589db82005534b6739c32e', 0],
+		['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
+		['81d0339948cd0596cf05a03df5b32288', 0], 
+		['042d872c6185752c4b3db850014bace1', 0],
+		['7b3ed1376b2358ebf50609d891ace0b4', 0]
+		], columns= ["api_key", "counter"])
+	df_api_keys.to_csv(r'Client.csv')
+
 
 
 """
@@ -39,12 +41,13 @@ class Client:
 		'10c2e4d0fef8e45470a5b43b84f15ec0', #oxaxe7@gmail.com
 		'81d0339948cd0596cf05a03df5b32288', #rahmanian.arya2356@gmail.com
 		'042d872c6185752c4b3db850014bace1', #nikolas-cacerces
+		"7b3ed1376b2358ebf50609d891ace0b4", #nimarahmanianstorage1@gmail.com
 	]
 	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 
 	df = pd.read_csv(csv_file)
 	
-	current_index = 1
+	current_index = 6
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
 	counter_limit = 1000

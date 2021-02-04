@@ -93,6 +93,9 @@ class eBayQuery:
 				about_a_link(client, link, temp_list, date_stored)
 			else:
 				fast_download(client, temp_list, link, date_stored, print_stats, deep_scrape)
+
+			temp_list.export_item_data(csv_file)
+			print(f"length of {listing_type}", len(temp_list.item_list), "\n")
 		except Exception as e:
 			printer.error(e)
 
@@ -101,10 +104,6 @@ class eBayQuery:
 				sys.exit()
 			
 			self.scrape_helper(client, link, csv_file, listing_type, date_stored, *cmdline_args)
-
-		temp_list.export_item_data(csv_file)
-
-		print(f"length of {listing_type}", len(temp_list.item_list), "\n")
 
 	def scrape(self, client, *cmdline_args):
 
