@@ -12,16 +12,16 @@ def product_stats(total_listings, max_iteration):
 	print("{0:30}: {1}".format("max_iteration", max_iteration))
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
 
-def page_stats_one(num_item_listings, count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code):
+def page_stats_one(num_item_listings, added, skipped_early, bad, class_code):
 	print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
 	print("PAGE STATS")
 	
 	print("{0:30}: {1}".format("num item listings", num_item_listings))
-	print("{0:30}: {1}".format("count added", count_added))
+	print("{0:30}: {1}".format("added", added))
 	print("----")
-	print("{0:30}: {1}".format("count_skipped_early", count_skipped_early))
-	print("{0:30}: {1}".format("count_skipped_bad", count_skipped_bad))
-	print("{0:30}: {1}".format("count_skipped_class_code", count_skipped_class_code))
+	print("{0:30}: {1}".format("skipped_early", skipped_early))
+	print("{0:30}: {1}".format("bad", bad))
+	print("{0:30}: {1}".format("class_code", class_code))
 	print("----")
 
 def page_stats_two(count, item_list_length, link, date_appended):

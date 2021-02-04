@@ -31,7 +31,7 @@ def about_a_link(client, link, product_collection, date_stored = None, print_sta
 	for count in range(max_iteration):
 
 		html = receive_html(client, link)
-		search_listings(html, "li", "s-item", product_collection, print_stats)
+		search_listings(html, product_collection, print_stats)
 
 		date_appended = product_collection.earliest_date()
 		

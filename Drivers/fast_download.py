@@ -59,7 +59,10 @@ def fast_download(client, product_collection, link, date_stored, print_stats, de
 			with open(f"../HTML_Store/scrape_{i}.txt", "r", encoding = "utf-8") as raw_html:
 				html = BeautifulSoup(raw_html, 'html.parser')
 
-			search_listings(html, "li", "s-item", product_collection, print_stats)
+			#search_listings(html, product_collection, print_stats)
+
+			for item in search_listings(html, print_stats):
+				product_collection.addItem(item)
 
 			date_appended = product_collection.earliest_date()
 			if print_stats:

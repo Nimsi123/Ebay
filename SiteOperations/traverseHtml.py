@@ -199,51 +199,59 @@ def is_overlapping(date_stored, date_appended):
         printer.overlap(date_appended, date_stored)
         return True
 
+def get_data(listing):
+    title = extract(find_element, listing, "h3", "s-item__title", clean_title)
+    price = extract(find_element, listing, "span", "s-item__price", clean_price)
+    shipping = extract(find_element, listing, "span", "s-item__shipping", clean_shipping)
+    date = extract(find_element, listing, "div", "s-item__title--tagblock", clean_date)
+
+    return title, price, shipping, date
+
+    """
+    if key == None:
+        date = extract(find_element, listing, "div", "s-item__title--tagblock", clean_date)
+    else:
+        print("*****need to do extra work to get sale date********MANDOLORIAN")
+        date = extract_nested(find_letters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
+    """
+    
 @timer
-def search_listings(html, element_type, class_code, item_collection, printer_bool_page_stats = False):
+def search_listings(html, printer_bool_page_stats = False):
     """
     html -> html code for an entire webpage
 
     Adds new items to item_collection.
     """
+    element_type, class_code = "li", "s-item"
 
     #ebay tries to mess with the sale date and my code
     #right before the code starts, I will find the special class_name that can be used to find the sale date!
-    key = find_key(html, element_type, ["S", "o", "l", "d"])
+    #key = find_key(html, element_type, ["S", "o", "l", "d"])
 
-    count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code = 0, 0, 0, 0
+    counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
 
     for listing in html.find_all(element_type):
         if listing.get("class") == None:
-            count_skipped_early += 1
+            counter["skipped_early"] += 1
             continue
         else:
             class_name = listing.get("class")[0]
 
         if class_name == class_code:
-            #extract data from a single listing
-
-            title = extract(find_element, listing, "h3", "s-item__title", clean_title)
-            price = extract(find_element, listing, "span", "s-item__price", clean_price)
-            shipping = extract(find_element, listing, "span", "s-item__shipping", clean_shipping)
-
-            if key == None:
-                date = extract(find_element, listing, "div", "s-item__title--tagblock", clean_date)
-            else:
-                print("*****need to do extra work to get sale date********MANDOLORIAN")
-                date = extract_nested(find_letters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
+            title, price, shipping, date = get_data(listing)
 
             if all([attr is not None for attr in [title, price, date, shipping]]):
                 total_cost = round(price+shipping, 2)
-                item_collection.addItem( Item(title, total_cost, date) )
-                count_added += 1
+                #item_collection.addItem( Item(title, total_cost, date) )
+                yield Item(title, total_cost, date)
+                counter["added"] += 1
             else:
                 #print(f"BAD LISTING -- title: {title} price: {price} shipping: {shipping} date: {date}")
-                count_skipped_bad += 1
-
+                counter["bad"] += 1
         else:
-            count_skipped_class_code += 1
+            counter["class_code"] += 1
 
     if printer_bool_page_stats:
-        printer.page_stats_one(len(html.find_all(element_type)), count_added, count_skipped_early, count_skipped_bad, count_skipped_class_code)
+        num_listings = len(html.find_all(element_type))
+        printer.page_stats_one(num_listings, **counter)
 
