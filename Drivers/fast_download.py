@@ -33,7 +33,7 @@ def fast_download(client, product_collection, link, date_stored, print_stats, de
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
 	total_listings, page_count = get_listings_iteration(html)
 
-	if total_listings is None and max_iteration is None:
+	if total_listings is None and page_count is None:
 		return
 
 	if print_stats:

@@ -131,8 +131,7 @@ def get_listings_iteration(html):
         print(f"Cannot find total listings")
         print("{0:30}: {1}\n".format("extract", temp_num))
         print(e)
-        import sys
-        sys.exit()
+        return None, None
     
     total_listings = int(temp_num)
 

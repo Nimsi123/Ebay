@@ -2,20 +2,6 @@ from scraper_api import ScraperAPIClient
 import pandas as pd
 from Ebay.ItemOrganization.timer import timer
 
-if 0:
-	df_api_keys = pd.DataFrame([
-		['bfb3cb210e50c39d09f82432095a5150', 0], 
-		['cbbdd094d7401d8912b09341e37be9b1', 0],
-		['c733663048589db82005534b6739c32e', 0],
-		['10c2e4d0fef8e45470a5b43b84f15ec0', 0],
-		['81d0339948cd0596cf05a03df5b32288', 0], 
-		['042d872c6185752c4b3db850014bace1', 0],
-		['7b3ed1376b2358ebf50609d891ace0b4', 0]
-		], columns= ["api_key", "counter"])
-	df_api_keys.to_csv(r'Client.csv')
-
-
-
 """
 SOME STATS
 fast_download is hitting roughly 130 api requests every 10 minutes.
@@ -47,14 +33,14 @@ class Client:
 	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 	df = pd.read_csv(csv_file)
 	
-	current_index = 0
+	current_index = 2
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
 	counter_limit = 1000
 
 	def next_client():
-		"""Once an api key has run out of free requests, switch clients by mutating class variables.
-		"""
+		"""Once an api key has run out of free requests, switch clients. 
+		Increments Client.current_index, updates Client.current_client, and initializes Client.counter."""
 
 		Client.current_index += 1
 		if Client.current_index == len(Client.api_keys):
@@ -63,7 +49,14 @@ class Client:
 			sys.exit()
 
 		Client.current_client = ScraperAPIClient( Client.api_keys[Client.current_index] )
-		Client.counter = 0
+		Client.counter = Client.df["counter"][Client.current_index]
+
+	def update_counter():
+		"""Increments Client.counter and updates .csv file"""
+		Client.counter += 1
+		df = pd.read_csv(Client.csv_file)
+		df.at[Client.current_index, "counter"] = Client.counter
+		df.to_csv(Client.csv_file, index = False)
 
 	@timer
 	def get(url):
@@ -77,14 +70,10 @@ class Client:
 
 		print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
 
-		if Client.counter > Client.counter_limit:
+		if Client.counter >= Client.counter_limit:
 			Client.next_client()
 
-		Client.counter += 1
-		df = pd.read_csv(Client.csv_file)
-		df.at[Client.current_index, "counter"] = Client.counter
-		df.to_csv(Client.csv_file, index = False)
-
+		Client.update_counter()
 		return Client.current_client.get(url)
 
 	""" 	Miscellaneous 	"""

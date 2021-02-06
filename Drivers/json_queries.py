@@ -47,7 +47,7 @@ d = {
         ]
     },
     "GPUs": [
-        "RTX 3090","RTX 3080","RTX 3070","RTX 2080 Ti","RTX 2080","RTX 2080 Super","RTX 2070","RTX 2070 Super","RTX 2060 Super",
+        "RTX 3090","RTX 3080","RTX 3070", "RTX 3060 Ti", "RTX 2080 Ti","RTX 2080","RTX 2080 Super","RTX 2070","RTX 2070 Super","RTX 2060 Super",
         "RTX 2060","RTX 1660","RTX 1660 Ti","RTX 1660 Super","RTX 1650","RTX 1650 Super","RTX 1080 Ti","RTX 1080","RTX 1070 ",
         "RTX 1070 Ti","RTX 1060","RTX 1050 Ti","RTX 1050","RX 6800 XT","RX 6800","RX 5700 XT","RX 5700","RX 5600 XT","RX 5500 XT",
         "RX 590","RX 580","RX 570","RX 480","RX 470","Vega 64","Vega 56","Radeon VII"

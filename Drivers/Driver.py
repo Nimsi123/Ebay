@@ -4,8 +4,6 @@ from Ebay.ItemOrganization.queryList import queryList
 from Ebay.ItemOrganization.Client import Client
 from json_queries import d
 
-Client.reset_csv()
-
 def get_kwargs(user_args):
 	"""
 	:param user_args: The list of user-typed command-line arguments.
@@ -31,17 +29,20 @@ def get_kwargs(user_args):
 
 	kwargs = dict([(kwarg, val) for (kwarg, _), val in cmd_vals.items()])
 
+	return kwargs
 
 if 0:
 	totalQueries = queryList()
 	totalQueries.update_queries(d)
 	totalQueries.data_collection(Client, single_oper = True, deep_scrape = False)
 
-if __name__ == "__main__" and False:
+if __name__ == "__main__":
+
+	Client.reset_csv()
 
 	kwargs = get_kwargs(sys.argv[1:])
 
 	totalQueries = queryList()
 	totalQueries.update_queries(d)
-	totalQueries.data_collection(Client, **kwargs)
+	totalQueries.data_collection(Client, start_index = 145, **kwargs)
 	totalQueries.data_visualization(kwargs["single_oper"])
