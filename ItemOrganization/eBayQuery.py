@@ -83,9 +83,9 @@ class eBayQuery:
 		return None
 
 	def scrape_helper(self, client, link, csv_file, listing_type, date_stored, *cmdline_args):
-		print(f"{self.name} {listing_type}\n")
 		synchronous_scrape, print_stats, deep_scrape = cmdline_args
 
+		printer.start_scrape(self.name, listing_type)
 		temp_list = ProductList()
 
 		try:
@@ -95,14 +95,11 @@ class eBayQuery:
 				fast_download(client, temp_list, link, date_stored, print_stats, deep_scrape)
 
 			temp_list.export_item_data(csv_file)
-			print(f"length of {listing_type}", len(temp_list.item_list), "\n")
+			printer.end_scrape(listing_type, len(temp_list.item_list))
+		except NameError as e:
+			raise e
 		except Exception as e:
 			printer.error(e)
-
-			if type(e) == NameError:
-				import sys
-				sys.exit()
-			
 			self.scrape_helper(client, link, csv_file, listing_type, date_stored, *cmdline_args)
 
 	def scrape(self, client, *cmdline_args):

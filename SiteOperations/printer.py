@@ -5,6 +5,12 @@ def new_query(name, count):
 	print("{0:20}: {1}".format("COUNT INDEX", count))
 	print("---------------------------------------------\n")
 
+def start_scrape(name, listing_type):
+	print("{0:20}: {1}".format(name, listing_type))
+
+def end_scrape(listing_type, list_len):
+	print("Length of " + "{0:20}: {1}".format(listing_type, list_len))
+
 def product_stats(total_listings, max_iteration):
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 	print("					PRODUCT STATS 				")
