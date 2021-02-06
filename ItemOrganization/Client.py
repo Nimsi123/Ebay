@@ -43,11 +43,11 @@ class Client:
 		'042d872c6185752c4b3db850014bace1', #nikolas-cacerces
 		"7b3ed1376b2358ebf50609d891ace0b4", #nimarahmanianstorage1@gmail.com
 	]
-	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 
+	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 	df = pd.read_csv(csv_file)
 	
-	current_index = 6
+	current_index = 0
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
 	counter_limit = 1000
@@ -86,3 +86,19 @@ class Client:
 		df.to_csv(Client.csv_file, index = False)
 
 		return Client.current_client.get(url)
+
+	""" 	Miscellaneous 	"""
+	def print_usage():
+		"""Prints the usage data for every account associated with an API key."""
+		for key in Client.api_keys:
+			client = ScraperAPIClient(key)
+			print(client.account())
+
+	def reset_csv():
+		"""Updates Client.csv with the requestCount number for each api key. 
+		This method should be called a minute after the last API call."""
+
+		data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in Client.api_keys]
+
+		df_api_keys = pd.DataFrame(data, columns= ["api_key", "counter"])
+		df_api_keys.to_csv( Client.csv_file )
