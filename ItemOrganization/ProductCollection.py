@@ -1,5 +1,4 @@
 import pandas as pd 
-import numpy as np
 
 class ProductCollection:
 	"""Represents a collection of product data scraped from eBay.com.
@@ -21,8 +20,12 @@ class ProductCollection:
 		self.count_added += 1
 
 	def get_recent_date(self, sale_type):
-		"""Gets the most recent date stored for either 'BIN' or 'Auction'. 
-		(Pandas - implemented with the 'group by' idea.)"""
+		"""Returns the most recent date stored in based on the sale_type. 
+
+		:param sale_type: either 'BIN' or 'Auction'
+		:type sale_type: str
+		:rtype: pandas.Timestamp or None if there are no items stored
+		"""
 		assert sale_type in ["BIN", "Auction"]
 		if self.df.empty:
 			return None
@@ -31,6 +34,7 @@ class ProductCollection:
 		return trimmed_series[0]
 
 	def reset_count_added(self):
+		"""Resets the counter that tracks the number of items added to storage."""
 		self.count_added = 0
 
 	def get_count_added(self):
@@ -47,8 +51,14 @@ class ProductCollection:
 	@staticmethod
 	def import_data(csv_file):
 		"""Loads data from .csv file to the underlying data structure. Returns a new ProductCollection object.
+		
 		Design question. Is this the only site of constructing a ProductCollection object?
-		~Table().read_table(csv_file)"""
+		~Table().read_table(csv_file)
+
+		:param csv_file: The .csv file with the previously scraped data
+		:type csv_file: str
+		:rtype: ProductCollection
+		"""
 		new = ProductCollection()
 		new.df = pd.read_csv(csv_file)
 		new.df['date'] = new.df['date'].astype('datetime64[ns]')
@@ -61,10 +71,16 @@ class ProductCollection:
 
 	def export_data(self, csv_file):
 		"""Exports data from the underlying data structure to the .csv file. 
-		Typically invoked after scraping data."""
+		Typically invoked after scraping data.
+
+		:param csv_file: The file to export the data
+		:type csv_file: str
+		"""
 		self.df.to_csv(csv_file, index = False)
 
 def test_code():
+	import numpy as np
+
 	collection = ProductCollection("Phones", "iPhone", "iPhone XS")
 	for i in range(0, 10, 2):
 		collection.add_item("sample title " + str(i),     i * 2,     np.datetime64("2018-01-1" + str(i)),     "Auction")
@@ -96,27 +112,29 @@ test_code()
 
 """Driver code for scraping and graphing.
 
-#initializing csv_file
-for groupA, groupB, groupC in self.query_names:
-	csv_file = make_csv_file(groupC)
-	collection = ProductCollection().read_csv(csv_file)
-	collection.set_groups(groupA, groupB, groupC) #temporary method
-	collection.export_data()
+
 
 #scraping
-for query_name in self.query_names:
-	csv_file = make_csv_file(query_name)
-	collection = ProductCollection().read_csv(csv_file)
+for groupA, groupB, groupC in self.query_names:
+	csv_file = make_csv_file(groupC)
+
+	if (csv_file exists):
+		collection = ProductCollection.import_data(csv_file)
+	else:
+		collection = ProductCollection(groupA, groupB, groupC)
 
 	for sale_type in [...]:
-		fast_download(collection, make_link(query_name, sale_type), *cmdline_args) #fast_download takes care of date_stored
+		fast_download(collection, sale_type, make_link(groupC, sale_type), *cmdline_args) #fast_download takes care of date_stored
 
 	collection.export_data(csv_file)
 
 #graphing
-for query_name in self.query_names:
-	csv_file = make_csv_file(query_name)
-	png_file = make_png_file(query_name)
-	collection = ProductCollection().read_csv(csv_file)
+for groupA, groupB, groupC in self.query_names:
+	csv_file = make_csv_file(groupC)
+	png_file = make_png_file(groupC)
+
+	assert (csv_file exists)
+
+	collection = ProductCollection.import_data(csv_file)
 	collection.graph(png_file, *args, **kwargs)
 """

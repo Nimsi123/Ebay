@@ -32,8 +32,8 @@ def get_kwargs(user_args):
 	return kwargs
 
 if 0:
-	totalQueries = queryList()
-	totalQueries.update_queries(d)
+	totalQueries = queryList(d)
+	#totalQueries.set_queries(d)
 	totalQueries.data_collection(Client, single_oper = True, deep_scrape = False)
 
 if __name__ == "__main__":
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
 	kwargs = get_kwargs(sys.argv[1:])
 
-	totalQueries = queryList()
-	totalQueries.update_queries(d)
+	totalQueries = queryList(d)
+	#totalQueries.set_queries(d)
 	totalQueries.data_collection(Client, start_index = 145, **kwargs)
 	totalQueries.data_visualization(kwargs["single_oper"])
