@@ -1,0 +1,16 @@
+Note: group can be used interchangeably with groupA, groupB, or groupC!
+
+1) Which group sells the (most/least) items?
+
+select group_, "Count" as count(*) from table group by group_ order by "Count" (ascending / descending) = True;
+
+2) Which subgroup sells the (most/least) items?
+
+ex. "Which phone sells the most?"
+select groupA, groupC, "Count" as count(*) from table group by groupC order by "Count" (ascending / descending) = True;
+
+3) What month is the (best/worst) for the group?
+
+ex. "What is the best month for phones?"
+select group_, "Month" as month, "Count" as count(*) from table group by group_, month order by "Count" (ascending / descending) = True;
+
