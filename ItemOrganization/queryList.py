@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 import os.path
 
 from Ebay.ItemOrganization.eBayQuery import eBayQuery
+from Ebay.ItemOrganization.ProductCollection import ProductCollection
 from Ebay.SiteOperations import printer
+from Ebay.Drivers.fast_download import fast_download
 
 from Ebay.ItemOrganization.timer import timer
 
@@ -16,7 +18,7 @@ def make_link(listing_type, search_str):
 	>>> make_link("Buy It Now", "Cream Disraeli Gears")
 	'https://www.ebay.com/sch/i.html?_from=R40&_nkw=Cream Disraeli Gears&LH_Sold=1&LH_Complete=1&rt=nc&LH_BIN=1&_ipg=200'
 	"""
-	assert listing_type in ["All Listings", "Auction", "Buy It Now"], "not a valid listing type. Must be one of 'All Listings', 'Auction', or 'Buy It Now'"
+	assert listing_type in ["All Listings", "Auction", "BIN"], "not a valid listing type. Must be one of 'All Listings', 'Auction', or 'Buy It Now'"
 
 	link = "https://www.ebay.com/sch/i.html?_from=R40&_nkw=" + search_str + "&LH_Sold=1&LH_Complete=1"
 
@@ -29,8 +31,8 @@ def make_link(listing_type, search_str):
 
 	return link + "&_ipg=200"
 
-def make_csv_name(name, sale_type):
-	return r".." + "\\CSV_Collection\\" + name.replace(" ", "_") + f"_{sale_type}.csv"
+def make_csv_name(name):
+	return r".." + "\\CSV_Collection\\" +  f"{name.replace(' ', '_')}.csv"
 
 def make_png_name(name):
 	return r"..\ImageDisplay\PNG" + "\\" + name.replace(" ", "_") + "_combo.png"
@@ -94,7 +96,8 @@ class queryList:
 		c.executemany('INSERT INTO stocks VALUES (?,?,?,?)', purchases)
 	'''
 
-	def scrape(self):
+	def scrape(self, client, single_oper = True, deep_scrape = False):
+
 		for groupA, groupB, groupC in self.query_collection:
 			csv_file = make_csv_name(groupC)
 
@@ -107,9 +110,15 @@ class queryList:
 				collection = ProductCollection(groupA, groupB, groupC)
 
 			for sale_type in ["BIN", "Auction"]:
-				fast_download(collection, sale_type, make_link(sale_type, groupC), *cmdline_args) #fast_download takes care of date_stored
+				cmdline_args = (True, False) #print_stats, deep_scrape
+				date_stored = collection.get_recent_date(sale_type)
+				fast_download(client, collection, sale_type, make_link(sale_type, groupC), date_stored, *cmdline_args) #fast_download takes care of date_stored
 
 			collection.export_data(csv_file)
+
+			if single_oper:
+				return
+
 
 	def visualize(self):
 		for _, __, groupC in self.query_collection:
@@ -170,48 +179,3 @@ class queryList:
 		for i in range(len(self.query_collection)):
 			if self.query_collection[i].name == search_name:
 				return i
-
-
-def transfer_csv(q_list):
-	import pandas as pd
-
-	for groupA, groupB, groupC in q_list.query_collection:
-		#print(groupA, groupB, groupC)
-		csv_file = make_csv_name(groupC, "Auction")
-
-		df_a = pd.read_csv(csv_file)
-		df_a['date'] = df_a['date'].astype('datetime64[ns]')
-		#print(df.dtypes)
-
-		df_a["sale_condition"] = "Auction"
-		df_a["groupA"] = groupA
-		df_a["groupB"] = groupB
-		df_a["groupC"] = groupC
-
-		csv_file = make_csv_name(groupC, "BIN")
-
-		df_b = pd.read_csv(csv_file)
-		df_b['date'] = df_b['date'].astype('datetime64[ns]')
-
-		df_b["sale_condition"] = "BIN"
-		df_b["groupA"] = groupA
-		df_b["groupB"] = groupB
-		df_b["groupC"] = groupC
-
-		df_a = df_a[['sale_condition', 'groupA', 'groupB', 'groupC', 'title', 'price', 'date']]
-		df_b = df_b[['sale_condition', 'groupA', 'groupB', 'groupC', 'title', 'price', 'date']]
-
-		frames = [df_a, df_b]
-
-		df = pd.concat(frames)
-		#print(df)
-		#print(df.dtypes)
-
-		csv_final = r".." + "\\CSV_Collection\\" + groupC.replace(" ", "_") + f".csv"
-		print(csv_final)
-
-		df.to_csv(csv_final, index = False)
-
-
-from Ebay.Drivers.json_queries import d
-transfer_csv(queryList(d))

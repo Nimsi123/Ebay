@@ -33,7 +33,7 @@ class Client:
 	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
 	df = pd.read_csv(csv_file)
 	
-	current_index = 2
+	current_index = 6
 	current_client = ScraperAPIClient( api_keys[current_index] )
 	counter = df["counter"][current_index]
 	counter_limit = 1000

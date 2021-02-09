@@ -130,8 +130,8 @@ def get_listings_iteration(html):
     except Exception as e:
         print(f"Cannot find total listings")
         print("{0:30}: {1}\n".format("extract", temp_num))
-        print(e)
-        return None, None
+        raise e
+        #return None, None
     
     total_listings = int(temp_num)
 
@@ -242,7 +242,7 @@ def search_listings(html, printer_bool_page_stats = False):
             if all([attr is not None for attr in [title, price, date, shipping]]):
                 total_cost = round(price+shipping, 2)
                 #item_collection.addItem( Item(title, total_cost, date) )
-                yield Item(title, total_cost, date)
+                yield title, total_cost, date
                 counter["added"] += 1
             else:
                 #print(f"BAD LISTING -- title: {title} price: {price} shipping: {shipping} date: {date}")

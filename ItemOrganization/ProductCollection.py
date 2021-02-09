@@ -15,6 +15,8 @@ class ProductCollection:
 
 	def add_item(self, title, price, date, sale_type):
 		"""Adds an item to the collection."""
+		assert type(title) == str and type(price) != str and type(date) != str and type(sale_type) == str
+
 		self.df.loc[self.row_count] = [sale_type] + self.groups + [title, price, date]
 		self.row_count += 1
 		self.count_added += 1
@@ -108,7 +110,7 @@ def test_code():
 	assert collection.get_recent_date("Auction") == pd.Timestamp('2018-01-25 00:00:00')
 	assert collection.get_recent_date("BIN") == pd.Timestamp('2018-01-19 00:00:00')
 
-test_code()
+#test_code()
 
 """Driver code for scraping and graphing.
 

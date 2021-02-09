@@ -23,12 +23,13 @@ def html_download(client, url, i):
 	with open(f"../HTML_Store/scrape_{i}.txt", "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
 
-def fast_download(client, product_collection, link, date_stored, print_stats, deep_scrape):
+def fast_download(client, storage, sale_type, link, date_stored, print_stats, deep_scrape):
 	"""
 	This function is called once for every query.
 	Until we reach an overlap point or page_count, iterate through the query's eBay pages and populate product_collection with Item data.
 	Use threads to download html concurrently. Iterate sequentially through the html text and convert to Item data.
 	"""
+	
 
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
 	total_listings, page_count = get_listings_iteration(html)
@@ -54,19 +55,25 @@ def fast_download(client, product_collection, link, date_stored, print_stats, de
 				count += 1
 
 		#digest html
+		storage.reset_count_added()
 		for i in range(count - sub_c, count):
 			#receive and parse html from text file
 			with open(f"../HTML_Store/scrape_{i}.txt", "r", encoding = "utf-8") as raw_html:
 				html = BeautifulSoup(raw_html, 'html.parser')
 
-			#search_listings(html, product_collection, print_stats)
+			date = None
+			ran_for_loop = False
+			print("Before for loop!")
+			for title, price, date in search_listings(html, print_stats):
+				storage.add_item(title, price, date, sale_type)
+				ran_for_loop = True
 
-			for item in search_listings(html, print_stats):
-				product_collection.addItem(item)
-
-			date_appended = product_collection.earliest_date()
+			if not ran_for_loop:
+				print("Didn't run the for loop!")
+				
+			oldest_date = date #the oldest date just added is the one last assigned in the for loop above
 			if print_stats:
-				printer.page_stats_two(count, len(product_collection.item_list), link, date_appended)
+				printer.page_stats_two(count, storage.get_count_added(), link, oldest_date)
 
-			if is_overlapping(date_stored, date_appended) and not deep_scrape:
+			if is_overlapping(date_stored, oldest_date) and not deep_scrape:
 				return

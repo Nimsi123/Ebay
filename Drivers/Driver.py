@@ -31,12 +31,14 @@ def get_kwargs(user_args):
 
 	return kwargs
 
-if 0:
+if 1:
+	Client.reset_csv()
 	totalQueries = queryList(d)
 	#totalQueries.set_queries(d)
-	totalQueries.data_collection(Client, single_oper = True, deep_scrape = False)
+	#totalQueries.data_collection(Client, single_oper = True, deep_scrape = False)
+	totalQueries.scrape(Client, single_oper = True, deep_scrape = False)
 
-if __name__ == "__main__":
+if __name__ == "__main__" and 0:
 
 	Client.reset_csv()
 
