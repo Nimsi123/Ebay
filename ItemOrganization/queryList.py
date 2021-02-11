@@ -8,6 +8,7 @@ from Ebay.SiteOperations import printer
 from Ebay.Drivers.fast_download import fast_download
 
 from Ebay.ItemOrganization.timer import timer
+from Ebay.Drivers.json_queries import d
 
 def make_link(listing_type, search_str):
 	"""
@@ -31,14 +32,11 @@ def make_link(listing_type, search_str):
 
 	return link + "&_ipg=200"
 
-def make_csv_name(name):
+def csv_dir(name):
 	return r".." + "\\CSV_Collection\\" +  f"{name.replace(' ', '_')}.csv"
 
-def make_png_name(name):
+def png_dir(name):
 	return r"..\ImageDisplay\PNG" + "\\" + name.replace(" ", "_") + "_combo.png"
-
-print(make_csv_name("1984"))
-print(make_png_name("1984"))
 
 class queryList:
 	"""
@@ -99,38 +97,35 @@ class queryList:
 		c.executemany('INSERT INTO stocks VALUES (?,?,?,?)', purchases)
 	'''
 
-	def scrape(self, client, single_oper = True, deep_scrape = False):
+	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
-		for groupA, groupB, groupC in self.query_collection:
-			csv_file = make_csv_name(groupC)
+		for groupA, groupB, groupC in self.query_collection[start_index:end_index]:
+			csv_file = csv_dir(groupC)
 
 			if os.path.isfile(csv_file):
 				collection = ProductCollection.import_data(csv_file)
 			else:
 				with open(csv_file, "w") as file:
 					pass
-
 				collection = ProductCollection(groupA, groupB, groupC)
 
 			for sale_type in ["BIN", "Auction"]:
-				cmdline_args = (True, deep_scrape) #print_stats, deep_scrape
-				date_stored = collection.get_recent_date(sale_type)
-				fast_download(client, collection, sale_type, make_link(sale_type, groupC), date_stored, *cmdline_args) #fast_download takes care of date_stored
+				cmdline_args = (print_stats, deep_scrape)
+				fast_download(client, collection, sale_type, make_link(sale_type, groupC), *cmdline_args) #fast_download takes care of date_stored
 
 			collection.export_data(csv_file)
 
 			if single_oper:
 				return
 
-
-	def visualize(self):
-		for _, __, groupC in self.query_collection:
-			csv_file = make_csv_file(groupC)
-			png_file = make_png_file(groupC)
+	def visualize(self, start_index = 0, single_oper = False):
+		for _, __, groupC in self.query_collection[start_index:]:
+			print(groupC)
+			csv_file = csv_dir(groupC)
+			png_file = png_dir(groupC)
 			assert os.path.isfile(csv_file)
 
-			collection = ProductCollection.import_data(csv_file)
-			collection.graph(png_file, *args, **kwargs)
+			ProductCollection.import_data(csv_file).scatter(png_file)
 
 	""" 	JSON -> eBayQuery 	"""
 	def split_helper(json, groupA = None):

@@ -23,13 +23,13 @@ def html_download(client, url, i):
 	with open(f"../HTML_Store/scrape_{i}.txt", "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
 
-def fast_download(client, storage, sale_type, link, date_stored, print_stats, deep_scrape):
+def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 	"""
 	This function is called once for every query.
 	Until we reach an overlap point or page_count, iterate through the query's eBay pages and populate product_collection with Item data.
 	Use threads to download html concurrently. Iterate sequentially through the html text and convert to Item data.
 	"""
-	
+	recent_date_stored = storage.get_recent_date(sale_type)
 
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
 	total_listings, page_count = get_listings_iteration(html)
@@ -76,5 +76,5 @@ def fast_download(client, storage, sale_type, link, date_stored, print_stats, de
 			if print_stats:
 				printer.page_stats_two(i, storage.get_count_added(), oldest_date)
 
-			if is_overlapping(date_stored, oldest_date) and not deep_scrape:
+			if is_overlapping(recent_date_stored, oldest_date) and not deep_scrape:
 				return

@@ -31,20 +31,17 @@ def get_kwargs(user_args):
 
 	return kwargs
 
-if 1:
+test = False
+
+if test:
 	Client.reset_csv()
 	totalQueries = queryList(d)
-	#totalQueries.set_queries(d)
-	#totalQueries.data_collection(Client, single_oper = True, deep_scrape = False)
-	totalQueries.scrape(Client, single_oper = True, deep_scrape = True)
+	totalQueries.scrape(Client, single_oper = True, print_stats = True, deep_scrape = True)
 
-if __name__ == "__main__" and 0:
-
+if __name__ == "__main__" and not test:
 	Client.reset_csv()
-
 	kwargs = get_kwargs(sys.argv[1:])
 
 	totalQueries = queryList(d)
-	#totalQueries.set_queries(d)
-	totalQueries.data_collection(Client, start_index = 145, **kwargs)
-	totalQueries.data_visualization(kwargs["single_oper"])
+	totalQueries.scrape(client, **kwargs)
+	totalQueries.visualize(kwargs["single_oper"])

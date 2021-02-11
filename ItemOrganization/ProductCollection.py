@@ -66,38 +66,37 @@ class ProductCollection:
 
 	@staticmethod
 	def graph_avg_price(ax, df, sale_condition, dot_color):
-		avg_price_df = df[df["sale_condition"] == sale_condition].groupby("date").mean().reset_index()
-		avg_price_df.plot.scatter("date", "price", c = dot_color, ax = ax)
+		avg_price_df = df[df["sale_condition"] == sale_condition][["date", "price"]].groupby("date").mean().reset_index()
+		avg_price_df.plot.scatter("date", "price", c = dot_color, ax = ax, label = sale_condition)
 
 	@staticmethod
 	def graph_volume(ax, df, sale_condition, dot_color):
-		volume_df = df[["sale_condition", "date"]][df["sale_condition"] == sale_condition].groupby("date").count().rename(columns = {"sale_condition":"count"}).reset_index()
-		volume_df.plot.scatter("date", "count", c = dot_color, ax = ax)
+		volume_df = df[df["sale_condition"] == sale_condition][["date"]]
+		volume_df["count"] = 0
+		volume_df = volume_df.groupby("date").count().reset_index()
+		volume_df.plot.scatter("date", "count", c = dot_color, ax = ax, label = sale_condition)
 
 	def scatter(self, png_file):
 		"""Creates a scatter plot that overlaps the data from all sale_type(s). Saves the plot to a .png file."""
+		if self.df.empty:
+			return None
+
 		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
 
 		groupC = self.groups[-1]
-		graph_labels = ("date", "average price", groupC)
-		ProductCollection.set_axis_details(avg_price_axes, *graph_labels)
-		graph_labels = ("date", "volume of sales", groupC)
-		ProductCollection.set_axis_details(volume_axes, *graph_labels)
+		ProductCollection.set_axis_details(avg_price_axes, "date", "average price", groupC)
+		ProductCollection.set_axis_details(volume_axes, "date", "volume of sales", groupC)
 
 		auction_details = ("Auction", "lightcoral")
 		bin_details = ("BIN", "aquamarine")
 
 		ProductCollection.graph_avg_price(avg_price_axes, self.df, *auction_details)
 		ProductCollection.graph_avg_price(avg_price_axes, self.df, *bin_details)
-
 		ProductCollection.graph_volume(volume_axes, self.df, *auction_details)
 		ProductCollection.graph_volume(volume_axes, self.df, *bin_details)
 
-		fig.legend(loc = "upper right")
-		plt.show()
-		#fig.savefig(png_file)
-		#fig.clf()
-		#plt.close()
+		fig.savefig(png_file)
+		plt.close()
 
 	@staticmethod
 	def import_data(csv_file):
