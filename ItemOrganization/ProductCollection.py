@@ -1,5 +1,10 @@
 import pandas as pd 
 
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib.dates import (YEARLY, DateFormatter,
+                              rrulewrapper, RRuleLocator, drange)
+
 class ProductCollection:
 	"""Represents a collection of product data scraped from eBay.com.
 	Implemented with the pandas module."""
@@ -46,9 +51,53 @@ class ProductCollection:
 	def get_row_count(self):
 		return self.row_count
 
-	def scatter(self, png_file, *args, **kwargs):
+	@staticmethod
+	def set_axis_details(ax, x_title, y_title, graph_title):
+
+		ax.set(
+			xlabel = x_title,
+			ylabel = y_title,
+			title = graph_title
+			)
+
+		formatter = DateFormatter('%m/%d/%y')
+		ax.xaxis.set_major_formatter(formatter)
+		ax.xaxis.set_tick_params(rotation=30, labelsize=10)
+
+	@staticmethod
+	def graph_avg_price(ax, df, sale_condition, dot_color):
+		avg_price_df = df[df["sale_condition"] == sale_condition].groupby("date").mean().reset_index()
+		avg_price_df.plot.scatter("date", "price", c = dot_color, ax = ax)
+
+	@staticmethod
+	def graph_volume(ax, df, sale_condition, dot_color):
+		volume_df = df[["sale_condition", "date"]][df["sale_condition"] == sale_condition].groupby("date").count().rename(columns = {"sale_condition":"count"}).reset_index()
+		volume_df.plot.scatter("date", "count", c = dot_color, ax = ax)
+
+	def scatter(self, png_file):
 		"""Creates a scatter plot that overlaps the data from all sale_type(s). Saves the plot to a .png file."""
-		pass
+		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
+
+		groupC = self.groups[-1]
+		graph_labels = ("date", "average price", groupC)
+		ProductCollection.set_axis_details(avg_price_axes, *graph_labels)
+		graph_labels = ("date", "volume of sales", groupC)
+		ProductCollection.set_axis_details(volume_axes, *graph_labels)
+
+		auction_details = ("Auction", "lightcoral")
+		bin_details = ("BIN", "aquamarine")
+
+		ProductCollection.graph_avg_price(avg_price_axes, self.df, *auction_details)
+		ProductCollection.graph_avg_price(avg_price_axes, self.df, *bin_details)
+
+		ProductCollection.graph_volume(volume_axes, self.df, *auction_details)
+		ProductCollection.graph_volume(volume_axes, self.df, *bin_details)
+
+		fig.legend(loc = "upper right")
+		plt.show()
+		#fig.savefig(png_file)
+		#fig.clf()
+		#plt.close()
 
 	@staticmethod
 	def import_data(csv_file):
@@ -78,7 +127,10 @@ class ProductCollection:
 		:param csv_file: The file to export the data
 		:type csv_file: str
 		"""
-		self.df.to_csv(csv_file, index = False)
+		#remove groupA and groupB from the subset to look at for efficiency?
+		#we could even remove groupC, since in these csv file, the group data is all identical!
+		#the above assumption might not always be true
+		self.df.drop_duplicates(subset = ["sale_condition", "title", "price", "date"]).to_csv(csv_file, index = False)
 
 def test_code():
 	import numpy as np
@@ -112,8 +164,16 @@ def test_code():
 
 #test_code()
 
-"""Driver code for scraping and graphing.
+def test_display():
+	csv_file = r"..\CSV_Collection\ti-83_plus_calculator.csv"
+	png_file = r"..\ImageDisplay\PNG\ti-83_plus_calculator.png"
 
+	c = ProductCollection.import_data(csv_file)
+	c.scatter(png_file)
+
+test_display()
+
+"""Driver code for scraping and graphing.
 
 
 #scraping

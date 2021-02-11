@@ -36,7 +36,7 @@ if 1:
 	totalQueries = queryList(d)
 	#totalQueries.set_queries(d)
 	#totalQueries.data_collection(Client, single_oper = True, deep_scrape = False)
-	totalQueries.scrape(Client, single_oper = True, deep_scrape = False)
+	totalQueries.scrape(Client, single_oper = True, deep_scrape = True)
 
 if __name__ == "__main__" and 0:
 

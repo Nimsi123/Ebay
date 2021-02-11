@@ -37,6 +37,9 @@ def make_csv_name(name):
 def make_png_name(name):
 	return r"..\ImageDisplay\PNG" + "\\" + name.replace(" ", "_") + "_combo.png"
 
+print(make_csv_name("1984"))
+print(make_png_name("1984"))
+
 class queryList:
 	"""
 	Represents all of the eBay queries we are keeping track of.
@@ -110,7 +113,7 @@ class queryList:
 				collection = ProductCollection(groupA, groupB, groupC)
 
 			for sale_type in ["BIN", "Auction"]:
-				cmdline_args = (True, False) #print_stats, deep_scrape
+				cmdline_args = (True, deep_scrape) #print_stats, deep_scrape
 				date_stored = collection.get_recent_date(sale_type)
 				fast_download(client, collection, sale_type, make_link(sale_type, groupC), date_stored, *cmdline_args) #fast_download takes care of date_stored
 

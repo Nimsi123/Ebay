@@ -50,6 +50,7 @@ def fast_download(client, storage, sale_type, link, date_stored, print_stats, de
 				executor.submit(html_download, client, link, count)
 				time.sleep(REQUEST_WAIT)
 
+				print("{0:30}: {1}".format("link", link))
 				link = next_link(link)
 				sub_c += 1
 				count += 1
@@ -70,10 +71,10 @@ def fast_download(client, storage, sale_type, link, date_stored, print_stats, de
 
 			if not ran_for_loop:
 				print("Didn't run the for loop!")
-				
+
 			oldest_date = date #the oldest date just added is the one last assigned in the for loop above
 			if print_stats:
-				printer.page_stats_two(count, storage.get_count_added(), link, oldest_date)
+				printer.page_stats_two(i, storage.get_count_added(), oldest_date)
 
 			if is_overlapping(date_stored, oldest_date) and not deep_scrape:
 				return
