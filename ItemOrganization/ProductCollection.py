@@ -164,13 +164,13 @@ def test_code():
 #test_code()
 
 def test_display():
-	csv_file = r"..\CSV_Collection\ti-83_plus_calculator.csv"
-	png_file = r"..\ImageDisplay\PNG\ti-83_plus_calculator.png"
+	csv_file = r"..\CSV\ti-83_plus_calculator.csv"
+	png_file = r"..\PNG\ti-83_plus_calculator.png"
 
 	c = ProductCollection.import_data(csv_file)
 	c.scatter(png_file)
 
-test_display()
+#test_display()
 
 """Driver code for scraping and graphing.
 

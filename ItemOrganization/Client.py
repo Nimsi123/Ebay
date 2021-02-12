@@ -30,7 +30,7 @@ class Client:
 		"7b3ed1376b2358ebf50609d891ace0b4", #nimarahmanianstorage1@gmail.com
 	]
 
-	csv_file = "..\\..\\Ebay\\ItemOrganization\\Client.csv"
+	csv_file = "..\\data_files\\Client.csv"
 	df = pd.read_csv(csv_file)
 	
 	current_index = 6
