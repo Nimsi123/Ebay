@@ -17,7 +17,7 @@ Timing before
 ?
 
 """
-
+ 
 class Client:
 
 	api_keys = [
@@ -95,4 +95,3 @@ class Client:
 		for key in Client.api_keys:
 			client = ScraperAPIClient(key)
 			print(client.account())
-			
