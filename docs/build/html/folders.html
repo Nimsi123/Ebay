@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to eBayScraper&#39;s documentation! &mdash; eBayScraper February 2021 documentation</title>
+  <title>Folder structure &mdash; eBayScraper February 2021 documentation</title>
   
 
   
@@ -36,7 +36,8 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installation" href="installation.html" /> 
+    <link rel="next" title="ItemOrganization" href="sections/ItemOrganization.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -50,7 +51,7 @@
           
 
           
-            <a href="#" class="icon icon-home" alt="Documentation Home"> eBayScraper
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> eBayScraper
           
 
           
@@ -82,11 +83,10 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="folders.html">Folder structure</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Folder structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sections/ItemOrganization.html">ItemOrganization</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sections/SiteOperations.html">SiteOperations</a></li>
 </ul>
 
             
@@ -102,7 +102,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">eBayScraper</a>
+          <a href="index.html">eBayScraper</a>
         
       </nav>
 
@@ -131,15 +131,15 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Welcome to eBayScraper's documentation!</li>
+      <li>Folder structure</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/folders.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -152,29 +152,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="welcome-to-ebayscraper-s-documentation">
-<h1>Welcome to eBayScraper's documentation!<a class="headerlink" href="#welcome-to-ebayscraper-s-documentation" title="Permalink to this headline">¶</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="folders.html">Folder structure</a></li>
-<li class="toctree-l1"><a class="reference internal" href="sections/ItemOrganization.html">ItemOrganization</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sections/ItemOrganization.html#module-Client">Client.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sections/ItemOrganization.html#productcollection-py">ProductCollection.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sections/ItemOrganization.html#module-query_list">query_list.py</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="sections/SiteOperations.html">SiteOperations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="sections/SiteOperations.html#about-a-link-py">about_a_link.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sections/SiteOperations.html#module-clean_entries">clean_entries.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sections/SiteOperations.html#module-fast_download">fast_download.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sections/SiteOperations.html#module-printer">printer.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="sections/SiteOperations.html#module-traverse_html">traverse_html.py</a></li>
-</ul>
-</li>
-</ul>
+  <div class="section" id="folder-structure">
+<h1>Folder structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h1>
+<p>eBayScraper's folder structure</p>
+<div class="line-block">
+<div class="line">eBayScraper</div>
+<div class="line">└── <a class="reference internal" href="sections/ItemOrganization.html#itemorganizationref"><span class="std std-ref">ItemOrganization</span></a></div>
+<div class="line">│   ├── <span class="xref std std-ref">ClientRef</span></div>
+<div class="line">│   ├── <span class="xref std std-ref">ProductCollectionRef</span></div>
+<div class="line">│   ├── <span class="xref std std-ref">QueryListRef</span></div>
+<div class="line">├── <span class="xref std std-ref">SiteOperationsRef</span></div>
+<div class="line">│   └── <span class="xref std std-ref">AboutALinkRef</span></div>
+<div class="line">│   └── <span class="xref std std-ref">CleanEntriesRef</span></div>
+<div class="line">│   └── <span class="xref std std-ref">FastDownloadRef</span></div>
+<div class="line">│   └── <span class="xref std std-ref">PrinterRef</span></div>
+<div class="line">│   └── <span class="xref std std-ref">TraverseHTMLRef</span></div>
+<div class="line">└── <span class="xref std std-ref">DataFilesRef</span></div>
 </div>
+<p>In the folder structure above:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">eBayScraper</span></code> is the folder we get when we issue a <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">eBayScraper</span></code> command</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eBayScraper/ItemOrganization</span></code> holds scripts that dictate the state of values at run-time. Such values are the scraping client's rotation, the data structure that stores and graphs the item data, and the class that organizes the flow of events.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eBayScraper/SiteOperations</span></code> holds scripts that deal with scraping meaningful data from the HTML code.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">eBayScraper/data_files</span></code> holds files and folder that pertain to the data to scrape. We store the collection of query names, the API call count, the scraped item data for each query, and the graphed images.</p></li>
+</ul>
 </div>
 
 
@@ -185,8 +186,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="installation.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="sections/ItemOrganization.html" class="btn btn-neutral float-right" title="ItemOrganization" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

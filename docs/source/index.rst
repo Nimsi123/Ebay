@@ -5,10 +5,7 @@ Welcome to eBayScraper's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
+   installation
+   folders
+   sections/ItemOrganization
+   sections/SiteOperations

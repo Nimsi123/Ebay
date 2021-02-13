@@ -35,7 +35,8 @@
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="ItemOrganization" href="ItemOrganization.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,11 +81,21 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">SiteOperations</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../folders.html">Folder structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ItemOrganization.html">ItemOrganization</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">SiteOperations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#about-a-link-py">about_a_link.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-clean_entries">clean_entries.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-fast_download">fast_download.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-printer">printer.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-traverse_html">traverse_html.py</a></li>
 </ul>
-</div>
+</li>
+</ul>
+
             
           
         </div>
@@ -148,19 +159,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-SiteOperations.clean_entries">
-<span id="siteoperations"></span><h1>SiteOperations<a class="headerlink" href="#module-SiteOperations.clean_entries" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="siteoperations">
+<span id="siteoperationsref"></span><h1>SiteOperations<a class="headerlink" href="#siteoperations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="about-a-link-py">
+<span id="aboutalinkref"></span><h2>about_a_link.py<a class="headerlink" href="#about-a-link-py" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-clean_entries">
+<span id="clean-entries-py"></span><span id="cleanentriesref"></span><h2>clean_entries.py<a class="headerlink" href="#module-clean_entries" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="SiteOperations.clean_entries.clean_date">
-<code class="sig-prename descclassname">SiteOperations.clean_entries.</code><code class="sig-name descname">clean_date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.clean_entries.clean_date" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cleans the date entry.
-Returns None if bad entry.</p>
+<dt id="clean_entries.clean_date">
+<code class="sig-prename descclassname">clean_entries.</code><code class="sig-name descname">clean_date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clean_entries.clean_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans the date entry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>entry</strong> (<em>str</em>) -- The date entry.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">datetime</span></code> object representing the date sold.</p>
+<dd class="field-even"><p>A <code class="docutils literal notranslate"><span class="pre">datetime</span></code> object representing the date sold. Otherwise, returns None if bad entry.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">datetime</span></code></p>
@@ -169,16 +184,15 @@ Returns None if bad entry.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.clean_entries.clean_price">
-<code class="sig-prename descclassname">SiteOperations.clean_entries.</code><code class="sig-name descname">clean_price</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.clean_entries.clean_price" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cleans the price entry.
-Returns None if bad entry.</p>
+<dt id="clean_entries.clean_price">
+<code class="sig-prename descclassname">clean_entries.</code><code class="sig-name descname">clean_price</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clean_entries.clean_price" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans the price entry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>entry</strong> (<em>str</em>) -- The price entry string.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The price</p>
+<dd class="field-even"><p>The price. Otherwise, returns None if bad entry.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -193,16 +207,15 @@ Returns None if bad entry.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.clean_entries.clean_shipping">
-<code class="sig-prename descclassname">SiteOperations.clean_entries.</code><code class="sig-name descname">clean_shipping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.clean_entries.clean_shipping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cleans the shipping entry.
-Returns None if bad entry.</p>
+<dt id="clean_entries.clean_shipping">
+<code class="sig-prename descclassname">clean_entries.</code><code class="sig-name descname">clean_shipping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clean_entries.clean_shipping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cleans the shipping entry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>entry</strong> (<em>str</em>) -- The shipping entry string.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The shipping</p>
+<dd class="field-even"><p>The shipping. Otherwise, returns None if bad entry.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -211,8 +224,8 @@ Returns None if bad entry.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.clean_entries.clean_title">
-<code class="sig-prename descclassname">SiteOperations.clean_entries.</code><code class="sig-name descname">clean_title</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.clean_entries.clean_title" title="Permalink to this definition">¶</a></dt>
+<dt id="clean_entries.clean_title">
+<code class="sig-prename descclassname">clean_entries.</code><code class="sig-name descname">clean_title</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">entry</span></em><span class="sig-paren">)</span><a class="headerlink" href="#clean_entries.clean_title" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleans the title entry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -227,17 +240,32 @@ Returns None if bad entry.</p>
 </dl>
 </dd></dl>
 
-<span class="target" id="module-SiteOperations.fast_download"></span><dl class="py function">
-<dt id="SiteOperations.fast_download.fast_download">
-<code class="sig-prename descclassname">SiteOperations.fast_download.</code><code class="sig-name descname">fast_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">storage</span></em>, <em class="sig-param"><span class="n">sale_type</span></em>, <em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">print_stats</span></em>, <em class="sig-param"><span class="n">deep_scrape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.fast_download.fast_download" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function is called once for every query.
-Until we reach an overlap point or page_count, iterate through the query's eBay pages and populate product_collection with Item data.
-Use threads to download html concurrently. Iterate sequentially through the html text and convert to Item data.</p>
+</div>
+<div class="section" id="module-fast_download">
+<span id="fast-download-py"></span><span id="fastdownloadref"></span><h2>fast_download.py<a class="headerlink" href="#module-fast_download" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="fast_download.fast_download">
+<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">fast_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">storage</span></em>, <em class="sig-param"><span class="n">sale_type</span></em>, <em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">print_stats</span></em>, <em class="sig-param"><span class="n">deep_scrape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.fast_download" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds item data to <code class="docutils literal notranslate"><span class="pre">storage</span></code>. Item data is collected from every listing posted on the html pages, starting at the <code class="docutils literal notranslate"><span class="pre">link</span></code>.
+Until we reach an overlap point or page_count, iterate through the eBay pages.
+Use threads to download html concurrently. Iterate sequentially through the html text and stores useful data in <code class="docutils literal notranslate"><span class="pre">storage</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>client</strong> (<em>class</em>) -- The class that provides html-downloading functionality</p></li>
+<li><p><strong>storage</strong> (<em>pandas.DataFrame</em>) -- The data structure that holds the item data.</p></li>
+<li><p><strong>sale_type</strong> (<em>str</em>) -- The type of listing. For example, items sold at 'Auction' or 'Buy it Now'.</p></li>
+<li><p><strong>link</strong> (<em>str</em>) -- The starting URL for scraping. All future links are obtained by calling next_link(link).</p></li>
+<li><p><strong>print_stats</strong> (<em>bool</em>) -- Determines whether we print stats on the scraping process.</p></li>
+<li><p><strong>deep_scrape</strong> (<em>bool</em>) -- Determines whether we end the search at an overlap point or not.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.fast_download.html_download">
-<code class="sig-prename descclassname">SiteOperations.fast_download.</code><code class="sig-name descname">html_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.fast_download.html_download" title="Permalink to this definition">¶</a></dt>
+<dt id="fast_download.html_download">
+<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">html_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.html_download" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the HTML from the eBay page and export it to the file 'scrape_{i}.txt' for the parameter i.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -249,37 +277,38 @@ Use threads to download html concurrently. Iterate sequentially through the html
 </dl>
 </dd></dl>
 
-<span class="target" id="module-SiteOperations.printer"></span><span class="target" id="module-SiteOperations.traverse_html"></span><dl class="py function">
-<dt id="SiteOperations.traverse_html.extract">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">get_raw_func</span></em>, <em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">class_name</span></em>, <em class="sig-param"><span class="n">clean_func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.extract" title="Permalink to this definition">¶</a></dt>
-<dd><p>html -&gt; a block of code representing a single listing</p>
-<p>Search the html block for the attribute of an item defined by 'element_type' and 'class_name.'
-Return the result of calling 'clean_func' on the item's attribute.</p>
-</dd></dl>
-
+</div>
+<div class="section" id="module-printer">
+<span id="printer-py"></span><span id="printerref"></span><h2>printer.py<a class="headerlink" href="#module-printer" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-traverse_html">
+<span id="traverse-html-py"></span><span id="traversehtmlref"></span><h2>traverse_html.py<a class="headerlink" href="#module-traverse_html" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
-<dt id="SiteOperations.traverse_html.extract_nested">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">extract_nested</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">get_raw_func</span></em>, <em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">outer_element_type</span></em>, <em class="sig-param"><span class="n">outer_class_name</span></em>, <em class="sig-param"><span class="n">inner_element_type</span></em>, <em class="sig-param"><span class="n">inner_class_name</span></em>, <em class="sig-param"><span class="n">clean_func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.extract_nested" title="Permalink to this definition">¶</a></dt>
-<dd><p>Some attributes are nested within two blocks.
-Returns the attribute accessed by diving into one block, and then going deeper.</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="SiteOperations.traverse_html.find_class_name">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">find_class_name</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">content</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.find_class_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>in the 'html' code, there is an element of 'element_type' which has 'content'
-if the 'content' matches the element's .contents, then return the class name 'class_name'</p>
-<dl class="simple">
-<dt>Why?</dt><dd><p>--&gt; helper method to find_key</p>
+<dt id="traverse_html.extract">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">class_name</span></em>, <em class="sig-param"><span class="n">clean_func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches <code class="docutils literal notranslate"><span class="pre">html</span></code> for the contents of the first html tag of <code class="docutils literal notranslate"><span class="pre">element_type</span></code> and <code class="docutils literal notranslate"><span class="pre">class_name</span></code>.
+Before returning the html contents, clean the value with the <code class="docutils literal notranslate"><span class="pre">clean_func</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>html</strong> -- a block of code representing a single listing</p></li>
+<li><p><strong>element_type</strong> (<em>str</em>) -- The element type of the html tag to search for. For example, <code class="docutils literal notranslate"><span class="pre">div</span></code>.</p></li>
+<li><p><strong>class_name</strong> (<em>str</em>) -- The class name of the html tag to search for.</p></li>
+<li><p><strong>clean_func</strong> (<em>function</em>) -- The function that converts the web text into a usable, readable format in the underlying data structure.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The return value of clean_func on the inner contents on the found html tag. Returns None if nothing is found.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Ranges from str to int to datetime.datetime.</p>
 </dd>
 </dl>
-<p>this 'class_name' is what ebay generated for every letter in the date
-content is one letter in &quot;Sold&quot;. we want to find the class_name that is common to all letters in &quot;Sold&quot;</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.traverse_html.find_element">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">find_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">attr_key</span></em>, <em class="sig-param"><span class="n">attr_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.find_element" title="Permalink to this definition">¶</a></dt>
+<dt id="traverse_html.find_element">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">find_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">attr_key</span></em>, <em class="sig-param"><span class="n">attr_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.find_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -300,29 +329,25 @@ content is one letter in &quot;Sold&quot;. we want to find the class_name that i
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.traverse_html.find_key">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">find_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">sequence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.find_key" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the class name, or 'key', common to all sub elements in 'tag_block.'</p>
-<dl class="simple">
-<dt>Why?</dt><dd><p>--&gt; ebay changed the class_name of the element representing the sale date</p>
+<dt id="traverse_html.get_data">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.get_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns all meaningfull item data from the html block.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>listing</strong> -- html block containing item data for a single listing.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the title, price, shipping, and date values of the listing.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.traverse_html.find_letters">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">find_letters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">class_code</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.find_letters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'</p>
-<dl class="simple">
-<dt>Why?</dt><dd><p>--&gt; class_code is used to encrypt the letters that make up the sale date string</p>
-</dd>
-</dl>
-<p>Should return something like &quot;Sold Jun 11, 2020&quot;</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="SiteOperations.traverse_html.get_listings_iteration">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">get_listings_iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.get_listings_iteration" title="Permalink to this definition">¶</a></dt>
+<dt id="traverse_html.get_listings_iteration">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">get_listings_iteration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.get_listings_iteration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the total number of listings for the query and the number of page iterations.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -338,8 +363,25 @@ content is one letter in &quot;Sold&quot;. we want to find the class_name that i
 </dd></dl>
 
 <dl class="py function">
-<dt id="SiteOperations.traverse_html.next_link">
-<code class="sig-prename descclassname">SiteOperations.traverse_html.</code><code class="sig-name descname">next_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">old_link</span></em><span class="sig-paren">)</span><a class="headerlink" href="#SiteOperations.traverse_html.next_link" title="Permalink to this definition">¶</a></dt>
+<dt id="traverse_html.is_overlapping">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">is_overlapping</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date_stored</span></em>, <em class="sig-param"><span class="n">date_appended</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.is_overlapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether date_stored is more into the past than date_appended. That is, date_appended is closer to the present day.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>date_appended</strong> (<em>date_stored</em><em>,</em>) -- Dates in time.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if date_appended is closer to present day than date_stored.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="traverse_html.next_link">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">next_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">old_link</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.next_link" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given an old link to an eBay page, returns a link to the next page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -355,12 +397,20 @@ content is one letter in &quot;Sold&quot;. we want to find the class_name that i
 </dd></dl>
 
 </div>
+</div>
 
 
            </div>
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="ItemOrganization.html" class="btn btn-neutral float-left" title="ItemOrganization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
