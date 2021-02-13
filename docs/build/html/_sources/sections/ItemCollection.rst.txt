@@ -1,0 +1,8 @@
+ItemCollection
+==============
+
+.. automodule:: ItemOrganization.Client
+    :members:
+
+.. automodule:: ItemOrganization.ProductCollection
+    :members:

@@ -71,9 +71,8 @@ class ProductCollection:
 
 	@staticmethod
 	def graph_volume(ax, df, sale_condition, dot_color):
-		volume_df = df[df["sale_condition"] == sale_condition][["date"]]
-		volume_df["count"] = 0
-		volume_df = volume_df.groupby("date").count().reset_index()
+		date_series = df[df["sale_condition"] == sale_condition]["date"]
+		volume_df = date_series.value_counts().to_frame().reset_index().rename(columns = {"date": "count", "index": "date"})
 		volume_df.plot.scatter("date", "count", c = dot_color, ax = ax, label = sale_condition)
 
 	def scatter(self, png_file):
@@ -164,8 +163,8 @@ def test_code():
 #test_code()
 
 def test_display():
-	csv_file = r"..\CSV\ti-83_plus_calculator.csv"
-	png_file = r"..\PNG\ti-83_plus_calculator.png"
+	csv_file = r"..\data_files\CSV\ti-83_plus_calculator.csv"
+	png_file = r"..\data_files\PNG\ti-83_plus_calculator.png"
 
 	c = ProductCollection.import_data(csv_file)
 	c.scatter(png_file)

@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="Python" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ItemCollection &mdash; eBayScraper February 2021 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> eBayScraper
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">ItemCollection</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">eBayScraper</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>ItemCollection</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/sections/ItemCollection.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ItemOrganization.Client">
+<span id="itemcollection"></span><h1>ItemCollection<a class="headerlink" href="#module-ItemOrganization.Client" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-ItemOrganization.ProductCollection"></span><dl class="py class">
+<dt id="ItemOrganization.ProductCollection.ProductCollection">
+<em class="property">class </em><code class="sig-prename descclassname">ItemOrganization.ProductCollection.</code><code class="sig-name descname">ProductCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a collection of product data scraped from eBay.com.
+Implemented with the pandas module.</p>
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.add_item">
+<code class="sig-name descname">add_item</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span></em>, <em class="sig-param"><span class="n">price</span></em>, <em class="sig-param"><span class="n">date</span></em>, <em class="sig-param"><span class="n">sale_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.add_item" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an item to the collection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.export_data">
+<code class="sig-name descname">export_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">csv_file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.export_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exports data from the underlying data structure to the .csv file.
+Typically invoked after scraping data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>csv_file</strong> (<em>str</em>) -- The file to export the data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.get_count_added">
+<code class="sig-name descname">get_count_added</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.get_count_added" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of newly added items.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.get_recent_date">
+<code class="sig-name descname">get_recent_date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sale_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.get_recent_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the most recent date stored in based on the sale_type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sale_type</strong> (<em>str</em>) -- either 'BIN' or 'Auction'</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>pandas.Timestamp or None if there are no items stored</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.import_data">
+<em class="property">static </em><code class="sig-name descname">import_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">csv_file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.import_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data from .csv file to the underlying data structure. Returns a new ProductCollection object.</p>
+<p>Design question. Is this the only site of constructing a ProductCollection object?
+~Table().read_table(csv_file)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>csv_file</strong> (<em>str</em>) -- The .csv file with the previously scraped data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#ItemOrganization.ProductCollection.ProductCollection" title="ItemOrganization.ProductCollection.ProductCollection">ProductCollection</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.reset_count_added">
+<code class="sig-name descname">reset_count_added</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.reset_count_added" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resets the counter that tracks the number of items added to storage.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ItemOrganization.ProductCollection.ProductCollection.scatter">
+<code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">png_file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ItemOrganization.ProductCollection.ProductCollection.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a scatter plot that overlaps the data from all sale_type(s). Saves the plot to a .png file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, Nima Rahmanian
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

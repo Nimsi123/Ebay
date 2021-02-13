@@ -1,7 +1,6 @@
 import datetime
 import bs4
 
-#functions to adjust html inputs to work with my algorithms
 def clean_title(entry):
     """Cleans the title entry.
 
@@ -16,11 +15,10 @@ def clean_title(entry):
 
 def clean_price(entry):
     """Cleans the price entry.
-    Returns None if bad entry.
-
+    
     :param entry: The price entry string.
     :type entry: str
-    :returns: The price
+    :returns: The price. Otherwise, returns None if bad entry.
     :rtype: float
 
     >>> clean_price("$100,000")
@@ -41,11 +39,10 @@ def clean_price(entry):
 
 def clean_shipping(entry):
     """Cleans the shipping entry.
-    Returns None if bad entry.
 
     :param entry: The shipping entry string.
     :type entry: str
-    :returns: The shipping
+    :returns: The shipping. Otherwise, returns None if bad entry.
     :rtype: float
     """
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
@@ -65,11 +62,10 @@ def clean_shipping(entry):
 
 def clean_date(entry):
     """Cleans the date entry.
-    Returns None if bad entry.
 
     :param entry: The date entry.
     :type entry: str
-    :returns: A ``datetime`` object representing the date sold.
+    :returns: A ``datetime`` object representing the date sold. Otherwise, returns None if bad entry.
     :rtype: ``datetime``
     """
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))

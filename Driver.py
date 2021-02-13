@@ -2,7 +2,7 @@ import sys
 
 from Ebay.ItemOrganization.query_list import query_list
 from Ebay.ItemOrganization.Client import Client
-from json_queries import d
+from Ebay.data_files.json_queries import d
 
 def get_kwargs(user_args):
 	"""
@@ -34,12 +34,12 @@ def get_kwargs(user_args):
 test = False
 
 if test:
-	Client.reset_csv()
+	Client.initialize_client()
 	totalQueries = query_list(d)
 	totalQueries.scrape(Client, single_oper = True, print_stats = True, deep_scrape = True)
 
-if __name__ == "__main__" and not test:
-	Client.reset_csv()
+if __name__ == "__main__" and not test and 0:
+	Client.initialize_client()
 	kwargs = get_kwargs(sys.argv[1:])
 
 	totalQueries = query_list(d)

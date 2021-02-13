@@ -30,14 +30,7 @@ class Client:
 		"7b3ed1376b2358ebf50609d891ace0b4", #nimarahmanianstorage1@gmail.com
 	]
 
-	csv_file = "..\\data_files\\Client.csv"
-	df = pd.read_csv(csv_file)
-	
-	current_index = 6
-	current_client = ScraperAPIClient( api_keys[current_index] )
-	counter = df["counter"][current_index]
-	counter_limit = 1000
-
+	@staticmethod
 	def next_client():
 		"""Once an api key has run out of free requests, switch clients. 
 		Increments Client.current_index, updates Client.current_client, and initializes Client.counter."""
@@ -51,14 +44,16 @@ class Client:
 		Client.current_client = ScraperAPIClient( Client.api_keys[Client.current_index] )
 		Client.counter = Client.df["counter"][Client.current_index]
 
+	@staticmethod
 	def update_counter():
-		"""Increments Client.counter and updates .csv file"""
+		"""Increments Client.counter and updates .csv file with new counter values."""
 		Client.counter += 1
 		df = pd.read_csv(Client.csv_file)
 		df.at[Client.current_index, "counter"] = Client.counter
 		df.to_csv(Client.csv_file, index = False)
 
 	@timer
+	@staticmethod
 	def get(url):
 		"""Essentially a wrapper function to client.get(url). If the counter exceedes the counter_limit, use the next available client.
 
@@ -76,18 +71,28 @@ class Client:
 		Client.update_counter()
 		return Client.current_client.get(url)
 
+	def initialize_client():
+		"""Initializes the Client's data before starting up the scraping.
+		Updates Client.csv with the requestCount number for each api key. 
+		"""
+
+		Client.csv_file = "data_files/Client.csv"
+		Client.df = pd.read_csv(csv_file)
+		
+		Client.current_index = 6
+		Client.current_client = ScraperAPIClient( Client.api_keys[Client.current_index] )
+		Client.counter = df["counter"][Client.current_index]
+		Client.counter_limit = 1000
+
+		data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in Client.api_keys]
+
+		df_api_keys = pd.DataFrame(data, columns= ["api_key", "counter"])
+		df_api_keys.to_csv( Client.csv_file )
+
 	""" 	Miscellaneous 	"""
 	def print_usage():
 		"""Prints the usage data for every account associated with an API key."""
 		for key in Client.api_keys:
 			client = ScraperAPIClient(key)
 			print(client.account())
-
-	def reset_csv():
-		"""Updates Client.csv with the requestCount number for each api key. 
-		This method should be called a minute after the last API call."""
-
-		data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in Client.api_keys]
-
-		df_api_keys = pd.DataFrame(data, columns= ["api_key", "counter"])
-		df_api_keys.to_csv( Client.csv_file )
+			

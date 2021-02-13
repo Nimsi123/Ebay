@@ -2,10 +2,9 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import time
 from bs4 import BeautifulSoup
 
-from Ebay.SiteOperations import printer
 from Ebay.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration
+from Ebay.SiteOperations import printer
 
-#constants
 THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5
 MAX_PAGES = 50
@@ -26,10 +25,22 @@ def html_download(client, url, i):
 		file.write(client.get(url).text)
 
 def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
-	"""
-	This function is called once for every query.
-	Until we reach an overlap point or page_count, iterate through the query's eBay pages and populate product_collection with Item data.
-	Use threads to download html concurrently. Iterate sequentially through the html text and convert to Item data.
+	"""Adds item data to ``storage``. Item data is collected from every listing posted on the html pages, starting at the ``link``.
+	Until we reach an overlap point or page_count, iterate through the eBay pages.
+	Use threads to download html concurrently. Iterate sequentially through the html text and stores useful data in ``storage``.
+
+	:param client: The class that provides html-downloading functionality
+	:type client: class
+	:param storage: The data structure that holds the item data.
+	:type storage: pandas.DataFrame
+	:param sale_type: The type of listing. For example, items sold at 'Auction' or 'Buy it Now'.
+	:type sale_type: str
+	:param link: The starting URL for scraping. All future links are obtained by calling next_link(link). 
+	:type link: str
+	:param print_stats: Determines whether we print stats on the scraping process.
+	:type print_stats: bool
+	:param deep_scrape: Determines whether we end the search at an overlap point or not.
+	:type deep_scrape: bool
 	"""
 	recent_date_stored = storage.get_recent_date(sale_type)
 
