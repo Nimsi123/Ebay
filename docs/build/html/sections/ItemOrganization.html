@@ -84,11 +84,11 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../folders.html">Folder structure</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ItemOrganization</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-Client">Client.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#productcollection-py">ProductCollection.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-ProductCollection">ProductCollection.py</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-query_list">query_list.py</a></li>
 </ul>
 </li>
@@ -160,12 +160,13 @@
             
   <div class="section" id="itemorganization">
 <span id="itemorganizationref"></span><h1>ItemOrganization<a class="headerlink" href="#itemorganization" title="Permalink to this headline">¶</a></h1>
+<p>This folder holds scripts that dictate the state of values at run-time. Such values are the scraping client's rotation, the data structure that stores and graphs the item data, and the class that organizes the flow of events.</p>
 <div class="section" id="module-Client">
 <span id="client-py"></span><span id="clientref"></span><h2>Client.py<a class="headerlink" href="#module-Client" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="productcollection-py">
-<span id="productcollectionref"></span><h2>ProductCollection.py<a class="headerlink" href="#productcollection-py" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-ProductCollection"><span id="querylistref"></span></span><dl class="py class">
+<div class="section" id="module-ProductCollection">
+<span id="productcollection-py"></span><span id="productcollectionref"></span><h2>ProductCollection.py<a class="headerlink" href="#module-ProductCollection" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
 <dt id="ProductCollection.ProductCollection">
 <em class="property">class </em><code class="sig-prename descclassname">ProductCollection.</code><code class="sig-name descname">ProductCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ProductCollection.ProductCollection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -241,7 +242,7 @@ Typically invoked after scraping data.</p>
 
 </div>
 <div class="section" id="module-query_list">
-<span id="query-list-py"></span><h2>query_list.py<a class="headerlink" href="#module-query_list" title="Permalink to this headline">¶</a></h2>
+<span id="query-list-py"></span><span id="querylistref"></span><h2>query_list.py<a class="headerlink" href="#module-query_list" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="query_list.make_link">
 <code class="sig-prename descclassname">query_list.</code><code class="sig-name descname">make_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing_type</span></em>, <em class="sig-param"><span class="n">search_str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#query_list.make_link" title="Permalink to this definition">¶</a></dt>

@@ -1,0 +1,348 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="Python" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Module Interface &mdash; eBayScraper February 2021 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Folder structure" href="folders.html" />
+    <link rel="prev" title="Installation and Setup" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> eBayScraper
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation and Setup</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Module Interface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-scraper">Running the scraper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#graphing-the-scraping-results">Graphing the scraping results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#viewing-graphs-with-the-web-interface">Viewing graphs with the web interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line-arguments">Command Line arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="folders.html">Folder structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sections/ItemOrganization.html">ItemOrganization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sections/SiteOperations.html">SiteOperations</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">eBayScraper</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Module Interface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/module_interface.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-interface">
+<h1>Module Interface<a class="headerlink" href="#module-interface" title="Permalink to this headline">¶</a></h1>
+<p>Interacting with the scraper, grapher, and web interface can all be achieved at the command line.</p>
+<div class="section" id="running-the-scraper">
+<h2>Running the scraper<a class="headerlink" href="#running-the-scraper" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Running the scraper involves calling <code class="docutils literal notranslate"><span class="pre">Driver.py</span></code> with command line arguments.</div>
+<div class="line">See <a class="reference internal" href="#cmdline-scrape"><span class="std std-ref">Scraping</span></a></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="graphing-the-scraping-results">
+<h2>Graphing the scraping results<a class="headerlink" href="#graphing-the-scraping-results" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Running the grapher involves calling <code class="docutils literal notranslate"><span class="pre">Driver.py</span></code> with command line arguments.</div>
+<div class="line">See <a class="reference internal" href="#cmdline-graph"><span class="std std-ref">Graphing</span></a></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="viewing-graphs-with-the-web-interface">
+<h2>Viewing graphs with the web interface<a class="headerlink" href="#viewing-graphs-with-the-web-interface" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><div class="line-block">
+<div class="line">Running the web interface involves calling <code class="docutils literal notranslate"><span class="pre">Driver.py</span></code> with command line arguments.</div>
+<div class="line">See <a class="reference internal" href="#cmdline-web"><span class="std std-ref">Web interace</span></a></div>
+</div>
+</li>
+</ul>
+</div>
+<div class="section" id="command-line-arguments">
+<h2>Command Line arguments<a class="headerlink" href="#command-line-arguments" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><span id="cmdline-scrape"></span><table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Scraping</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command line argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-s</span></code></p></td>
+<td><p>Scrapes data from eBay.com</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-d</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Performs a deep scrape. The scraper does not stop scraping once it</div>
+<div class="line">reaches a point where the data overlaps from the past.</div>
+</div>
+</td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-synchr</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Performs a synchronous scrape. This approach does not use</div>
+<div class="line">threading to increase the scraping speed.</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<span id="cmdline-graph"></span><table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Graphing</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command line argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-g</span></code></p></td>
+<td><div class="line-block">
+<div class="line">Graphs charts from scraped data.</div>
+<div class="line">Creates .png files in <code class="docutils literal notranslate"><span class="pre">eBayScraper/data_files/PNG</span></code></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<table class="colwidths-given docutils align-default" id="id3">
+<caption><span class="caption-text">For both scraping and graphing</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command line argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-p</span></code></p></td>
+<td><p>Prints the progress on either scraping or graphing.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-so</span></code></p></td>
+<td><p>Only performs one scraping or graphing process.</p></td>
+</tr>
+</tbody>
+</table>
+<span id="cmdline-web"></span><table class="colwidths-given docutils align-default" id="id4">
+<caption><span class="caption-text">Web interace</span><a class="headerlink" href="#id4" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Command line argument</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-web</span></code></p></td>
+<td><p>Opens up an interactive web page to view the result of your scrapes.</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="folders.html" class="btn btn-neutral float-right" title="Folder structure" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation and Setup" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2021, Nima Rahmanian
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

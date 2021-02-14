@@ -3,6 +3,8 @@
 SiteOperations
 ==============
 
+This folder holds scripts that deal with scraping meaningful data from the HTML code.
+
 .. _AboutALinkRef:
 
 about_a_link.py

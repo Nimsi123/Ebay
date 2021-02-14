@@ -13,10 +13,15 @@ def get_kwargs(user_args):
 	"""
 	
 	cmd_vals = {
-		("print_stats", "-p"): False,
+		("scrape", "-s"): False,
 		("deep_scrape", "-d"): False,
-		("single_oper", "-s"): False,
-		("synchronous_scrape", "-synchr"): False,
+		("synchronous_scrape", "-synchr"): False
+
+		("graph", "-g"): False,
+
+		("print_stats", "-p"): False,
+		("single_oper", "-so"): False,
+		
 	}
 	possible_args = [key[1] for key in cmd_vals.keys()]
 
@@ -39,9 +44,12 @@ if test:
 	totalQueries.scrape(Client, single_oper = True, print_stats = True, deep_scrape = True)
 
 if __name__ == "__main__" and not test and 0:
-	Client.initialize_client()
-	kwargs = get_kwargs(sys.argv[1:])
 
+	kwargs = get_kwargs(sys.argv[1:])
 	totalQueries = query_list(d)
-	totalQueries.scrape(client, **kwargs)
-	totalQueries.visualize(kwargs["single_oper"])
+
+	if kwargs["scrape"]:
+		Client.initialize_client()
+		totalQueries.scrape(client, [kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]])
+	if kwargs["graph"]:
+		totalQueries.visualize(kwargs["single_oper"])

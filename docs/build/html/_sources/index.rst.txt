@@ -6,6 +6,9 @@ Welcome to eBayScraper's documentation!
    :caption: Contents:
 
    installation
+   module_interface
    folders
    sections/ItemOrganization
    sections/SiteOperations
+   sections/data_files
+   implementation

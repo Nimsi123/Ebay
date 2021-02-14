@@ -1,0 +1,81 @@
+================
+Module Interface
+================
+
+Interacting with the scraper, grapher, and web interface can all be achieved at the command line.
+
+*******************
+Running the scraper
+*******************
+
+- | Running the scraper involves calling ``Driver.py`` with command line arguments.
+  | See :ref:`cmdline_scrape`
+
+
+*****************************
+Graphing the scraping results
+*****************************
+
+- | Running the grapher involves calling ``Driver.py`` with command line arguments.
+  | See :ref:`cmdline_graph`
+
+*************************************
+Viewing graphs with the web interface
+*************************************
+
+- | Running the web interface involves calling ``Driver.py`` with command line arguments.
+  | See :ref:`cmdline_web`
+
+**********************
+Command Line arguments
+**********************
+	.. _cmdline_scrape:
+
+	.. list-table:: Scraping
+	   :widths: 25 25
+	   :header-rows: 1
+
+	   * - Command line argument
+	     - Description
+	   * - ``-s``
+	     - Scrapes data from eBay.com
+	   * - ``-d``
+	     - | Performs a deep scrape. The scraper does not stop scraping once it 
+	       | reaches a point where the data overlaps from the past.
+	   * - ``-synchr``
+	     - | Performs a synchronous scrape. This approach does not use 
+	       | threading to increase the scraping speed.
+
+	.. _cmdline_graph:
+
+	.. list-table:: Graphing
+	   :widths: 25 25
+	   :header-rows: 1
+
+	   * - Command line argument
+	     - Description
+	   * - ``-g``
+	     - | Graphs charts from scraped data. 
+	       | Creates .png files in ``eBayScraper/data_files/PNG``
+
+	.. list-table:: For both scraping and graphing
+	   :widths: 25 25
+	   :header-rows: 1
+
+	   * - Command line argument
+	     - Description
+	   * - ``-p``
+	     - Prints the progress on either scraping or graphing.
+	   * - ``-so``
+	     - Only performs one scraping or graphing process.
+
+	.. _cmdline_web:
+
+	.. list-table:: Web interace
+	   :widths: 25 25
+	   :header-rows: 1
+
+	   * - Command line argument
+	     - Description
+	   * - ``-web``
+	     - Opens up an interactive web page to view the result of your scrapes.

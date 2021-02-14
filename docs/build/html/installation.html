@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; eBayScraper February 2021 documentation</title>
+  <title>Installation and Setup &mdash; eBayScraper February 2021 documentation</title>
   
 
   
@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Module Interface" href="module_interface.html" />
+    <link rel="prev" title="Welcome to eBayScraper&#39;s documentation!" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -80,11 +82,19 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Installation</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-queries-to-a-collection">Adding queries to a collection</a></li>
 </ul>
-</div>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="module_interface.html">Module Interface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="folders.html">Folder structure</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sections/ItemOrganization.html">ItemOrganization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sections/SiteOperations.html">SiteOperations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Underlying Data Structure Implementation</a></li>
+</ul>
+
             
           
         </div>
@@ -129,7 +139,7 @@
     
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Installation</li>
+      <li>Installation and Setup</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -148,9 +158,50 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">eBayScraper</span></code> on the command line to download this module.</p>
+  <div class="section" id="installation-and-setup">
+<h1>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this headline">¶</a></h1>
+<p>Run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">eBayScraper</span></code> on the command line.</p>
+<div class="section" id="adding-queries-to-a-collection">
+<h2>Adding queries to a collection<a class="headerlink" href="#adding-queries-to-a-collection" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Navigate to <code class="docutils literal notranslate"><span class="pre">eBayScraper/data_files</span></code> and open <code class="docutils literal notranslate"><span class="pre">json_queries.py</span></code></p></li>
+<li><dl>
+<dt>Add categories and items within categories to the dictionary.</dt><dd><p>We represent the ordering of categories and sub-categories as dictionaries.
+Keys are the categories, and you can have sub-categories as values.
+The nested structure ends when you place a list of queries as the value.</p>
+<p>For example, the code below would be a way of organizing iPhone models within the iPhone
+category within the Phone category. There can also be other sub-categories to Phones.
+Lastly, there can be either one and two sub-categories. Notice how Apple Watches only have
+one sub-category.</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="p">{</span>
+        <span class="s2">&quot;Phones&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;iPhones&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;iPhone6&quot;</span><span class="p">,</span> <span class="s2">&quot;iPhone7&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;Samsung Galaxy&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;Samsung Galaxy S7 Edge&quot;</span><span class="p">]</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;Apple Watch&quot;</span><span class="p">:</span> <span class="p">[</span>
+                <span class="s2">&quot;Apple Watch Series 1&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple Watch Series 3&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple Watch Series 4&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Apple Watch Series 5&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple Watch Series 6&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple Watch SE&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;Apple Watch Nike&quot;</span><span class="p">,</span> <span class="s2">&quot;Apple Watch Hermes&quot;</span>
+        <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</td></tr></table></div>
+<p>You should note that the <strong>string in the list</strong> is what is actually searched on eBay.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 </div>
 
 
@@ -158,6 +209,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="module_interface.html" class="btn btn-neutral float-right" title="Module Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to eBayScraper&#39;s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
