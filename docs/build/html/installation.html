@@ -85,6 +85,7 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Setup</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#adding-scraperapi-api-keys">Adding ScraperAPI api keys</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#adding-queries-to-a-collection">Adding queries to a collection</a></li>
 </ul>
 </li>
@@ -162,6 +163,14 @@
   <div class="section" id="installation-and-setup">
 <h1>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this headline">¶</a></h1>
 <p>Run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">eBayScraper</span></code> on the command line.</p>
+<div class="section" id="adding-scraperapi-api-keys">
+<h2>Adding ScraperAPI api keys<a class="headerlink" href="#adding-scraperapi-api-keys" title="Permalink to this headline">¶</a></h2>
+<p>eBayScraper relies on ScraperAPI for retrieving eBay pages' HTML.</p>
+<ol class="arabic simple">
+<li><p>Make a free-trial account for <a class="reference external" href="https://www.scraperapi.com/">ScraperAPI</a>.</p></li>
+<li><p>Add the api key as a string to the list in data_files/api_keys.py. You can add multiple api keys here and the Client will rotate between all available keys.</p></li>
+</ol>
+</div>
 <div class="section" id="adding-queries-to-a-collection">
 <span id="addingqueries"></span><h2>Adding queries to a collection<a class="headerlink" href="#adding-queries-to-a-collection" title="Permalink to this headline">¶</a></h2>
 <ul>

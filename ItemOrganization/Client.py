@@ -2,6 +2,8 @@ from termcolor import colored
 from scraper_api import ScraperAPIClient
 import pandas as pd
 
+from Ebay.data_files.api_keys import api_keys
+
 from Ebay.ItemOrganization.timer import timer
 
 """
@@ -21,16 +23,6 @@ Timing before
 """
  
 class Client:
-
-	api_keys = [
-		'bfb3cb210e50c39d09f82432095a5150', #nimarahmanian2020@gmail.com
-		'cbbdd094d7401d8912b09341e37be9b1', #nimarahmanian8@gmail.com
-		'c733663048589db82005534b6739c32e', #nimsi@berkeley.edu
-		'10c2e4d0fef8e45470a5b43b84f15ec0', #oxaxe7@gmail.com
-		'81d0339948cd0596cf05a03df5b32288', #rahmanian.arya2356@gmail.com
-		'042d872c6185752c4b3db850014bace1', #nikolas-cacerces
-		"7b3ed1376b2358ebf50609d891ace0b4", #nimarahmanianstorage1@gmail.com
-	]
 
 	def next_client():
 		"""Once an api key has run out of free requests, switch clients. 
@@ -74,6 +66,7 @@ class Client:
 		"""Initializes the Client's data before starting up the scraping.
 		Updates Client.csv with the requestCount number for each api key. 
 		"""
+		Client.api_keys = api_keys
 
 		Client.csv_file = "data_files/Client.csv"
 		Client.df = pd.read_csv(Client.csv_file)

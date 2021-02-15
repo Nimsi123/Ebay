@@ -246,31 +246,11 @@ Typically invoked after scraping data.</p>
 </div>
 <div class="section" id="module-query_list">
 <span id="query-list-py"></span><span id="querylistref"></span><h2>query_list.py<a class="headerlink" href="#module-query_list" title="Permalink to this headline">¶</a></h2>
-<dl class="py function">
-<dt id="query_list.make_link">
-<code class="sig-prename descclassname">query_list.</code><code class="sig-name descname">make_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing_type</span></em>, <em class="sig-param"><span class="n">search_str</span></em><span class="sig-paren">)</span><a class="headerlink" href="#query_list.make_link" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a starting link for a search query.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">make_link</span><span class="p">(</span><span class="s2">&quot;Auction&quot;</span><span class="p">,</span> <span class="s2">&quot;Jimi Hendrix Poster&quot;</span><span class="p">)</span>
-<span class="go">&#39;https://www.ebay.com/sch/i.html?_from=R40&amp;_nkw=Jimi Hendrix Poster&amp;LH_Sold=1&amp;LH_Complete=1&amp;rt=nc&amp;LH_Auction=1&amp;_ipg=200&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">make_link</span><span class="p">(</span><span class="s2">&quot;Buy It Now&quot;</span><span class="p">,</span> <span class="s2">&quot;Cream Disraeli Gears&quot;</span><span class="p">)</span>
-<span class="go">&#39;https://www.ebay.com/sch/i.html?_from=R40&amp;_nkw=Cream Disraeli Gears&amp;LH_Sold=1&amp;LH_Complete=1&amp;rt=nc&amp;LH_BIN=1&amp;_ipg=200&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
 <dl class="py class">
 <dt id="query_list.query_list">
 <em class="property">class </em><code class="sig-prename descclassname">query_list.</code><code class="sig-name descname">query_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json</span></em><span class="sig-paren">)</span><a class="headerlink" href="#query_list.query_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents all of the eBay queries we are keeping track of.</p>
-<dl class="py method">
-<dt id="query_list.query_list.data_collection">
-<code class="sig-name descname">data_collection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">start_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">end_index</span><span class="o">=</span><span class="default_value">999</span></em>, <em class="sig-param"><span class="n">single_oper</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">synchronous_scrape</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">print_stats</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">deep_scrape</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#query_list.query_list.data_collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate through queries in self.totalQueries.
-For every query, scrape data from AUCTION and BUY IT NOW pages, respectively.
-Export this data to every query's respective csv file.</p>
-</dd></dl>
-
 <dl class="py method">
 <dt id="query_list.query_list.find_count">
 <code class="sig-name descname">find_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">search_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#query_list.query_list.find_count" title="Permalink to this definition">¶</a></dt>

@@ -3,6 +3,15 @@ Installation and Setup
 
 Run ``pip install eBayScraper`` on the command line.
 
+**************************
+Adding ScraperAPI api keys
+**************************
+
+eBayScraper relies on ScraperAPI for retrieving eBay pages' HTML. 
+
+#. Make a free-trial account for `ScraperAPI <https://www.scraperapi.com/>`_.
+#. Add the api key as a string to the list in ``data_files/api_keys.py``. You can add multiple api keys here and the Client will rotate between all available keys.
+
 .. _AddingQueries:
 
 ******************************
