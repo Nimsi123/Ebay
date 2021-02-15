@@ -3,7 +3,7 @@ from termcolor import colored
 
 from Ebay.ItemOrganization.query_list import query_list
 from Ebay.ItemOrganization.Client import Client
-from Ebay.data_files.queries import d
+from Ebay.data_files.queries import d, to_js_json
 
 def get_kwargs(user_args):
 	"""
@@ -68,9 +68,7 @@ if __name__ == "__main__":
 
 	kwargs = get_kwargs(sys.argv[1:])
 	totalQueries = query_list(d)
-
-	if kwargs["print_stats"]:
-		os.system('color')
+	to_js_json()
 
 	if kwargs["setup"]:
 		check_setup()
@@ -81,6 +79,9 @@ if __name__ == "__main__":
 		run_test()
 		import sys
 		sys.exit()
+
+	if kwargs["print_stats"]:
+		os.system('color')
 
 	if kwargs["scrape"]:
 		Client.initialize_client()
