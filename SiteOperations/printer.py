@@ -4,8 +4,8 @@ from termcolor import colored
 def new_query(name):
 	opening_lines = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	new_query =     "\t\tNew Query"
-	collecting =    "{0:20}: {1}".format("COLLECTING", name)
-	#count_index =   "{0:20}: {1}".format("COUNT INDEX", count)
+	collecting =    "{0:30}: {1}".format("COLLECTING", name)
+	#count_index =   "{0:30}: {1}".format("COUNT INDEX", count)
 	minus_lines = "---------------------------------------------\n"
 
 	print(opening_lines)

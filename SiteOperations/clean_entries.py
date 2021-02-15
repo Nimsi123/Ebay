@@ -33,9 +33,10 @@ def clean_price(entry):
             return round(float(entry.replace(',', '').strip()[1:]), 2)
         except:
             #print("bad price: ", entry)
-            return None
+            return [entry]
     else:
-        return None
+        #print("bad price: ", entry)
+        return [entry]
 
 def clean_shipping(entry):
     """Cleans the shipping entry.
@@ -58,7 +59,7 @@ def clean_shipping(entry):
                 return round(float(message), 2)
         except:
             #print("bad shipping: ", entry)
-            return None
+            return [entry]
 
 def clean_date(entry):
     """Cleans the date entry.
@@ -72,7 +73,7 @@ def clean_date(entry):
 
     if entry.find("Sold") == -1:
         #print("bad date: ", entry)
-        return None
+        return [entry]
 
     date = entry[len("Sold  "):]
 

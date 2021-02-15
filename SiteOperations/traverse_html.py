@@ -1,8 +1,10 @@
 import bs4
+import pandas as pd
 
 from Ebay.SiteOperations.clean_entries import clean_title, clean_price, clean_shipping, clean_date
 from Ebay.SiteOperations import printer
 from Ebay.ItemOrganization.timer import timer
+from Ebay.data_files.links import BAD_LISTING_DIR
 
 def find_element(html, element_type, attr_key, attr_value):
     """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
@@ -139,6 +141,7 @@ def search_listings(html, print_stats = False):
     :yields: the title, total_cost and date associated with a single listing on the html page.
     """
     element_type, class_code = "li", "s-item"
+    bad_listing_store = pd.read_csv(BAD_LISTING_DIR)
 
     counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
 
@@ -152,15 +155,25 @@ def search_listings(html, print_stats = False):
         if class_name == class_code:
             title, price, shipping, date = get_data(listing)
 
-            if all([attr is not None for attr in [title, price, date, shipping]]):
+            #if all([attr is not None for attr in [title, price, date, shipping]]):
+            if all([type(attr) is not list for attr in [title, price, date, shipping]]):
                 total_cost = round(price+shipping, 2)
                 yield title, total_cost, date
                 counter["added"] += 1
             else:
-                #print(f"BAD LISTING -- title: {title} price: {price} shipping: {shipping} date: {date}")
+                title, price, date, shipping = [item[0] if type(item) == list else item for item in [title, price, date, shipping]]
+                bad_listing_store = bad_listing_store.append({
+                    "title": title,
+                    "price": price,
+                    "shipping": shipping,
+                    "date": date
+                    }, ignore_index=True)
+
                 counter["bad"] += 1
         else:
             counter["class_code"] += 1
+
+    bad_listing_store.to_csv(BAD_LISTING_DIR, index = None)
 
     if print_stats:
         num_listings = len(html.find_all(element_type))

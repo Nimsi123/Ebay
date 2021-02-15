@@ -27,4 +27,4 @@ def png_dir(name):
 	return f"data_files\\PNG\\{name.replace(' ', '_')}_combo.png"
 
 HTML_STORE_DIR = "data_files/HTML_Store/scrape_{}.txt"
-#QUERY_LIST_EXPORT_DIR = r"..\\data_files\\query_list_export.csv"
+BAD_LISTING_DIR = "data_files/bad_listings.csv"

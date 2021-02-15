@@ -71,7 +71,7 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 		storage.reset_count_added()
 		for i in range(count - sub_c, count):
 			#receive and parse html from text file
-			with open(FORMATTED_DIR.format(i), "r", encoding = "utf-8") as raw_html:
+			with open(HTML_STORE_DIR.format(i), "r", encoding = "utf-8") as raw_html:
 				html = BeautifulSoup(raw_html, 'html.parser')
 
 			date = None
