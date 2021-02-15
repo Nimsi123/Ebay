@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from Ebay.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration
 from Ebay.SiteOperations import printer
-from Ebay.data_files.links import HTML_STORE_DIR
+from Ebay.data_files.directories import HTML_STORE_DIR
 
 THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5

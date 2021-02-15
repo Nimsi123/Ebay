@@ -6,7 +6,7 @@ from Ebay.ItemOrganization.ProductCollection import ProductCollection
 from Ebay.SiteOperations import printer
 from Ebay.SiteOperations.fast_download import fast_download
 
-from Ebay.data_files.links import make_eBay_link, csv_dir, png_dir
+from Ebay.data_files.directories import make_eBay_link, csv_dir, png_dir
 
 
 class query_list:
@@ -46,13 +46,17 @@ class query_list:
 
 	def visualize(self, start_index = 0, single_oper = False, print_stats = False):
 		for _, __, groupC in self.query_collection[start_index:]:
-			printer.start_graphing(groupC)
+			if print_stats:
+				printer.start_graph(groupC)
 
 			csv_file = csv_dir(groupC)
 			png_file = png_dir(groupC)
 			assert os.path.isfile(csv_file)
 
 			ProductCollection.import_data(csv_file).scatter(png_file)
+
+			if single_oper:
+				return
 
 	""" 	JSON -> eBayQuery 	"""
 	def split_helper(json, groupA = None):
@@ -74,36 +78,6 @@ class query_list:
 		:ytype: tuple
 		"""
 		yield from query_list.split_helper(json)
-
-	def set_queries(self, json):
-		"""Initializes self.query_collection
-
-		:param json: 
-		:rtype: None
-		"""
-
-		"""
-		for groups in query_list.split(json):
-			self.query_collection.append( eBayQuery(*groups) )
-		"""
-		pass
-
-	""" 	Miscellaneous 	"""
-	def __str__(self):
-		"""
-		Returns a string represention of self
-		"""
-
-		return "\n".join([str(query) for query in self.query_collection])
-
-	def find_count(self, search_name):
-		"""
-		Returns the index of the query in query_collection that has the title query_name.
-		"""
-
-		for i in range(len(self.query_collection)):
-			if self.query_collection[i].name == search_name:
-				return i
 
 	'''
 	def sql_export():

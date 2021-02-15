@@ -4,7 +4,7 @@ import pandas as pd
 from Ebay.SiteOperations.clean_entries import clean_title, clean_price, clean_shipping, clean_date
 from Ebay.SiteOperations import printer
 from Ebay.ItemOrganization.timer import timer
-from Ebay.data_files.links import BAD_LISTING_DIR
+from Ebay.data_files.directories import BAD_LISTING_DIR
 
 def find_element(html, element_type, attr_key, attr_value):
     """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.

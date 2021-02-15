@@ -1,4 +1,5 @@
 import sys, webbrowser, os
+from termcolor import colored
 
 from Ebay.ItemOrganization.query_list import query_list
 from Ebay.ItemOrganization.Client import Client
@@ -25,6 +26,7 @@ def get_kwargs(user_args):
 		("web", "-web"): False,
 
 		("test", "-t"): False,
+		("setup", "--setup"): False,
 		
 	}
 	possible_args = [key[1] for key in cmd_vals.keys()]
@@ -40,6 +42,27 @@ def get_kwargs(user_args):
 
 	return kwargs
 
+def check_setup():
+	"""Prints to the user if their setup is successful.
+	"""
+	from Ebay.data_files.api_keys import api_keys
+	
+	os.system('color')
+	if (api_keys != [] and d != {}):
+		print(colored("Setup is successful!", "green"))
+	else:
+		print(colored("Make sure the list in data_files/api_keys.py and the dictionary in data_files/queries.py are not empty!", "red"))
+
+def run_test():
+	"""Runs a basic test on the scraper, grapher, and web interface.
+	"""
+	
+	os.system('color')
+	Client.initialize_client()
+	totalQueries = query_list(d)
+	totalQueries.scrape(Client, single_oper = True, print_stats = True, deep_scrape = False)
+	totalQueries.visualize(single_oper = True, print_stats = True)
+	webbrowser.open("file://" + os.path.realpath("web/index.html"))
 
 if __name__ == "__main__":
 
@@ -47,13 +70,15 @@ if __name__ == "__main__":
 	totalQueries = query_list(d)
 
 	if kwargs["print_stats"]:
-		from termcolor import colored
 		os.system('color')
 
-	if kwargs["test"]:
+	if kwargs["setup"]:
+		check_setup()
+		import sys
+		sys.exit()
 
-		Client.initialize_client()
-		totalQueries.scrape(Client, single_oper = True, print_stats = True, deep_scrape = False)
+	if kwargs["test"]:
+		run_test()
 		import sys
 		sys.exit()
 

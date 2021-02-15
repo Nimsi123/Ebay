@@ -3,25 +3,9 @@ from scraper_api import ScraperAPIClient
 import pandas as pd
 
 from Ebay.data_files.api_keys import api_keys
-from Ebay.data_files.links import CLIENT_REQUESTS_DIR
+from Ebay.data_files.directories import CLIENT_REQUESTS_DIR
 
-from Ebay.ItemOrganization.timer import timer
-
-"""
-SOME STATS
-fast_download is hitting roughly 130 api requests every 10 minutes.
-
-Threads | Average API Request time
-
-5  | 2.4
-10 | 1.4
-15 | 1.1
-20 | 1.4
-
-Timing before
-?
-
-"""
+#from Ebay.ItemOrganization.timer import timer
  
 class Client:
 
