@@ -67,13 +67,13 @@ class ProductCollection:
 	@staticmethod
 	def graph_avg_price(ax, df, sale_condition, dot_color):
 		avg_price_df = df[df["sale_condition"] == sale_condition][["date", "price"]].groupby("date").mean().reset_index()
-		avg_price_df.plot.scatter("date", "price", c = dot_color, ax = ax, label = sale_condition)
+		avg_price_df.plot.scatter("date", "price", c = dot_color, ax = ax, label = sale_condition, rot = 30)
 
 	@staticmethod
 	def graph_volume(ax, df, sale_condition, dot_color):
 		date_series = df[df["sale_condition"] == sale_condition]["date"]
 		volume_df = date_series.value_counts().to_frame().reset_index().rename(columns = {"date": "count", "index": "date"})
-		volume_df.plot.scatter("date", "count", c = dot_color, ax = ax, label = sale_condition)
+		volume_df.plot.scatter("date", "count", c = dot_color, ax = ax, label = sale_condition, rot = 30)
 
 	def scatter(self, png_file):
 		"""Creates a scatter plot that overlaps the data from all sale_type(s). Saves the plot to a .png file."""
@@ -170,31 +170,3 @@ def test_display():
 	c.scatter(png_file)
 
 #test_display()
-
-"""Driver code for scraping and graphing.
-
-
-#scraping
-for groupA, groupB, groupC in self.query_names:
-	csv_file = make_csv_file(groupC)
-
-	if (csv_file exists):
-		collection = ProductCollection.import_data(csv_file)
-	else:
-		collection = ProductCollection(groupA, groupB, groupC)
-
-	for sale_type in [...]:
-		fast_download(collection, sale_type, make_link(groupC, sale_type), *cmdline_args) #fast_download takes care of date_stored
-
-	collection.export_data(csv_file)
-
-#graphing
-for groupA, groupB, groupC in self.query_names:
-	csv_file = make_csv_file(groupC)
-	png_file = make_png_file(groupC)
-
-	assert (csv_file exists)
-
-	collection = ProductCollection.import_data(csv_file)
-	collection.graph(png_file, *args, **kwargs)
-"""
