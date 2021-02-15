@@ -1,9 +1,9 @@
 from bs4 import BeautifulSoup
 
-from Ebay.SiteOperations import printer
-from Ebay.ItemOrganization.Item import Item
-from Ebay.SiteOperations.clean_entries import clean_title, clean_price, clean_shipping, clean_date
-from Ebay.SiteOperations.traverseHtml import find_element, find_letters, find_key, next_link, is_overlapping, extract, search_listings, get_listings_iteration
+from eBayScraper.SiteOperations import printer
+from eBayScraper.ItemOrganization.Item import Item
+from eBayScraper.SiteOperations.clean_entries import clean_title, clean_price, clean_shipping, clean_date
+from eBayScraper.SiteOperations.traverseHtml import find_element, find_letters, find_key, next_link, is_overlapping, extract, search_listings, get_listings_iteration
 
 def receive_html(client, link):
 	"""Returns the html from a webpage as a BeautifulSoup object.

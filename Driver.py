@@ -1,9 +1,9 @@
 import sys, webbrowser, os
 from termcolor import colored
 
-from Ebay.ItemOrganization.query_list import query_list
-from Ebay.ItemOrganization.Client import Client
-from Ebay.data_files.queries import d, to_js_json
+from eBayScraper.ItemOrganization.query_list import query_list
+from eBayScraper.ItemOrganization.Client import Client
+from eBayScraper.data_files.queries import d, to_js_json
 
 def get_kwargs(user_args):
 	"""
@@ -45,7 +45,7 @@ def get_kwargs(user_args):
 def check_setup():
 	"""Prints to the user if their setup is successful.
 	"""
-	from Ebay.data_files.api_keys import api_keys
+	from eBayScraper.data_files.api_keys import api_keys
 	
 	os.system('color')
 	if (api_keys != [] and d != {}):

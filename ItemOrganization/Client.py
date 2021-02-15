@@ -2,10 +2,10 @@ from termcolor import colored
 from scraper_api import ScraperAPIClient
 import pandas as pd
 
-from Ebay.data_files.api_keys import api_keys
-from Ebay.data_files.directories import CLIENT_REQUESTS_DIR
+from eBayScraper.data_files.api_keys import api_keys
+from eBayScraper.data_files.directories import CLIENT_REQUESTS_DIR
 
-#from Ebay.ItemOrganization.timer import timer
+#from eBayScraper.ItemOrganization.timer import timer
  
 class Client:
 

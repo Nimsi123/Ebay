@@ -1,13 +1,12 @@
 from setuptools import setup
 
-setup(name='eBayItemScraper',
+setup(name='eBayScraper',
       version='1.0',
-      description='Web Scraping Tools for eBay',
+      description='An easy way to track listing data for multiple search queries sold on eBay.com.',
       url='http://github.com',
       author='Nima Rahmanian',
       author_email='nimarahmanian8@gmail.com',
-      packages=["Book_Scraping", "Device_Scraping",  "Drivers",
-                "General_Purpose", "School_Scraping", "Site_Operations"],
+      packages=["data_files", "ItemOrganization", "SiteOperations"],
       zip_safe=False,
       package_data={
         # If any package contains *.txt or *.rst files, include them:

@@ -2,9 +2,9 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import time
 from bs4 import BeautifulSoup
 
-from Ebay.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration
-from Ebay.SiteOperations import printer
-from Ebay.data_files.directories import HTML_STORE_DIR
+from eBayScraper.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration
+from eBayScraper.SiteOperations import printer
+from eBayScraper.data_files.directories import HTML_STORE_DIR
 
 THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5

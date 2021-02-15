@@ -2,11 +2,11 @@ import csv
 import matplotlib.pyplot as plt
 import os.path
 
-from Ebay.ItemOrganization.ProductCollection import ProductCollection
-from Ebay.SiteOperations import printer
-from Ebay.SiteOperations.fast_download import fast_download
+from eBayScraper.ItemOrganization.ProductCollection import ProductCollection
+from eBayScraper.SiteOperations import printer
+from eBayScraper.SiteOperations.fast_download import fast_download
 
-from Ebay.data_files.directories import make_eBay_link, csv_dir, png_dir
+from eBayScraper.data_files.directories import make_eBay_link, csv_dir, png_dir
 
 
 class query_list:

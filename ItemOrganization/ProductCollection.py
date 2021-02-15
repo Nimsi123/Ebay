@@ -6,7 +6,7 @@ from matplotlib.dates import (YEARLY, DateFormatter,
                               rrulewrapper, RRuleLocator, drange)
 
 class ProductCollection:
-	"""Represents a collection of product data scraped from eBay.com.
+	"""Represents a collection of product data scraped from eBayScraper.com.
 	Implemented with the pandas module."""
 
 	def __init__(self, *groups):
