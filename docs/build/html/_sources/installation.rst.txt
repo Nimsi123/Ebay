@@ -17,7 +17,7 @@ Adding ScraperAPI api keys
 eBayScraper relies on ScraperAPI for retrieving eBay HTML. 
 
 #. Start a free-trial with `ScraperAPI <https://www.scraperapi.com/>`_.
-#. Open ``data_files/api_keys.py``. Add the api key as a string to the list ``api_keys``. You can add multiple api keys; if the number of requests is maxed out on one key, eBayScraper will switch to another api key.
+#. Open ``data_files/api_keys.py``. Add the api key as a string to the list ``api_keys``. You can add multiple api keys; if the number of requests is maxed out on a key, eBayScraper will switch to another api key.
 
 	Within ``api_keys.py``, this would look like
 
@@ -36,15 +36,14 @@ Adding queries to a collection
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Open ``data_files/queries.py``
-- Add categories and items within categories to the dictionary.
+- Add categorized search queries to the dictionary.
 	We represent the ordering of categories and sub-categories as dictionaries.
 	The nested structure ends when you place a list of queries as the value.
 
-	For example, the code below organizes *iPhone models* within the *iPhone* 
-	category within the *Phone* category. 
-	There can also be other sub-categories to Phones, like *Samsung Galaxy*.
-	Lastly, there can be either one or two sub-categories. Notice how *Apple Watch* only has
-	one sub-category.
+	For example, the code below organizes *iPhone models* within the *iPhone* sub-category within the *Phone* category. 
+	There can also be other sub-categories within *Phones* at the same hierarchical level as *iPhones*, like *Samsung Galaxy*.
+	
+	Lastly, there doesn't have to be a sub-category within a category. For example, the category *Apple Watch* does not have sub-categories.
 
 	.. code-block:: python
 		:linenos:
@@ -64,6 +63,15 @@ Adding queries to a collection
 	- Note
 		- The **string in the list** is what you would type into the eBay search bar.
 		- You can add and remove from this dictionary at any time!
+
+When you have entered values for the list in ``data_files/api_keys.py`` and the dictionary in
+``data_files/queries.py``, run the following command in the terminal to confirm a successful setup.
+
+.. code-block:: console
+	
+	python driver.py --setup
+
+Move on when the terminal prints **Setup is successful**.
 
 Using the Module
 ^^^^^^^^^^^^^^^^

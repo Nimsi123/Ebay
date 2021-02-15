@@ -179,7 +179,7 @@
 <p>eBayScraper relies on ScraperAPI for retrieving eBay HTML.</p>
 <ol class="arabic">
 <li><p>Start a free-trial with <a class="reference external" href="https://www.scraperapi.com/">ScraperAPI</a>.</p></li>
-<li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/api_keys.py</span></code>. Add the api key as a string to the list <code class="docutils literal notranslate"><span class="pre">api_keys</span></code>. You can add multiple api keys; if the number of requests is maxed out on one key, eBayScraper will switch to another api key.</p>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/api_keys.py</span></code>. Add the api key as a string to the list <code class="docutils literal notranslate"><span class="pre">api_keys</span></code>. You can add multiple api keys; if the number of requests is maxed out on a key, eBayScraper will switch to another api key.</p>
 <blockquote>
 <div><p>Within <code class="docutils literal notranslate"><span class="pre">api_keys.py</span></code>, this would look like</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
@@ -200,13 +200,11 @@
 <ul>
 <li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/queries.py</span></code></p></li>
 <li><dl>
-<dt>Add categories and items within categories to the dictionary.</dt><dd><p>We represent the ordering of categories and sub-categories as dictionaries.
+<dt>Add categorized search queries to the dictionary.</dt><dd><p>We represent the ordering of categories and sub-categories as dictionaries.
 The nested structure ends when you place a list of queries as the value.</p>
-<p>For example, the code below organizes <em>iPhone models</em> within the <em>iPhone</em>
-category within the <em>Phone</em> category.
-There can also be other sub-categories to Phones, like <em>Samsung Galaxy</em>.
-Lastly, there can be either one or two sub-categories. Notice how <em>Apple Watch</em> only has
-one sub-category.</p>
+<p>For example, the code below organizes <em>iPhone models</em> within the <em>iPhone</em> sub-category within the <em>Phone</em> category.
+There can also be other sub-categories within <em>Phones</em> at the same hierarchical level as <em>iPhones</em>, like <em>Samsung Galaxy</em>.</p>
+<p>Lastly, there doesn't have to be a sub-category within a category. For example, the category <em>Apple Watch</em> does not have sub-categories.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
@@ -244,6 +242,12 @@ one sub-category.</p>
 </dl>
 </li>
 </ul>
+<p>When you have entered values for the list in <code class="docutils literal notranslate"><span class="pre">data_files/api_keys.py</span></code> and the dictionary in
+<code class="docutils literal notranslate"><span class="pre">data_files/queries.py</span></code>, run the following command in the terminal to confirm a successful setup.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python driver.py --setup</span>
+</pre></div>
+</div>
+<p>Move on when the terminal prints <strong>Setup is successful</strong>.</p>
 </div>
 <div class="section" id="using-the-module">
 <h3>Using the Module<a class="headerlink" href="#using-the-module" title="Permalink to this headline">¶</a></h3>
