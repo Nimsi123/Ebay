@@ -32,10 +32,10 @@ def make_link(listing_type, search_str):
 	return link + "&_ipg=200"
 
 def csv_dir(name):
-	return f"..\\data_files\\CSV\\{name.replace(' ', '_')}.csv"
+	return f"data_files\\CSV\\{name.replace(' ', '_')}.csv"
 
 def png_dir(name):
-	return f"..\\data_files\\PNG\\{name.replace(' ', '_')}_combo.png"
+	return f"data_files\\PNG\\{name.replace(' ', '_')}_combo.png"
 
 class query_list:
 	"""
@@ -99,6 +99,7 @@ class query_list:
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
 		for groupA, groupB, groupC in self.query_collection[start_index:end_index]:
+			printer.new_query(groupC)
 			csv_file = csv_dir(groupC)
 
 			if os.path.isfile(csv_file):
@@ -110,7 +111,10 @@ class query_list:
 
 			for sale_type in ["BIN", "Auction"]:
 				cmdline_args = (print_stats, deep_scrape)
+
+				printer.start_scrape(groupC, sale_type)
 				fast_download(client, collection, sale_type, make_link(sale_type, groupC), *cmdline_args) #fast_download takes care of date_stored
+				printer.end_scrape(sale_type, collection.get_count_added())
 
 			collection.export_data(csv_file)
 
@@ -119,7 +123,8 @@ class query_list:
 
 	def visualize(self, start_index = 0, single_oper = False):
 		for _, __, groupC in self.query_collection[start_index:]:
-			print(groupC)
+			printer.start_graphing(groupC)
+
 			csv_file = csv_dir(groupC)
 			png_file = png_dir(groupC)
 			assert os.path.isfile(csv_file)

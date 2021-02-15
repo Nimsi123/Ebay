@@ -10,7 +10,7 @@ REQUEST_WAIT = 0.5
 MAX_PAGES = 50
 ITEM_PER_PAGE = 200
 
-FORMATTED_DIR = "../data_files/HTML_Store/scrape_{}.txt"
+FORMATTED_DIR = "data_files/HTML_Store/scrape_{}.txt"
 
 def html_download(client, url, i):
 	"""Get the HTML from the eBay page and export it to the file 'scrape_{i}.txt' for the parameter i.

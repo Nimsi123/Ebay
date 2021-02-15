@@ -1,5 +1,7 @@
+from termcolor import colored
 from scraper_api import ScraperAPIClient
 import pandas as pd
+
 from Ebay.ItemOrganization.timer import timer
 
 """
@@ -30,21 +32,19 @@ class Client:
 		"7b3ed1376b2358ebf50609d891ace0b4", #nimarahmanianstorage1@gmail.com
 	]
 
-	@staticmethod
 	def next_client():
 		"""Once an api key has run out of free requests, switch clients. 
 		Increments Client.current_index, updates Client.current_client, and initializes Client.counter."""
 
 		Client.current_index += 1
 		if Client.current_index == len(Client.api_keys):
-			print("ran out of api requests.")
+			print(colored("ran out of api requests.", "red"))
 			import sys
 			sys.exit()
 
 		Client.current_client = ScraperAPIClient( Client.api_keys[Client.current_index] )
 		Client.counter = Client.df["counter"][Client.current_index]
 
-	@staticmethod
 	def update_counter():
 		"""Increments Client.counter and updates .csv file with new counter values."""
 		Client.counter += 1
@@ -53,7 +53,6 @@ class Client:
 		df.to_csv(Client.csv_file, index = False)
 
 	@timer
-	@staticmethod
 	def get(url):
 		"""Essentially a wrapper function to client.get(url). If the counter exceedes the counter_limit, use the next available client.
 
@@ -63,7 +62,7 @@ class Client:
 		:rtype: requests.models.Response
 		"""
 
-		print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
+		#print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
 
 		if Client.counter >= Client.counter_limit:
 			Client.next_client()
@@ -77,11 +76,11 @@ class Client:
 		"""
 
 		Client.csv_file = "data_files/Client.csv"
-		Client.df = pd.read_csv(csv_file)
+		Client.df = pd.read_csv(Client.csv_file)
 		
 		Client.current_index = 6
 		Client.current_client = ScraperAPIClient( Client.api_keys[Client.current_index] )
-		Client.counter = df["counter"][Client.current_index]
+		Client.counter = Client.df["counter"][Client.current_index]
 		Client.counter_limit = 1000
 
 		data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in Client.api_keys]

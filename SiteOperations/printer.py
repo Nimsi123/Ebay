@@ -1,32 +1,47 @@
-def new_query(name, count):
-	print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-	print("					New Query 					")
-	print("{0:20}: {1}".format("COLLECTING", name))
-	print("{0:20}: {1}".format("COUNT INDEX", count))
-	print("---------------------------------------------\n")
+import os
+from termcolor import colored
+
+def new_query(name):
+	opening_lines = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+	new_query =     "\t\tNew Query"
+	collecting =    "{0:20}: {1}".format("COLLECTING", name)
+	#count_index =   "{0:20}: {1}".format("COUNT INDEX", count)
+	minus_lines = "---------------------------------------------\n"
+
+	print(opening_lines)
+	print(colored(new_query, "green"))
+	print(colored(collecting, "green"))
+	#print(colored(count_index, "green"))
+	print(minus_lines)
+
+def start_graph(name):
+	print("Graphing" + name)
 
 def start_scrape(name, listing_type):
-	print("{0:20}: {1}".format(name, listing_type))
+	start_str = "{0:20}: {1}".format(name, listing_type)
+	print(colored(start_str, "green"))
 
 def end_scrape(listing_type, list_len):
-	print("Length of " + "{0:20}: {1}".format(listing_type, list_len))
+	length_of = "Length of " + "{0:20}: {1}".format(listing_type, list_len)
+	print(colored(length_of, "green"))
 
 def product_stats(total_listings, max_iteration):
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
-	print("					PRODUCT STATS 				")
+	print("\t\tPRODUCT STATS")
 	print("{0:30}: {1}".format("total_listings", total_listings))
 	print("{0:30}: {1}".format("max_iteration", max_iteration))
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n")
 
 def page_stats_one(num_item_listings, added, skipped_early, bad, class_code):
 	print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
-	print("PAGE STATS")
+	print("\t\tPAGE STATS")
 	
 	print("{0:30}: {1}".format("num item listings", num_item_listings))
 	print("{0:30}: {1}".format("added", added))
 	print("----")
 	print("{0:30}: {1}".format("skipped_early", skipped_early))
-	print("{0:30}: {1}".format("bad", bad))
+	bad_str = "{0:30}: {1}".format("bad", bad)
+	print(colored(bad_str, "red"))
 	print("{0:30}: {1}".format("class_code", class_code))
 	print("----")
 
@@ -38,13 +53,19 @@ def page_stats_two(count, item_list_length, date_appended):
 	print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
 def overlap(date_appended, date_stored):
-	print("-----------------------------------------------")
-	print("					Broken the loop		  		  ")
-	print("{0:20}: {1}".format("appended", date_appended))
-	print("{0:20}: {1}".format("stored", date_stored))
-	print("-----------------------------------------------\n")
+	minus_lines =     "---------------------------------------------"
+	broken_the_loop = "	\tBroken the loop"
+	d_appended =      "{0:20}: {1}".format("appended", date_appended)
+	d_stored = "{0:20}: {1}".format("stored", date_stored)
+
+	print(minus_lines)
+	print(colored(broken_the_loop, "yellow"))
+	print(colored(d_appended, "yellow"))
+	print(colored(d_stored, "yellow"))
+	print(minus_lines + "\n")
 
 def error(e):
-	print("*********************************************x86")
+	error_bars = "*********************************************"
+	print(colored(error_bars, "red"))
 	print(e)
-	print("*********************************************x86")
+	print(colored(error_bars, "red"))
