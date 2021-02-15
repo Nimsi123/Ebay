@@ -1,2 +1,5 @@
 HTML_Store/
+data_files/CSV
+data_files/PNG
+docs/source
 *.pyc
