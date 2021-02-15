@@ -1,34 +1,45 @@
-================
+.. _ModuleInterfaceRef:
+
 Module Interface
 ================
 
 Interacting with the scraper, grapher, and web interface can all be achieved at the command line.
 
-*******************
 Running the scraper
-*******************
+^^^^^^^^^^^^^^^^^^^
 
-- | Running the scraper involves calling ``Driver.py`` with command line arguments.
-  | See :ref:`cmdline_scrape`
+- | Running the scraper involves calling ``driver.py`` with command line arguments.
+  | See :ref:`cmdline_scrape`.
 
 
-*****************************
 Graphing the scraping results
-*****************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- | Running the grapher involves calling ``Driver.py`` with command line arguments.
-  | See :ref:`cmdline_graph`
+- | Running the grapher involves calling ``driver.py`` with command line arguments.
+  | See :ref:`cmdline_graph`.
 
-*************************************
 Viewing graphs with the web interface
-*************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- | Running the web interface involves calling ``Driver.py`` with command line arguments.
-  | See :ref:`cmdline_web`
+- | Running the web interface involves calling ``driver.py`` with command line arguments.
+  | See :ref:`cmdline_web`.
 
-**********************
+Example Commands
+^^^^^^^^^^^^^^^^
+
+.. code-block:: console
+
+	python driver.py -s 		# Starts the scraper
+
+	python driver.py -s -p  	# Starts the scraper and prints details about the scraping process
+
+	python driver.py -g 		# Creates graphs from the scraped data
+
+	python driver.py -web 		# Opens the web interface to view graphs
+
 Command Line arguments
-**********************
+^^^^^^^^^^^^^^^^^^^^^^
+
 	.. _cmdline_scrape:
 
 	.. list-table:: Scraping

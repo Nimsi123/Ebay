@@ -1,32 +1,49 @@
 Installation and Setup
 ======================
 
+Installation
+************
+
 Run ``pip install eBayScraper`` on the command line.
 
-**************************
+Setup
+*****
+
+We will only be working within ``eBayScraper/data_files`` for the setup.
+
 Adding ScraperAPI api keys
-**************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-eBayScraper relies on ScraperAPI for retrieving eBay pages' HTML. 
+eBayScraper relies on ScraperAPI for retrieving eBay HTML. 
 
-#. Make a free-trial account for `ScraperAPI <https://www.scraperapi.com/>`_.
-#. Add the api key as a string to the list in data_files/api_keys.py. You can add multiple api keys here and the Client will rotate between all available keys.
+#. Start a free-trial with `ScraperAPI <https://www.scraperapi.com/>`_.
+#. Open ``data_files/api_keys.py``. Add the api key as a string to the list ``api_keys``. You can add multiple api keys; if the number of requests is maxed out on one key, eBayScraper will switch to another api key.
+
+	Within ``api_keys.py``, this would look like
+
+	.. code-block:: python
+		:linenos:
+
+		api_keys = [
+			"<add api key>",
+			"<optionally add more keys to the list>"
+		]
+
 
 .. _AddingQueries:
 
-******************************
 Adding queries to a collection
-******************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Navigate to ``eBayScraper/data_files`` and open ``json_queries.py``
+- Open ``data_files/queries.py``
 - Add categories and items within categories to the dictionary.
 	We represent the ordering of categories and sub-categories as dictionaries.
-	Keys are the categories, and you can have sub-categories as values. 
 	The nested structure ends when you place a list of queries as the value.
 
-	For example, the code below would be a way of organizing iPhone models within the iPhone 
-	category within the Phone category. There can also be other sub-categories to Phones.
-	Lastly, there can be either one and two sub-categories. Notice how Apple Watches only have
+	For example, the code below organizes *iPhone models* within the *iPhone* 
+	category within the *Phone* category. 
+	There can also be other sub-categories to Phones, like *Samsung Galaxy*.
+	Lastly, there can be either one or two sub-categories. Notice how *Apple Watch* only has
 	one sub-category.
 
 	.. code-block:: python
@@ -44,4 +61,12 @@ Adding queries to a collection
 			]
 		}
 
-	You should note that the **string in the list** is what is actually searched on eBay.
+	- Note
+		- The **string in the list** is what you would type into the eBay search bar.
+		- You can add and remove from this dictionary at any time!
+
+Using the Module
+^^^^^^^^^^^^^^^^
+
+**Congratulations!** You're now ready to use all of the features eBayScraper has to offer!
+See :ref:`ModuleInterfaceRef` on how to get started!

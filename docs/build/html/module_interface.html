@@ -89,12 +89,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#running-the-scraper">Running the scraper</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#graphing-the-scraping-results">Graphing the scraping results</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#viewing-graphs-with-the-web-interface">Viewing graphs with the web interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-commands">Example Commands</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#command-line-arguments">Command Line arguments</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="folders.html">Folder structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sections/ItemOrganization.html">ItemOrganization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sections/SiteOperations.html">SiteOperations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sections/data_files.html">data_files</a></li>
+<li class="toctree-l1"><a class="reference internal" href="implementation.html">Underlying Data Structure Implementation</a></li>
 </ul>
 
             
@@ -161,14 +164,14 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-interface">
-<h1>Module Interface<a class="headerlink" href="#module-interface" title="Permalink to this headline">¶</a></h1>
+<span id="moduleinterfaceref"></span><h1>Module Interface<a class="headerlink" href="#module-interface" title="Permalink to this headline">¶</a></h1>
 <p>Interacting with the scraper, grapher, and web interface can all be achieved at the command line.</p>
 <div class="section" id="running-the-scraper">
 <h2>Running the scraper<a class="headerlink" href="#running-the-scraper" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><div class="line-block">
-<div class="line">Running the scraper involves calling <code class="docutils literal notranslate"><span class="pre">Driver.py</span></code> with command line arguments.</div>
-<div class="line">See <a class="reference internal" href="#cmdline-scrape"><span class="std std-ref">Scraping</span></a></div>
+<div class="line">Running the scraper involves calling <code class="docutils literal notranslate"><span class="pre">driver.py</span></code> with command line arguments.</div>
+<div class="line">See <a class="reference internal" href="#cmdline-scrape"><span class="std std-ref">Scraping</span></a>.</div>
 </div>
 </li>
 </ul>
@@ -177,8 +180,8 @@
 <h2>Graphing the scraping results<a class="headerlink" href="#graphing-the-scraping-results" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><div class="line-block">
-<div class="line">Running the grapher involves calling <code class="docutils literal notranslate"><span class="pre">Driver.py</span></code> with command line arguments.</div>
-<div class="line">See <a class="reference internal" href="#cmdline-graph"><span class="std std-ref">Graphing</span></a></div>
+<div class="line">Running the grapher involves calling <code class="docutils literal notranslate"><span class="pre">driver.py</span></code> with command line arguments.</div>
+<div class="line">See <a class="reference internal" href="#cmdline-graph"><span class="std std-ref">Graphing</span></a>.</div>
 </div>
 </li>
 </ul>
@@ -187,11 +190,23 @@
 <h2>Viewing graphs with the web interface<a class="headerlink" href="#viewing-graphs-with-the-web-interface" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><div class="line-block">
-<div class="line">Running the web interface involves calling <code class="docutils literal notranslate"><span class="pre">Driver.py</span></code> with command line arguments.</div>
-<div class="line">See <a class="reference internal" href="#cmdline-web"><span class="std std-ref">Web interace</span></a></div>
+<div class="line">Running the web interface involves calling <code class="docutils literal notranslate"><span class="pre">driver.py</span></code> with command line arguments.</div>
+<div class="line">See <a class="reference internal" href="#cmdline-web"><span class="std std-ref">Web interace</span></a>.</div>
 </div>
 </li>
 </ul>
+</div>
+<div class="section" id="example-commands">
+<h2>Example Commands<a class="headerlink" href="#example-commands" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python driver.py -s             # Starts the scraper</span>
+
+<span class="go">python driver.py -s -p          # Starts the scraper and prints details about the scraping process</span>
+
+<span class="go">python driver.py -g             # Creates graphs from the scraped data</span>
+
+<span class="go">python driver.py -web           # Opens the web interface to view graphs</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="command-line-arguments">
 <h2>Command Line arguments<a class="headerlink" href="#command-line-arguments" title="Permalink to this headline">¶</a></h2>

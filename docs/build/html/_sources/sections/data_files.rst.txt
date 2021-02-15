@@ -16,7 +16,7 @@ Holds the scraped listing data.
 	
 	``sale_condition`` describes whether the item was sold at Auction or Buy It Now
 	
-	``groupA, groupB, groupC`` describes the categorization set by the user in ``json_queries.py``
+	``groupA, groupB, groupC`` describes the categorization set by the user in ``queries.py``
 	
 	``title, price, date`` are all listing details
 - Every row in the file corresponds to a unique listing posted on eBay.com
@@ -46,7 +46,7 @@ query_list_export.csv
 Stores the list of categorized queries selected by the user.
 
 ***************
-json_queries.py
+queries.py
 ***************
 
 The .py file where the user inputs the categorized queries to track. See :ref:`AddingQueries`.

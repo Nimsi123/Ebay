@@ -401,6 +401,23 @@ Before returning the html contents, clean the value with the <code class="docuti
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="traverse_html.search_listings">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">search_listings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">print_stats</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.search_listings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Yields item data from listings in a single page's html.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>html</strong> -- html code for an entire webpage</p></li>
+<li><p><strong>print_stats</strong> (<em>bool</em>) -- Determines whether to print updates on the scraping process</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p>the title, total_cost and date associated with a single listing on the html page.</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 </div>
 

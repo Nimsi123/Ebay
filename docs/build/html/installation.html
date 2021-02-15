@@ -85,8 +85,13 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installation and Setup</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-scraperapi-api-keys">Adding ScraperAPI api keys</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adding-queries-to-a-collection">Adding queries to a collection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-scraperapi-api-keys">Adding ScraperAPI api keys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-queries-to-a-collection">Adding queries to a collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-module">Using the Module</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="module_interface.html">Module Interface</a></li>
@@ -162,26 +167,45 @@
             
   <div class="section" id="installation-and-setup">
 <h1>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">eBayScraper</span></code> on the command line.</p>
+</div>
+<div class="section" id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h2>
+<p>We will only be working within <code class="docutils literal notranslate"><span class="pre">eBayScraper/data_files</span></code> for the setup.</p>
 <div class="section" id="adding-scraperapi-api-keys">
-<h2>Adding ScraperAPI api keys<a class="headerlink" href="#adding-scraperapi-api-keys" title="Permalink to this headline">¶</a></h2>
-<p>eBayScraper relies on ScraperAPI for retrieving eBay pages' HTML.</p>
-<ol class="arabic simple">
-<li><p>Make a free-trial account for <a class="reference external" href="https://www.scraperapi.com/">ScraperAPI</a>.</p></li>
-<li><p>Add the api key as a string to the list in data_files/api_keys.py. You can add multiple api keys here and the Client will rotate between all available keys.</p></li>
+<h3>Adding ScraperAPI api keys<a class="headerlink" href="#adding-scraperapi-api-keys" title="Permalink to this headline">¶</a></h3>
+<p>eBayScraper relies on ScraperAPI for retrieving eBay HTML.</p>
+<ol class="arabic">
+<li><p>Start a free-trial with <a class="reference external" href="https://www.scraperapi.com/">ScraperAPI</a>.</p></li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/api_keys.py</span></code>. Add the api key as a string to the list <code class="docutils literal notranslate"><span class="pre">api_keys</span></code>. You can add multiple api keys; if the number of requests is maxed out on one key, eBayScraper will switch to another api key.</p>
+<blockquote>
+<div><p>Within <code class="docutils literal notranslate"><span class="pre">api_keys.py</span></code>, this would look like</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">api_keys</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s2">&quot;&lt;add api key&gt;&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;&lt;optionally add more keys to the list&gt;&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</li>
 </ol>
 </div>
 <div class="section" id="adding-queries-to-a-collection">
-<span id="addingqueries"></span><h2>Adding queries to a collection<a class="headerlink" href="#adding-queries-to-a-collection" title="Permalink to this headline">¶</a></h2>
+<span id="addingqueries"></span><h3>Adding queries to a collection<a class="headerlink" href="#adding-queries-to-a-collection" title="Permalink to this headline">¶</a></h3>
 <ul>
-<li><p>Navigate to <code class="docutils literal notranslate"><span class="pre">eBayScraper/data_files</span></code> and open <code class="docutils literal notranslate"><span class="pre">json_queries.py</span></code></p></li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/queries.py</span></code></p></li>
 <li><dl>
 <dt>Add categories and items within categories to the dictionary.</dt><dd><p>We represent the ordering of categories and sub-categories as dictionaries.
-Keys are the categories, and you can have sub-categories as values.
 The nested structure ends when you place a list of queries as the value.</p>
-<p>For example, the code below would be a way of organizing iPhone models within the iPhone
-category within the Phone category. There can also be other sub-categories to Phones.
-Lastly, there can be either one and two sub-categories. Notice how Apple Watches only have
+<p>For example, the code below organizes <em>iPhone models</em> within the <em>iPhone</em>
+category within the <em>Phone</em> category.
+There can also be other sub-categories to Phones, like <em>Samsung Galaxy</em>.
+Lastly, there can be either one or two sub-categories. Notice how <em>Apple Watch</em> only has
 one sub-category.</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
@@ -206,11 +230,26 @@ one sub-category.</p>
 <span class="p">}</span>
 </pre></div>
 </td></tr></table></div>
-<p>You should note that the <strong>string in the list</strong> is what is actually searched on eBay.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Note</dt><dd><ul>
+<li><p>The <strong>string in the list</strong> is what you would type into the eBay search bar.</p></li>
+<li><p>You can add and remove from this dictionary at any time!</p></li>
+</ul>
 </dd>
 </dl>
 </li>
 </ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="using-the-module">
+<h3>Using the Module<a class="headerlink" href="#using-the-module" title="Permalink to this headline">¶</a></h3>
+<p><strong>Congratulations!</strong> You're now ready to use all of the features eBayScraper has to offer!
+See <a class="reference internal" href="module_interface.html#moduleinterfaceref"><span class="std std-ref">Module Interface</span></a> on how to get started!</p>
+</div>
 </div>
 </div>
 

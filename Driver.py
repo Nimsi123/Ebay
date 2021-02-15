@@ -2,7 +2,7 @@ import sys, webbrowser, os
 
 from Ebay.ItemOrganization.query_list import query_list
 from Ebay.ItemOrganization.Client import Client
-from Ebay.data_files.json_queries import d
+from Ebay.data_files.queries import d
 
 def get_kwargs(user_args):
 	"""

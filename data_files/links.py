@@ -28,3 +28,4 @@ def png_dir(name):
 
 HTML_STORE_DIR = "data_files/HTML_Store/scrape_{}.txt"
 BAD_LISTING_DIR = "data_files/bad_listings.csv"
+CLIENT_REQUESTS_DIR = "data_files/Client.csv"
