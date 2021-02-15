@@ -61,6 +61,6 @@ if __name__ == "__main__":
 		Client.initialize_client()
 		totalQueries.scrape(client, [kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]])
 	if kwargs["graph"]:
-		totalQueries.visualize(kwargs["single_oper"])
+		totalQueries.visualize(kwargs["single_oper"], kwargs["print_stats"])
 	if kwargs["web"]:
 		webbrowser.open("file://" + os.path.realpath("web/index.html"))

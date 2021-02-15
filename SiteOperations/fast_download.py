@@ -4,13 +4,12 @@ from bs4 import BeautifulSoup
 
 from Ebay.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration
 from Ebay.SiteOperations import printer
+from Ebay.data_files.links import HTML_STORE_DIR
 
 THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5
 MAX_PAGES = 50
 ITEM_PER_PAGE = 200
-
-FORMATTED_DIR = "data_files/HTML_Store/scrape_{}.txt"
 
 def html_download(client, url, i):
 	"""Get the HTML from the eBay page and export it to the file 'scrape_{i}.txt' for the parameter i.
@@ -21,7 +20,7 @@ def html_download(client, url, i):
 	:type i: int
 	"""
 
-	with open(FORMATTED_DIR.format(i), "w", encoding = "utf-8") as file:
+	with open(HTML_STORE_DIR.format(i), "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
 
 def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
