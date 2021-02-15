@@ -3,3 +3,4 @@ data_files/CSV
 data_files/PNG
 docs/source
 *.pyc
+timing_analysis_report.txt
