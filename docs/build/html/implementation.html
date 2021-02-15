@@ -36,7 +36,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="SiteOperations" href="sections/SiteOperations.html" /> 
+    <link rel="prev" title="data_files" href="sections/data_files.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,6 +88,7 @@
 <li class="toctree-l1"><a class="reference internal" href="folders.html">Folder structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sections/ItemOrganization.html">ItemOrganization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sections/SiteOperations.html">SiteOperations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="sections/data_files.html">data_files</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Underlying Data Structure Implementation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pandas-and-dataframe">Pandas and <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code></a></li>
 </ul>
@@ -161,6 +162,22 @@
 <h1>Underlying Data Structure Implementation<a class="headerlink" href="#underlying-data-structure-implementation" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="pandas-and-dataframe">
 <h2>Pandas and <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code><a class="headerlink" href="#pandas-and-dataframe" title="Permalink to this headline">¶</a></h2>
+<p>eBayScraper uses pandas' <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> module to manipulate the scraped listing data.</p>
+<ul>
+<li><p>You can recreate this object by importing from a csv file</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
+</li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> object can be described by</p>
+<blockquote>
+<div><div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sale_condition&quot;</span><span class="p">,</span> <span class="s2">&quot;groupA&quot;</span><span class="p">,</span> <span class="s2">&quot;groupB&quot;</span><span class="p">,</span> <span class="s2">&quot;groupC&quot;</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="s2">&quot;price&quot;</span><span class="p">,</span> <span class="s2">&quot;date&quot;</span><span class="p">])</span>
+</pre></div>
+</td></tr></table></div>
+</div></blockquote>
 </div>
 </div>
 
@@ -173,7 +190,7 @@
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="sections/SiteOperations.html" class="btn btn-neutral float-left" title="SiteOperations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="sections/data_files.html" class="btn btn-neutral float-left" title="data_files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

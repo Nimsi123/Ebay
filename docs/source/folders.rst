@@ -15,7 +15,7 @@ eBayScraper's folder structure
 | │   └── :ref:`PrinterRef`
 | │   └── :ref:`TraverseHTMLRef`
 | └── :ref:`DataFilesRef`
-
+|
 
 In the folder structure above:
 

@@ -3,6 +3,8 @@ Installation and Setup
 
 Run ``pip install eBayScraper`` on the command line.
 
+.. _AddingQueries:
+
 ******************************
 Adding queries to a collection
 ******************************

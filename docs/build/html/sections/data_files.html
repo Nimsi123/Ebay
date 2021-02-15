@@ -35,7 +35,9 @@
 
     
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Underlying Data Structure Implementation" href="../implementation.html" />
+    <link rel="prev" title="SiteOperations" href="SiteOperations.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -81,12 +83,21 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation and Setup</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../module_interface.html">Module Interface</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../folders.html">Folder structure</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ItemOrganization.html">ItemOrganization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="SiteOperations.html">SiteOperations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">data_files</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#csv">/CSV</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#png">/PNG</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#html-store">/HTML_Store</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#client-csv">Client.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#query-list-export-csv">query_list_export.csv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#json-queries-py">json_queries.py</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../implementation.html">Underlying Data Structure Implementation</a></li>
 </ul>
 
@@ -155,6 +166,41 @@
             
   <div class="section" id="data-files">
 <span id="datafilesref"></span><h1>data_files<a class="headerlink" href="#data-files" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="csv">
+<span id="csv-docs"></span><h2>/CSV<a class="headerlink" href="#csv" title="Permalink to this headline">¶</a></h2>
+<p>Holds the scraped listing data.</p>
+<ul>
+<li><dl>
+<dt>Data is organized with the following column headers.</dt><dd><p><code class="docutils literal notranslate"><span class="pre">sale_condition,</span> <span class="pre">groupA,</span> <span class="pre">groupB,</span> <span class="pre">groupC,</span> <span class="pre">title,</span> <span class="pre">price,</span> <span class="pre">date</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">sale_condition</span></code> describes whether the item was sold at Auction or Buy It Now</p>
+<p><code class="docutils literal notranslate"><span class="pre">groupA,</span> <span class="pre">groupB,</span> <span class="pre">groupC</span></code> describes the categorization set by the user in <code class="docutils literal notranslate"><span class="pre">json_queries.py</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">title,</span> <span class="pre">price,</span> <span class="pre">date</span></code> are all listing details</p>
+</dd>
+</dl>
+</li>
+<li><p>Every row in the file corresponds to a unique listing posted on eBay.com</p></li>
+</ul>
+</div>
+<div class="section" id="png">
+<h2>/PNG<a class="headerlink" href="#png" title="Permalink to this headline">¶</a></h2>
+<p>Holds the .png files for the graphed scrape data.</p>
+</div>
+<div class="section" id="html-store">
+<h2>/HTML_Store<a class="headerlink" href="#html-store" title="Permalink to this headline">¶</a></h2>
+<p>Holds the temporary .txt files used during the scraping process.</p>
+</div>
+<div class="section" id="client-csv">
+<h2>Client.csv<a class="headerlink" href="#client-csv" title="Permalink to this headline">¶</a></h2>
+<p>Maintains a record of the number of API requests. Helps <a class="reference internal" href="ItemOrganization.html#module-Client" title="Client"><code class="xref py py-class docutils literal notranslate"><span class="pre">Client</span></code></a> keep track of which API key to use.</p>
+</div>
+<div class="section" id="query-list-export-csv">
+<h2>query_list_export.csv<a class="headerlink" href="#query-list-export-csv" title="Permalink to this headline">¶</a></h2>
+<p>Stores the list of categorized queries selected by the user.</p>
+</div>
+<div class="section" id="json-queries-py">
+<h2>json_queries.py<a class="headerlink" href="#json-queries-py" title="Permalink to this headline">¶</a></h2>
+<p>The .py file where the user inputs the categorized queries to track. See <a class="reference internal" href="../installation.html#addingqueries"><span class="std std-ref">Adding queries to a collection</span></a>.</p>
+</div>
 </div>
 
 
@@ -162,6 +208,15 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../implementation.html" class="btn btn-neutral float-right" title="Underlying Data Structure Implementation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="SiteOperations.html" class="btn btn-neutral float-left" title="SiteOperations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
