@@ -44,7 +44,7 @@ class Client:
 		df.at[Client.current_index, "counter"] = Client.counter
 		df.to_csv(Client.csv_file, index = False)
 
-	@timer
+	#@timer
 	def get(url):
 		"""Essentially a wrapper function to client.get(url). If the counter exceedes the counter_limit, use the next available client.
 

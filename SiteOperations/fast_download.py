@@ -62,7 +62,7 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 				executor.submit(html_download, client, link, count)
 				time.sleep(REQUEST_WAIT)
 
-				print("{0:30}: {1}".format("link", link))
+				#print("{0:30}: {1}".format("link", link))
 				link = next_link(link)
 				sub_c += 1
 				count += 1
@@ -75,14 +75,14 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 				html = BeautifulSoup(raw_html, 'html.parser')
 
 			date = None
-			ran_for_loop = False
-			print("Before for loop!")
+			#ran_for_loop = False
+			#print("Before for loop!")
 			for title, price, date in search_listings(html, print_stats):
 				storage.add_item(title, price, date, sale_type)
 				ran_for_loop = True
 
-			if not ran_for_loop:
-				print("Didn't run the for loop!")
+			#if not ran_for_loop:
+				#print("Didn't run the for loop!")
 
 			oldest_date = date #the oldest date just added is the one last assigned in the for loop above
 			if print_stats:

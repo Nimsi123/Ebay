@@ -6,7 +6,6 @@ from Ebay.ItemOrganization.ProductCollection import ProductCollection
 from Ebay.SiteOperations import printer
 from Ebay.SiteOperations.fast_download import fast_download
 
-from Ebay.ItemOrganization.timer import timer
 from Ebay.data_files.json_queries import d
 from Ebay.data_files.links import make_eBay_link, csv_dir, png_dir
 

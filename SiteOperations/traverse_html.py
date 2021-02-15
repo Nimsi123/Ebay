@@ -128,7 +128,7 @@ def get_data(listing):
 
     return title, price, shipping, date
     
-@timer
+#@timer
 def search_listings(html, print_stats = False):
     """Yields item data from listings in a single page's html.
     
