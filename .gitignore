@@ -4,6 +4,6 @@ data_files/CSV/*
 data_files/PNG/*
 !data_files/PNG/nothing.txt
 #we need the nothing.txt files so that git tracks the empty folder
-docs/source
+#docs/source
 *.pyc
 timing_analysis_report.txt

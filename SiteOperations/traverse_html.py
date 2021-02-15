@@ -173,7 +173,7 @@ def search_listings(html, print_stats = False):
         else:
             counter["class_code"] += 1
 
-    bad_listing_store.to_csv(BAD_LISTING_DIR, index = None)
+    bad_listing_store.drop_duplicates().to_csv(BAD_LISTING_DIR, index = None)
 
     if print_stats:
         num_listings = len(html.find_all(element_type))
