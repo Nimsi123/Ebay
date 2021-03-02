@@ -23,7 +23,7 @@ class query_list:
 			printer.new_query(groupC)
 			csv_file = csv_dir(groupC)
 
-			with open(csv_file, "r", "utf-8") as f:
+			with open(csv_file, "r") as f:
 				if len(f.readlines()) == 0:
 					empty = True
 				else:
@@ -58,6 +58,15 @@ class query_list:
 			csv_file = csv_dir(groupC)
 			png_file = png_dir(groupC)
 			assert os.path.isfile(csv_file)
+
+			with open(csv_file, "r") as f:
+				if len(f.readlines()) == 0:
+					empty = True
+				else:
+					empty = False
+
+			if empty:
+				return
 
 			ProductCollection.import_data(csv_file).scatter(png_file)
 
