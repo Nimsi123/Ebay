@@ -109,7 +109,14 @@ class ProductCollection:
 		:rtype: ProductCollection
 		"""
 		new = ProductCollection()
-		new.df = pd.read_csv(csv_file)
+
+		#some files might be empty initially
+		with open(csv_file, "r", "utf-8") as f:
+			if len(f.readlines()) == 0:
+				new.df = pd.DataFrame()
+			else:
+				new.df = pd.read_csv(csv_file)
+
 		new.df['date'] = new.df['date'].astype('datetime64[ns]')
 
 		new.row_count = len(new.df.index)
