@@ -23,7 +23,13 @@ class query_list:
 			printer.new_query(groupC)
 			csv_file = csv_dir(groupC)
 
-			if os.path.isfile(csv_file):
+			with open(csv_file, "r", "utf-8") as f:
+				if len(f.readlines()) == 0:
+					empty = True
+				else:
+					empty = False
+
+			if os.path.isfile(csv_file) and not empty:
 				collection = ProductCollection.import_data(csv_file)
 			else:
 				with open(csv_file, "w") as file:
