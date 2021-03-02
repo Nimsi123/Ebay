@@ -63,11 +63,7 @@ class Client:
 		Client.counter_limit = 1000
 		Client.current_index = -1
 
-		Client.current_client = ScraperAPIClient( api_keys[Client.current_index] )
-		Client.counter = Client.df["counter"][Client.current_index]
-
-		if Client.counter >= Client.counter_limit:
-			Client.next_client()
+		Client.next_client()
 
 	""" 	Miscellaneous 	"""
 	def print_usage():
