@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<!--Bootstrap-->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+		<link rel = "stylesheet" type = "text/css" href = "index.css">
+		<script src = "json.js"></script>
+		<script src = "index.js"></script>
+
+	</head>
+
+	<body>
+
+		<!--Navbar-->
+		<nav class="navbar navbar-expand-lg navbar-light bg-light navbar-fixed-top">
+			<div class = "container">
+			  <a class="navbar-brand" href="#Jumbotron">eBay Scraper</a>
+			  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			    <span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarNav">
+			    <ul class="navbar-nav">
+			      <li class="nav-item">
+			        <a class="nav-link" href="#View-Graphs">View Graphs</a>
+			      </li>
+			      <li class="nav-item">
+			        <a class="nav-link" href="#Credits">Credits</a>
+			      </li>
+			    </ul>
+			  </div>
+			</div>
+		</nav>
+
+		<!--Jumbotron-->
+		<div id = "Jumbotron" class = "container anchored">
+			<div class = "jumbotron">
+				<h1>eBay Scraper</h1>
+				<p style = "text-align:center;"> <i> Scrape, track, analyze, and query data on products sold on eBay.com. </i> </p>
+
+				<div id = "project_stats">
+					<span>___ scraped pages</span><br>
+					<span>___ recorded sales</span><br>
+					<span>___ gigabytes of stored data</span><br>
+					<span>and counting  ...</span>
+				</div>
+			</div>
+		</div>
+
+		<!--View Graphs-->
+		<div id = "View-Graphs" class = "container anchored">
+
+			<h3>View Graphs</h3>
+
+			<!--Select query-->
+			<div id = "dropdown holder" class = "row">
+				<div id = "1-drop" class = "col-4">
+					<div class="dropdown">
+					  <button id = "1-btnholder" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Category
+					  </button>
+					  <div id = "insertbtns" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					  	<!--Empty for now-->
+					    <button class="dropdown-item" type="button">Action</button>
+					  </div>
+					</div>
+				</div>
+				<div id = "2-drop" class = "col-4" style = "display:none;">
+					<div class="dropdown">
+					  <button id = "2-btnholder" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Sub-category
+					  </button>
+					  <div id = "2-insertbtns" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					  	<!--Empty for now-->
+					  </div>
+					</div>
+				</div>
+				<div id = "3-drop" class = "col-4" style = "display:none;">
+					<div class="dropdown">
+					  <button id = "3-btnholder" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    Sub-category
+					  </button>
+					  <div id = "3-insertbtns" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+					  	<!--Empty for now-->
+					  </div>
+					</div>
+				</div>
+			</div>
+
+			<img id = "photo"> <!--Use Javascript to set the source for this tag.-->
+		</div>		
+
+		<!--Credits-->
+		<div id = "Credits" class = "container anchored">
+
+			<h3>Credits</h3>
+
+			<div class = "row">
+				<div class = "col-6">
+					<span>Developed and maintained by Nima Rahmanian.</span>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>
