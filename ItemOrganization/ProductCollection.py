@@ -110,12 +110,7 @@ class ProductCollection:
 		"""
 		new = ProductCollection()
 
-		#some files might be empty initially
-		with open(csv_file, "r", "utf-8") as f:
-			if len(f.readlines()) == 0:
-				new.df = pd.DataFrame()
-			else:
-				new.df = pd.read_csv(csv_file)
+		new.df = pd.read_csv(csv_file)
 
 		new.df['date'] = new.df['date'].astype('datetime64[ns]')
 
