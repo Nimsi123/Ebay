@@ -23,7 +23,7 @@ class query_list:
 			printer.new_query(groupC)
 			csv_file = csv_dir(groupC)
 
-			with open(csv_file, "r", "utf-8") as f:
+			with open(csv_file, "r") as f:
 				if len(f.readlines()) == 0:
 					empty = True
 				else:
