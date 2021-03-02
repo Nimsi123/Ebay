@@ -1,4 +1,3 @@
 api_keys = [
-    "<add api key>",
-    "<optionally add more keys to the list>"
+    'c733663048589db82005534b6739c32e'
 ]

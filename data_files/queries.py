@@ -1,5 +1,5 @@
 d = {
-
+	"calculator": ["ti-83 plus calculator", "ti-84 plus calculator", "ti-84 plus CE calculator", "ti-89 calculator"]
 }
 
 
