@@ -59,6 +59,15 @@ class query_list:
 			png_file = png_dir(groupC)
 			assert os.path.isfile(csv_file)
 
+			with open(csv_file, "r") as f:
+				if len(f.readlines()) == 0:
+					empty = True
+				else:
+					empty = False
+
+			if empty:
+				return
+
 			ProductCollection.import_data(csv_file).scatter(png_file)
 
 			if single_oper:
