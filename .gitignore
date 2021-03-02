@@ -1,8 +1,9 @@
-HTML_Store/
 data_files/CSV/*
 !data_files/CSV/nothing.txt
 data_files/PNG/*
 !data_files/PNG/nothing.txt
+data_files/HTML_Store/*
+!data_files/HTML_Store/nothing.txt
 #we need the nothing.txt files so that git tracks the empty folder
 #docs/source
 *.pyc

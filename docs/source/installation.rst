@@ -4,7 +4,9 @@ Installation and Setup
 Installation
 ************
 
-Run ``pip install eBayScraper`` on the command line.
+Clone the repository `here <https://github.com/Nimsi123/eBayScraper>`_.
+
+Move the folder to the ``/Python/Python39/`` directory, or the equivalent for your version of Python.
 
 Setup
 *****
