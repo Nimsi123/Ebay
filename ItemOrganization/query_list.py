@@ -30,7 +30,12 @@ class query_list:
 					empty = False
 
 			if os.path.isfile(csv_file) and not empty:
-				collection = ProductCollection.import_data(csv_file)
+				try:
+					collection = ProductCollection.import_data(csv_file)
+				except:
+					with open(csv_file, "w") as file:
+						pass
+					collection = ProductCollection(groupA, groupB, groupC)
 			else:
 				with open(csv_file, "w") as file:
 					pass
