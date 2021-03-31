@@ -6,6 +6,84 @@ from eBayScraper.SiteOperations import printer
 from eBayScraper.ItemOrganization.timer import timer
 from eBayScraper.data_files.directories import BAD_LISTING_DIR
 
+def find_letters(html, element_type, class_code):
+    """Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
+    Why?
+        --> class_code is used to encrypt the letters that make up the sale date string
+    Should return something like "Sold Jun 11, 2020"
+    """
+
+    saleDate = ""
+    for element in html.find_all(element_type):
+        if element.get("class") == None:
+            continue
+        else:
+            class_name = (element.get("class"))[0]
+
+        if class_name.find(class_code) != -1 and element.contents != None:
+            try:
+                #add another letter to the string
+                saleDate += element.contents[0]
+
+            except:
+                #code enters this block if element.contents[0] fails
+                #   this means we have come to an end of all the letters and we much reach a verdict: either we got the right letters, or we didn't
+                if saleDate.find("Sold") == -1:
+                    return None
+                else:
+                    return saleDate
+
+    return saleDate
+
+def find_class_name(html, element_type, content):
+    """
+    in the 'html' code, there is an element of 'element_type' which has 'content'
+    if the 'content' matches the element's .contents, then return the class name 'class_name'
+    Why?
+        --> helper method to find_key
+    this 'class_name' is what ebay generated for every letter in the date
+    content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
+    """
+
+    for element in html.find_all(element_type):
+        if element.get("class") == None:
+            continue
+        else:
+            class_name = (element.get("class"))[0]
+
+        if len(element.contents) == 0:
+            continue
+
+        if element.contents[0] == content:
+            #the class name is the KEY
+            return class_name
+
+    return None
+
+def find_key(html, element_type, sequence):
+    """
+    Returns the class name, or 'key', common to all sub elements in 'tag_block.'
+    Why?
+        --> ebay changed the class_name of the element representing the sale date
+    """
+
+    for listing in html.find_all(element_type):
+        tagBlock = find_element(listing, "div", "class", "s-item__title--tagblock")
+
+        if tagBlock == None:
+            continue
+
+        tagBlock = tagBlock.contents[0]
+
+        keys = []
+        for letter in sequence:
+            keys.append( find_class_name(tagBlock, "span", letter) )
+
+        if len(set(keys)) == 1:
+            #all the keys are identical
+            if keys[0] != None:
+                return keys[0]
+
 def find_element(html, element_type, attr_key, attr_value):
     """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
 
@@ -76,7 +154,23 @@ def next_link(old_link):
         end = old_link.find("&_pgn=") + len("&_pgn=")
         return old_link[:end] + str((int(old_link[end:]) + 1))
 
-def extract(html, element_type, class_name, clean_func):
+def extract_nested(find, html, outer_element_type, outer_class_name, inner_element_type, inner_class_name, clean_func):
+    """
+    Some attributes are nested within two blocks.
+    Returns the attribute accessed by diving into one block, and then going deeper.
+    """
+
+    outer_block = find_element(html, outer_element_type, "class", outer_class_name)
+
+    if outer_block == None:
+        return None
+
+    outer_block = outer_block.contents[0]
+    cleaned_inner = extract(outer_block, inner_element_type, inner_class_name, clean_func, find = find)
+
+    return cleaned_inner
+
+def extract(html, element_type, class_name, clean_func, find = find_element):
     """ Searches ``html`` for the contents of the first html tag of ``element_type`` and ``class_name``. 
     Before returning the html contents, clean the value with the ``clean_func``.
     
@@ -92,7 +186,7 @@ def extract(html, element_type, class_name, clean_func):
     :rtype: Ranges from str to int to datetime.datetime. 
     """
 
-    raw = find_element(html, element_type, "class", class_name)
+    raw = find(html, element_type, "class", class_name)
     
     if raw == None:
         return None
@@ -126,7 +220,15 @@ def get_data(listing):
     title = extract(listing, "h3", "s-item__title", clean_title)
     price = extract(listing, "span", "s-item__price", clean_price)
     shipping = extract(listing, "span", "s-item__shipping", clean_shipping)
-    date = extract(listing, "div", "s-item__title--tagblock", clean_date)
+
+    key = find_key(html, element_type, ["S", "o", "l", "d"])
+    if key == None:
+        date = extract(listing, "div", "s-item__title--tagblock", clean_date)
+    else:
+        print("*****need to do extra work to get sale date********MANDOLORIAN")
+        date = extract_nested(find_letters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
+
+    #date = extract(listing, "div", "s-item__title--tagblock", clean_date)
 
     return title, price, shipping, date
     

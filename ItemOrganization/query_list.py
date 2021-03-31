@@ -8,11 +8,21 @@ from eBayScraper.SiteOperations.fast_download import fast_download
 
 from eBayScraper.data_files.directories import make_eBay_link, csv_dir, png_dir
 
+"""TODO:
+
+i'm getting way to many "bad" listings
+
+problem with scraping and visualizing with brand new products that have never been scraped before.
+
+ebay brought back the extra keys in the sale date. bring back the key code!
+
+"""
 
 class query_list:
 	"""
 	Represents all of the eBay queries we are keeping track of.
 	"""
+	SALE_TYPES = ["BIN", "Auction"]
 
 	def __init__(self, json):
 		self.query_collection = list(query_list.split(json))		
@@ -23,7 +33,7 @@ class query_list:
 			printer.new_query(groupC)
 			csv_file = csv_dir(groupC)
 
-			with open(csv_file, "r") as f:
+			with open(csv_file, "r", encoding = "UTF-8") as f:
 				if len(f.readlines()) == 0:
 					empty = True
 				else:
@@ -32,7 +42,7 @@ class query_list:
 			if os.path.isfile(csv_file) and not empty:
 				try:
 					collection = ProductCollection.import_data(csv_file)
-				except:
+				except: # TODO: we shouldn't need this here.
 					with open(csv_file, "w") as file:
 						pass
 					collection = ProductCollection(groupA, groupB, groupC)
@@ -41,12 +51,12 @@ class query_list:
 					pass
 				collection = ProductCollection(groupA, groupB, groupC)
 
-			for sale_type in ["BIN", "Auction"]:
+			for sale_type in query_list.SALE_TYPES:
 				cmdline_args = (print_stats, deep_scrape)
 
 				if print_stats: 
 					printer.start_scrape(groupC, sale_type)
-				fast_download(client, collection, sale_type, make_eBay_link(sale_type, groupC), *cmdline_args) #fast_download takes care of date_stored
+				fast_download(client, collection, sale_type, make_eBay_link(sale_type, groupC), *cmdline_args)
 				if print_stats:
 					printer.end_scrape(sale_type, collection.get_count_added())
 
