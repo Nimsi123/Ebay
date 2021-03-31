@@ -6,7 +6,15 @@ from eBayScraper.SiteOperations import printer
 from eBayScraper.ItemOrganization.timer import timer
 from eBayScraper.data_files.directories import BAD_LISTING_DIR
 
-def find_letters(html, element_type, class_code):
+"""
+There is no need for extract nested! Just dive as deep as you want for the nested expression.
+
+>>> x = BeautifulSoup("<div class = 'foo shoo' id = 'bar'></div>")
+>>> x.find_all("div", attrs={"class": "foo"})
+[<div class="foo shoo" id="bar"></div>]
+"""
+
+def find_letters(html, element_type, attrs):
     """Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
     Why?
         --> class_code is used to encrypt the letters that make up the sale date string
@@ -14,13 +22,8 @@ def find_letters(html, element_type, class_code):
     """
 
     saleDate = ""
-    for element in html.find_all(element_type):
-        if element.get("class") == None:
-            continue
-        else:
-            class_name = (element.get("class"))[0]
-
-        if class_name.find(class_code) != -1 and element.contents != None:
+    for element in html.find_all(element_type, attrs = attrs):
+        if element.contents != None:
             try:
                 #add another letter to the string
                 saleDate += element.contents[0]
@@ -60,7 +63,7 @@ def find_class_name(html, element_type, content):
 
     return None
 
-def find_key(html, element_type, sequence):
+def find_key(html, sequence):
     """
     Returns the class name, or 'key', common to all sub elements in 'tag_block' that
     have the letters in sequence.
@@ -69,7 +72,7 @@ def find_key(html, element_type, sequence):
         --> ebay changed the class_name of the element representing the sale date
     """
 
-    tagBlock = find_element(html, "div", "class", "s-item__title--tagblock")
+    tagBlock = find_element(html, "div", {"class": "s-item__title--tagblock"})
 
     if not tagBlock:
         return None
@@ -87,7 +90,7 @@ def find_key(html, element_type, sequence):
     return None
 
 
-def find_element(html, element_type, attr_key, attr_value):
+def find_element(html, element_type, attrs):
     """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
 
     :param html: The HTML block to search.
@@ -102,13 +105,8 @@ def find_element(html, element_type, attr_key, attr_value):
     :rtype: bs4.element.Tag or None
     """
 
-    for element in html.find_all(element_type):
-        if element.get(attr_key) == None:
-            continue
-        else:
-            class_name = (element.get(attr_key))[0]
-
-        if class_name.find(attr_value) != -1 and element.contents != None:
+    for element in html.find_all(element_type, attrs = attrs):
+        if element.contents != None:
             return element
 
     return None
@@ -157,21 +155,51 @@ def next_link(old_link):
         end = old_link.find("&_pgn=") + len("&_pgn=")
         return old_link[:end] + str((int(old_link[end:]) + 1))
 
+'''
 def get_subelement(html, outer_spec):
+
+    """
+    Follows the specifications of outer_spec down the tree. Returns the FIRST html tag that is a found down the tree.
+    >>> html = BeautifulSoup("<span class = 'out'><div class = 'in2'></div><div class = 'in'><div><div></div></div></div></span>", "html.parser")
+    >>> get_subelement(html, [("span", "out"), ("div", "in")])
+    <div class="in"><div><div></div></div></div>
+    """
+
+    if len(outer_spec) == 0:
+        return html
+
+    element_type, class_name = outer_spec[0]
+    elements = html.find_all(element_type, class_ = class_name)
+
+    for element in elements:
+        sub_elem = get_subelement(element, outer_spec[1:])
+        if sub_elem:
+            return sub_elem
+
+    return None
+'''
+
+
+def get_subelement(html, outer_spec):
+    """
+    >>> html = BeautifulSoup("<span class = 'out'><div class = 'in'></div></span>", "html.parser")
+    >>> get_subelement(html, [("span", "out")])
+    <div class="in"></div>
+
+    >>> html = BeautifulSoup("<span class = 'out'><div class = 'in2'></div><div class = 'in'></div></span>", "html.parser")
+    >>> get_subelement(html, [("span", "out")])
+    <div class="in2"></div>
+
+    """
 
     outer_block = html
     for outer_element_type, outer_class_name in outer_spec:
-        print(outer_element_type, outer_class_name)
-        print(outer_block)
-        outer_block = find_element(outer_block, outer_element_type, "class", outer_class_name)
-
+        outer_block = find_element(outer_block, outer_element_type, {"class": outer_class_name})
 
         if outer_block == None:
-            print("went to none")
             return None
         else:
             outer_block = outer_block.contents[0]
-            print("contents: ", outer_block)
     return outer_block
 
 def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name, clean_func):
@@ -180,21 +208,11 @@ def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name,
     Returns the attribute accessed by diving into one block, and then going deeper.
     """
 
-    outer_block = html
-    for outer_element_type, outer_class_name in outer_spec:
-        #print(outer_element_type, outer_class_name)
-        #print(outer_block)
-        outer_block = find_element(outer_block, outer_element_type, "class", outer_class_name)
+    outer_block = get_subelement(html, outer_spec)
 
+    if outer_block == None:
+        return None
 
-        if outer_block == None:
-            print("went to none")
-            return None
-        else:
-            outer_block = outer_block.contents[0]
-            #print("contents: ", outer_block)
-
-    #outer_block = outer_block.contents[0]
     cleaned_inner = extract(outer_block, inner_element_type, inner_class_name, clean_func, find = find)
 
     return cleaned_inner
@@ -211,14 +229,15 @@ def extract(html, element_type, class_name, clean_func, find = find_element):
     :type class_name: str
     :param clean_func: The function that converts the web text into a usable, readable format in the underlying data structure.
     :type clean_func: function
-    :returns: The return value of clean_func on the inner contents on the found html tag. Returns None if nothing is found.
+    :returns: The return value of clean_func on the inner contents on the found html tag.
+    Passes None to clean_func if nothing is found.
     :rtype: Ranges from str to int to datetime.datetime. 
     """
 
-    raw = find(html, element_type, "class", class_name)
+    raw = find(html, element_type, {"class": class_name})
     
     if raw == None:
-        return None
+        return clean_func(None)
 
     while type(raw) == bs4.Tag:
         #go deeper in a nest
@@ -246,37 +265,26 @@ def get_data(listing):
     :returns: the title, price, shipping, and date values of the listing.
     :rtype: tuple
     """
-    #with open("temp.txt", "w", encoding = "UTF-8") as f:
-    #    f.write(str(listing))
-    #import sys
-    #sys.exit()
 
     title = extract(listing, "h3", "s-item__title", clean_title)
     price = extract(listing, "span", "s-item__price", clean_price)
     shipping = extract(listing, "span", "s-item__shipping", clean_shipping)
 
-    #date_sublisting = get_subelement(listing, [("div", "s-item__title--tagblock")])
-    #print("date sublisting: ", date_sublisting)
-    #if date_sublisting:
-    #    key = find_key(date_sublisting, "span", ["S", "o", "l", "d"])
-    #else:
-    #    key = None
-    key = find_key(listing, "li", ["S", "o", "l", "d"])
-    print("key: ", key)
-    #if key == None:
-    #    key = find_key(listing, "li", ["S", "p", "o", "n", "s", "o", "r", "e", "d"])
+    key = find_key(listing, ["S", "o", "l", "d"])
 
     if key == None:
         date = extract(listing, "div", "s-item__title--tagblock", clean_date)
     else:
-        print("*****need to do extra work to get sale date********MANDOLORIAN")
-        date = extract_nested(find_letters, listing, [("div", "s-item__title--tagblock"), ("span", "POSITIVE"), ("span", key)], clean_date)
-
-    #date = extract(listing, "div", "s-item__title--tagblock", clean_date)
+        # we use extract_nested in case there might be other elements like <span class = '{key}'></span> within listing,
+        # but outside of <div class = "s-item__title--tagblock"></div>
+        date = extract_nested(find_letters, listing, [("div", "s-item__title--tagblock")], "span", key, clean_date)
 
     return title, price, shipping, date
-    
-#@timer
+
+def good_data(*data):
+    print(data)
+    return all([type(attr) is not list for attr in data])
+
 def search_listings(html, print_stats = False):
     """Yields item data from listings in a single page's html.
     
@@ -291,33 +299,23 @@ def search_listings(html, print_stats = False):
 
     counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
 
-    for listing in html.find_all(element_type):
-        if listing.get("class") == None:
-            counter["skipped_early"] += 1
-            continue
+    for listing in html.find_all(element_type, class_ = class_code):
+        title, price, shipping, date = get_data(listing)
+
+        if good_data(title, price, date, shipping):
+            total_cost = round(price+shipping, 2)
+            yield title, total_cost, date
+            counter["added"] += 1
         else:
-            class_name = listing.get("class")[0]
+            title, price, date, shipping = [item[0] if type(item) == list else item for item in [title, price, date, shipping]]
+            bad_listing_store = bad_listing_store.append({
+                "title": title,
+                "price": price,
+                "shipping": shipping,
+                "date": date
+                }, ignore_index=True)
 
-        if class_name == class_code:
-            title, price, shipping, date = get_data(listing)
-
-            #if all([attr is not None for attr in [title, price, date, shipping]]):
-            if all([type(attr) is not list for attr in [title, price, date, shipping]]):
-                total_cost = round(price+shipping, 2)
-                yield title, total_cost, date
-                counter["added"] += 1
-            else:
-                title, price, date, shipping = [item[0] if type(item) == list else item for item in [title, price, date, shipping]]
-                bad_listing_store = bad_listing_store.append({
-                    "title": title,
-                    "price": price,
-                    "shipping": shipping,
-                    "date": date
-                    }, ignore_index=True)
-
-                counter["bad"] += 1
-        else:
-            counter["class_code"] += 1
+            counter["bad"] += 1
 
     bad_listing_store.drop_duplicates().to_csv(BAD_LISTING_DIR, index = None)
 

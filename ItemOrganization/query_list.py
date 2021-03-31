@@ -29,8 +29,9 @@ class query_list:
 
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
+		counter = start_index
 		for groupA, groupB, groupC in self.query_collection[start_index:end_index]:
-			printer.new_query(groupC)
+			printer.new_query(groupC, counter)
 			csv_file = csv_dir(groupC)
 
 			with open(csv_file, "r", encoding = "UTF-8") as f:
@@ -61,6 +62,7 @@ class query_list:
 					printer.end_scrape(sale_type, collection.get_count_added())
 
 			collection.export_data(csv_file)
+			counter += 1
 
 			if single_oper:
 				return

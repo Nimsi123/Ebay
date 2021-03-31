@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
 	if kwargs["scrape"]:
 		Client.initialize_client()
-		totalQueries.scrape(Client, **{key: kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]})
+		totalQueries.scrape(Client, start_index = 6, **{key: kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]})
 	if kwargs["graph"]:
 		totalQueries.visualize(kwargs["single_oper"], kwargs["print_stats"])
 	if kwargs["web"]:

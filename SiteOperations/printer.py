@@ -1,11 +1,11 @@
 import os
 from termcolor import colored
 
-def new_query(name):
+def new_query(name, count):
 	opening_lines = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	new_query =     "\t\tNew Query"
 	collecting =    "{0:30}: {1}".format("COLLECTING", name)
-	#count_index =   "{0:30}: {1}".format("COUNT INDEX", count)
+	count_index =   "{0:30}: {1}".format("COUNT INDEX", count)
 	minus_lines = "---------------------------------------------\n"
 
 	print(opening_lines)
