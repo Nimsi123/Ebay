@@ -154,18 +154,20 @@ def next_link(old_link):
         end = old_link.find("&_pgn=") + len("&_pgn=")
         return old_link[:end] + str((int(old_link[end:]) + 1))
 
-def extract_nested(find, html, outer_element_type, outer_class_name, inner_element_type, inner_class_name, clean_func):
+def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name, clean_func):
     """
     Some attributes are nested within two blocks.
     Returns the attribute accessed by diving into one block, and then going deeper.
     """
 
-    outer_block = find_element(html, outer_element_type, "class", outer_class_name)
+    outer_block = html
+    for outer_element_type, outer_class_name in outer_spec:
+        outer_block = find_element(outer_block, outer_element_type, "class", outer_class_name).contents[0]
 
-    if outer_block == None:
-        return None
+        if outer_block == None:
+            return None
 
-    outer_block = outer_block.contents[0]
+    #outer_block = outer_block.contents[0]
     cleaned_inner = extract(outer_block, inner_element_type, inner_class_name, clean_func, find = find)
 
     return cleaned_inner
@@ -217,16 +219,24 @@ def get_data(listing):
     :returns: the title, price, shipping, and date values of the listing.
     :rtype: tuple
     """
+    with open("temp.txt", "w", encoding = "UTF-8") as f:
+        f.write(str(listing))
+    import sys
+    sys.exit()
+
     title = extract(listing, "h3", "s-item__title", clean_title)
     price = extract(listing, "span", "s-item__price", clean_price)
     shipping = extract(listing, "span", "s-item__shipping", clean_shipping)
 
-    key = find_key(html, element_type, ["S", "o", "l", "d"])
+    key = find_key(listing, "li", ["S", "o", "l", "d"])
+    #if key == None:
+    #    key = find_key(listing, "li", ["S", "p", "o", "n", "s", "o", "r", "e", "d"])
+
     if key == None:
         date = extract(listing, "div", "s-item__title--tagblock", clean_date)
     else:
         print("*****need to do extra work to get sale date********MANDOLORIAN")
-        date = extract_nested(find_letters, listing, "div", "s-item__title--tagblock", "span", key, clean_date)
+        date = extract_nested(find_letters, listing, ["div", "s-item__title--tagblock", "span", "POSITIVE", "span", key], clean_date)
 
     #date = extract(listing, "div", "s-item__title--tagblock", clean_date)
 

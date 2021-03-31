@@ -74,7 +74,7 @@ class query_list:
 			png_file = png_dir(groupC)
 			assert os.path.isfile(csv_file)
 
-			with open(csv_file, "r") as f:
+			with open(csv_file, "r", encoding = "UTF-8") as f:
 				if len(f.readlines()) == 0:
 					empty = True
 				else:
