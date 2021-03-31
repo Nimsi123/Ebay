@@ -62,27 +62,30 @@ def find_class_name(html, element_type, content):
 
 def find_key(html, element_type, sequence):
     """
-    Returns the class name, or 'key', common to all sub elements in 'tag_block.'
+    Returns the class name, or 'key', common to all sub elements in 'tag_block' that
+    have the letters in sequence.
+
     Why?
         --> ebay changed the class_name of the element representing the sale date
     """
 
-    for listing in html.find_all(element_type):
-        tagBlock = find_element(listing, "div", "class", "s-item__title--tagblock")
+    tagBlock = find_element(html, "div", "class", "s-item__title--tagblock")
 
-        if tagBlock == None:
-            continue
+    if not tagBlock:
+        return None
 
-        tagBlock = tagBlock.contents[0]
+    # tag block contains all the <span class="s-jnpuot">S</span> elements.
 
-        keys = []
-        for letter in sequence:
-            keys.append( find_class_name(tagBlock, "span", letter) )
+    keys = []
+    for letter in sequence:
+        keys.append( find_class_name(tagBlock, "span", letter) )
 
-        if len(set(keys)) == 1:
-            #all the keys are identical
-            if keys[0] != None:
-                return keys[0]
+    if len(set(keys)) == 1:
+        #all the keys are identical
+        if keys[0] != None:
+            return keys[0]
+    return None
+
 
 def find_element(html, element_type, attr_key, attr_value):
     """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
@@ -154,6 +157,23 @@ def next_link(old_link):
         end = old_link.find("&_pgn=") + len("&_pgn=")
         return old_link[:end] + str((int(old_link[end:]) + 1))
 
+def get_subelement(html, outer_spec):
+
+    outer_block = html
+    for outer_element_type, outer_class_name in outer_spec:
+        print(outer_element_type, outer_class_name)
+        print(outer_block)
+        outer_block = find_element(outer_block, outer_element_type, "class", outer_class_name)
+
+
+        if outer_block == None:
+            print("went to none")
+            return None
+        else:
+            outer_block = outer_block.contents[0]
+            print("contents: ", outer_block)
+    return outer_block
+
 def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name, clean_func):
     """
     Some attributes are nested within two blocks.
@@ -162,10 +182,17 @@ def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name,
 
     outer_block = html
     for outer_element_type, outer_class_name in outer_spec:
-        outer_block = find_element(outer_block, outer_element_type, "class", outer_class_name).contents[0]
+        #print(outer_element_type, outer_class_name)
+        #print(outer_block)
+        outer_block = find_element(outer_block, outer_element_type, "class", outer_class_name)
+
 
         if outer_block == None:
+            print("went to none")
             return None
+        else:
+            outer_block = outer_block.contents[0]
+            #print("contents: ", outer_block)
 
     #outer_block = outer_block.contents[0]
     cleaned_inner = extract(outer_block, inner_element_type, inner_class_name, clean_func, find = find)
@@ -219,16 +246,23 @@ def get_data(listing):
     :returns: the title, price, shipping, and date values of the listing.
     :rtype: tuple
     """
-    with open("temp.txt", "w", encoding = "UTF-8") as f:
-        f.write(str(listing))
-    import sys
-    sys.exit()
+    #with open("temp.txt", "w", encoding = "UTF-8") as f:
+    #    f.write(str(listing))
+    #import sys
+    #sys.exit()
 
     title = extract(listing, "h3", "s-item__title", clean_title)
     price = extract(listing, "span", "s-item__price", clean_price)
     shipping = extract(listing, "span", "s-item__shipping", clean_shipping)
 
+    #date_sublisting = get_subelement(listing, [("div", "s-item__title--tagblock")])
+    #print("date sublisting: ", date_sublisting)
+    #if date_sublisting:
+    #    key = find_key(date_sublisting, "span", ["S", "o", "l", "d"])
+    #else:
+    #    key = None
     key = find_key(listing, "li", ["S", "o", "l", "d"])
+    print("key: ", key)
     #if key == None:
     #    key = find_key(listing, "li", ["S", "p", "o", "n", "s", "o", "r", "e", "d"])
 
@@ -236,7 +270,7 @@ def get_data(listing):
         date = extract(listing, "div", "s-item__title--tagblock", clean_date)
     else:
         print("*****need to do extra work to get sale date********MANDOLORIAN")
-        date = extract_nested(find_letters, listing, ["div", "s-item__title--tagblock", "span", "POSITIVE", "span", key], clean_date)
+        date = extract_nested(find_letters, listing, [("div", "s-item__title--tagblock"), ("span", "POSITIVE"), ("span", key)], clean_date)
 
     #date = extract(listing, "div", "s-item__title--tagblock", clean_date)
 
