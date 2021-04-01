@@ -1,7 +1,10 @@
 import datetime
 import bs4
 
-"""Clean functions return a list to signal a bad input."""
+"""Clean functions return a list with a single element to signal a bad input."""
+NOT_FOUND = ["element not found in html"]
+
+strip_comma = lambda entry: NOT_FOUND if entry == None else entry.replace(',', '')
 
 def clean_title(entry):
     """Cleans the title entry.
@@ -12,7 +15,7 @@ def clean_title(entry):
     :rtype: str
     """
     if entry == None:
-        return []
+        return NOT_FOUND
 
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
@@ -32,7 +35,7 @@ def clean_price(entry):
     >>>
     """
     if entry == None:
-        return []
+        return NOT_FOUND
 
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
@@ -55,10 +58,9 @@ def clean_shipping(entry):
     :rtype: float
     """
     if entry == None:
-        return []
+        return NOT_FOUND
 
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
-    print("shipping entry: ", entry)
 
     if entry in ["Free shipping", "Shipping not specified", "Freight"] or entry.find("$") == -1 or entry == "":
         return 0
@@ -82,8 +84,8 @@ def clean_date(entry):
     :rtype: ``datetime``
     """
     if entry == None:
-        return []
-        
+        return NOT_FOUND
+
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("Sold") == -1:

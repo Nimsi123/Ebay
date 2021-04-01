@@ -11,7 +11,7 @@ def new_query(name, count):
 	print(opening_lines)
 	print(colored(new_query, "green"))
 	print(colored(collecting, "green"))
-	#print(colored(count_index, "green"))
+	print(colored(count_index, "green"))
 	print(minus_lines)
 
 def start_graph(name):
@@ -21,9 +21,15 @@ def start_scrape(name, listing_type):
 	start_str = "{0:20}: {1}".format(name, listing_type)
 	print(colored(start_str, "green"))
 
-def end_scrape(listing_type, list_len):
-	length_of = "Length of " + "{0:20}: {1}".format(listing_type, list_len)
-	print(colored(length_of, "green"))
+def end_scrape(listing_type, total_listings, list_len):
+	total_possible = "{0:30}: {1}".format("Total listings", total_listings)
+	length_of =      "{0:30}: {1}".format("Length of " + listing_type, list_len)
+
+	color = "green"
+	if list_len < 0.5 * total_possible:
+		color = "red"
+
+	print(colored(length_of, color))
 
 def product_stats(total_listings, max_iteration):
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")

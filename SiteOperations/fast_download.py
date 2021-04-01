@@ -23,6 +23,20 @@ def html_download(client, url, i):
 	with open(HTML_STORE_DIR.format(i), "w", encoding = "utf-8") as file:
 		file.write(client.get(url).text)
 
+def run_threads(client, link, count, page_count):
+	sub_c = 0
+	#run threads and download html
+	with ThreadPoolExecutor(max_workers=THREAD_LIMIT) as executor:
+		while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
+			executor.submit(html_download, client, link, count)
+			time.sleep(REQUEST_WAIT)
+
+			link = next_link(link)
+			sub_c += 1
+			count += 1
+
+	return sub_c, count
+
 def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 	"""Adds item data to ``storage``. Item data is collected from every listing posted on the html pages, starting at the ``link``.
 	Until we reach an overlap point or page_count, iterate through the eBay pages.
@@ -53,36 +67,20 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 		printer.product_stats(total_listings, page_count)
 
 	count = 0
+	storage.reset_count_added()
 	while count < min(MAX_PAGES, page_count):
 
-		sub_c = 0
-		#run threads and download html
-		with ThreadPoolExecutor(max_workers=THREAD_LIMIT) as executor:
-			while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
-				executor.submit(html_download, client, link, count)
-				time.sleep(REQUEST_WAIT)
-
-				#print("{0:30}: {1}".format("link", link))
-				link = next_link(link)
-				sub_c += 1
-				count += 1
+		sub_c, count = run_threads(client, link, count, page_count)
 
 		#digest html
-		storage.reset_count_added()
 		for i in range(count - sub_c, count):
 			#receive and parse html from text file
 			with open(HTML_STORE_DIR.format(i), "r", encoding = "utf-8") as raw_html:
 				html = BeautifulSoup(raw_html, 'html.parser')
 
 			date = None
-			#ran_for_loop = False
-			#print("Before for loop!")
-			for title, price, date in search_listings(html, print_stats):
+			for title, price, date in search_listings(html, print_stats): # search_listings might yield nothing!
 				storage.add_item(title, price, date, sale_type)
-				ran_for_loop = True
-
-			#if not ran_for_loop:
-				#print("Didn't run the for loop!")
 
 			oldest_date = date #the oldest date just added is the one last assigned in the for loop above
 			if print_stats:
@@ -90,3 +88,5 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 
 			if is_overlapping(recent_date_stored, oldest_date) and not deep_scrape:
 				return
+
+	return total_listings

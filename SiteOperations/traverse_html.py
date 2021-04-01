@@ -1,7 +1,7 @@
 import bs4
 import pandas as pd
 
-from eBayScraper.SiteOperations.clean_entries import clean_title, clean_price, clean_shipping, clean_date
+from eBayScraper.SiteOperations.clean_entries import strip_comma, clean_title, clean_price, clean_shipping, clean_date
 from eBayScraper.SiteOperations import printer
 from eBayScraper.ItemOrganization.timer import timer
 from eBayScraper.data_files.directories import BAD_LISTING_DIR
@@ -119,7 +119,7 @@ def get_listings_iteration(html):
     :returns: Returns the total number of listings for the query and the number of page iterations.
     :rtype: tuple
     """
-    strip_comma = lambda entry: entry.replace(',', '')
+    
     temp_num = extract(html, "h1", "srp-controls__count-heading", strip_comma)
     
     try:
@@ -282,7 +282,6 @@ def get_data(listing):
     return title, price, shipping, date
 
 def good_data(*data):
-    print(data)
     return all([type(attr) is not list for attr in data])
 
 def search_listings(html, print_stats = False):
