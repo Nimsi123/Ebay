@@ -1,7 +1,7 @@
 import bs4
 import pandas as pd
 
-from eBayScraper.SiteOperations.clean_entries import strip_comma, clean_title, clean_price, clean_shipping, clean_date
+from eBayScraper.SiteOperations.clean_entries import strip_comma, clean_title, clean_price, clean_shipping, clean_date, NOT_FOUND
 from eBayScraper.SiteOperations import printer
 from eBayScraper.ItemOrganization.timer import timer
 from eBayScraper.data_files.directories import BAD_LISTING_DIR
@@ -13,6 +13,28 @@ There is no need for extract nested! Just dive as deep as you want for the neste
 >>> x.find_all("div", attrs={"class": "foo"})
 [<div class="foo shoo" id="bar"></div>]
 """
+
+# TODO: replace all calls to find_element with the bs4 method .find! it does pretty much the exact same thing!
+def find_element(html, element_type, attrs):
+    """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
+
+    :param html: The HTML block to search.
+    :type html: 
+    :param element_type: The HTML tag to search for.
+    :type element_type: str
+    :param attr_key: The key of an element's attribute.
+    :type attr_key: str
+    :param attr_val: If the element's value at key equals attr_value, we have our match.
+    :type attr_val: str
+    :returns: An HTML element within `html` that satisfies the condition. Returns None if an element is not found.
+    :rtype: bs4.element.Tag or None
+    """
+
+    for element in html.find_all(element_type, attrs = attrs):
+        if element.contents != None:
+            return element
+
+    return None
 
 def find_letters(html, element_type, attrs):
     """Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
@@ -38,39 +60,41 @@ def find_letters(html, element_type, attrs):
 
     return saleDate
 
-def find_class_name(html, element_type, content):
+def find_class_names(html, element_type, content):
     """
-    in the 'html' code, there is an element of 'element_type' which has 'content'
-    if the 'content' matches the element's .contents, then return the class name 'class_name'
+    in the 'html' code, there are elements of 'element_type' that has 'content'
+    return the class names of all elements for which 'content' matches the element's .contents
     Why?
         --> helper method to find_key
     this 'class_name' is what ebay generated for every letter in the date
     content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
     """
 
+    class_names = []
     for element in html.find_all(element_type):
         if element.get("class") == None:
             continue
         else:
-            class_name = (element.get("class"))[0]
+            class_name = element.get("class")[0]
 
         if len(element.contents) == 0:
             continue
 
         if element.contents[0] == content:
             #the class name is the KEY
-            return class_name
+            class_names.append(class_name)
 
-    return None
+    return class_names
 
 def find_key(html, sequence):
     """
-    Returns the class name, or 'key', common to all sub elements in 'tag_block' that
+    Returns the class name, or 'key', most commonly seen in all sub elements in 'tag_block' that
     have the letters in sequence.
 
     Why?
         --> ebay changed the class_name of the element representing the sale date
     """
+    assert len(sequence) != 0
 
     tagBlock = find_element(html, "div", {"class": "s-item__title--tagblock"})
 
@@ -81,35 +105,22 @@ def find_key(html, sequence):
 
     keys = []
     for letter in sequence:
-        keys.append( find_class_name(tagBlock, "span", letter) )
+        keys.extend(find_class_names(tagBlock, "span", letter))
+
+    return max(set(keys), key = keys.count)
+
+    """
+    keys = [key for key in keys if key != None]
+    print("keys: ", keys)
+
 
     if len(set(keys)) == 1:
         #all the keys are identical
         if keys[0] != None:
             return keys[0]
+    print("nothing matching")
     return None
-
-
-def find_element(html, element_type, attrs):
-    """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
-
-    :param html: The HTML block to search.
-    :type html: 
-    :param element_type: The HTML tag to search for.
-    :type element_type: str
-    :param attr_key: The key of an element's attribute.
-    :type attr_key: str
-    :param attr_val: If the element's value at key equals attr_value, we have our match.
-    :type attr_val: str
-    :returns: An HTML element within `html` that satisfies the condition. Returns None if an element is not found.
-    :rtype: bs4.element.Tag or None
     """
-
-    for element in html.find_all(element_type, attrs = attrs):
-        if element.contents != None:
-            return element
-
-    return None
 
 def get_listings_iteration(html):
     """Returns the total number of listings for the query and the number of page iterations.
@@ -122,6 +133,12 @@ def get_listings_iteration(html):
     
     temp_num = extract(html, "h1", "srp-controls__count-heading", strip_comma)
     
+    if temp_num == NOT_FOUND:
+        return NOT_FOUND, NOT_FOUND
+
+    # type of temp_num must be str at this point
+
+    # 4/1/21 this try except block is unnecessary. just find total_listings = int(temp_num)
     try:
         total_listings = int(temp_num)
     except Exception as e:
@@ -129,11 +146,6 @@ def get_listings_iteration(html):
         print("{0:30}: {1}\n".format("extract", temp_num))
         raise e
         #return None, None
-    
-    total_listings = int(temp_num)
-
-    if total_listings == 0:
-        return None, None
 
     #ebay won't show us more that 10,000 items from their page even though there might be more to look at
     max_iteration = min(50, int(total_listings/200 +1))
@@ -257,7 +269,7 @@ def is_overlapping(date_stored, date_appended):
         printer.overlap(date_appended, date_stored)
         return True
 
-def get_data(listing):
+def get_data(listing, key):
     """Returns all meaningfull item data from the html block.
 
     :param listing: html block containing item data for a single listing.
@@ -269,8 +281,6 @@ def get_data(listing):
     title = extract(listing, "h3", "s-item__title", clean_title)
     price = extract(listing, "span", "s-item__price", clean_price)
     shipping = extract(listing, "span", "s-item__shipping", clean_shipping)
-
-    key = find_key(listing, ["S", "o", "l", "d"])
 
     if key == None:
         date = extract(listing, "div", "s-item__title--tagblock", clean_date)
@@ -284,7 +294,7 @@ def get_data(listing):
 def good_data(*data):
     return all([type(attr) is not list for attr in data])
 
-def search_listings(html, print_stats = False):
+def search_listings(html, key, print_stats = False):
     """Yields item data from listings in a single page's html.
     
     :param html: html code for an entire webpage
@@ -299,7 +309,7 @@ def search_listings(html, print_stats = False):
     counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
 
     for listing in html.find_all(element_type, class_ = class_code):
-        title, price, shipping, date = get_data(listing)
+        title, price, shipping, date = get_data(listing, key)
 
         if good_data(title, price, date, shipping):
             total_cost = round(price+shipping, 2)

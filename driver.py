@@ -60,7 +60,7 @@ def run_test():
 	os.system('color')
 	Client.initialize_client()
 	totalQueries = query_list(d)
-	totalQueries.scrape(Client, single_oper = True, print_stats = True, deep_scrape = False)
+	totalQueries.scrape(Client, start_index = 30, single_oper = True, print_stats = True, deep_scrape = False)
 	totalQueries.visualize(single_oper = True, print_stats = True)
 	webbrowser.open("file://" + os.path.realpath("web/index.html"))
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
 
 	if kwargs["scrape"]:
 		Client.initialize_client()
-		totalQueries.scrape(Client, start_index = 68, **{key: kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]})
+		totalQueries.scrape(Client, start_index = 213, **{key: kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]})
 	if kwargs["graph"]:
 		totalQueries.visualize(kwargs["single_oper"], kwargs["print_stats"])
 	if kwargs["web"]:

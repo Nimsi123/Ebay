@@ -2,7 +2,8 @@ from concurrent.futures.thread import ThreadPoolExecutor
 import time
 from bs4 import BeautifulSoup
 
-from eBayScraper.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration
+from eBayScraper.SiteOperations.clean_entries import NOT_FOUND
+from eBayScraper.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration, find_key
 from eBayScraper.SiteOperations import printer
 from eBayScraper.data_files.directories import HTML_STORE_DIR
 
@@ -10,6 +11,12 @@ THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5
 MAX_PAGES = 50
 ITEM_PER_PAGE = 200
+
+
+"""
+TODO: 
+OPTIMIZATION: find the key once. don't find the key for every listing.
+"""
 
 def html_download(client, url, i):
 	"""Get the HTML from the eBay page and export it to the file 'scrape_{i}.txt' for the parameter i.
@@ -60,8 +67,8 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
 	total_listings, page_count = get_listings_iteration(html)
 
-	if total_listings is None and page_count is None:
-		return
+	if total_listings is NOT_FOUND and page_count is None:
+		return total_listings
 
 	if print_stats:
 		printer.product_stats(total_listings, page_count)
@@ -70,23 +77,30 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 	storage.reset_count_added()
 	while count < min(MAX_PAGES, page_count):
 
+		start = time.time()
 		sub_c, count = run_threads(client, link, count, page_count)
+		end = time.time()
 
 		#digest html
 		for i in range(count - sub_c, count):
+
 			#receive and parse html from text file
 			with open(HTML_STORE_DIR.format(i), "r", encoding = "utf-8") as raw_html:
 				html = BeautifulSoup(raw_html, 'html.parser')
 
+			# if a key is used by eBay, every page has a unique key. 
+			# only need to find it once per page.
+			key = find_key(html, ["S", "o", "l", "d"])
+
 			date = None
-			for title, price, date in search_listings(html, print_stats): # search_listings might yield nothing!
+			for title, price, date in search_listings(html, key, print_stats): # search_listings might yield nothing!
 				storage.add_item(title, price, date, sale_type)
 
 			oldest_date = date #the oldest date just added is the one last assigned in the for loop above
 			if print_stats:
-				printer.page_stats_two(i, storage.get_count_added(), oldest_date)
+				printer.page_stats_two(i, storage.get_count_added(), oldest_date, end-start)
 
 			if is_overlapping(recent_date_stored, oldest_date) and not deep_scrape:
-				return
+				return total_listings
 
 	return total_listings

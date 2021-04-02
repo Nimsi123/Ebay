@@ -48,7 +48,13 @@ class Client:
 			Client.next_client()
 
 		Client.update_counter()
-		return Client.current_client.get(url)
+
+		try:
+			return Client.current_client.get(url)
+		except:
+			print("Client failed to retrieve HTML.")
+			print("Link: " + url)
+			return Client.current_client.get(url)
 
 	def initialize_client():
 		"""Initializes the Client's data before starting up the scraping.
