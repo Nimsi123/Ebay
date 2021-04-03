@@ -16,12 +16,19 @@ class ProductCollection:
 	use the import_data(csv_file) method."""
 
 	def __init__(self, csv_file, *groups):
+		"""Returns a ProductCollection:
+		if the csv_file has a valid length
+		else if groups are passed to the constructor.
+
+		Otherwise, returns None."""
 
 		df = pd.read_csv(csv_file)
 
 		if len(df.index) == 0:
 			self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
-			assert len(groups) != 0
+			if len(groups) == 0:
+				# cannot make a valid ProductCollection
+				return
 			self.groups = list(groups)
 		else:
 			df['date'] = df['date'].astype('datetime64[ns]')
@@ -47,10 +54,14 @@ class ProductCollection:
 		:rtype: pandas.Timestamp or None if there are no items stored
 		"""
 		assert sale_type in ["BIN", "Auction"]
-		if self.df.empty:
+		if not self.has_valid_length():
 			return None
 
 		trimmed_series = self.df[self.df["sale_condition"] == sale_type]["date"].sort_values(ascending = False, ignore_index = True)
+
+		if trimmed_series.empty:
+			return None
+
 		return trimmed_series[0]
 
 	def reset_count_added(self):
@@ -90,7 +101,7 @@ class ProductCollection:
 
 	def scatter(self, png_file):
 		"""Creates a scatter plot that overlaps the data from all sale_type(s). Saves the plot to a .png file."""
-		if self.df.empty:
+		if not self.has_valid_length():
 			return None
 
 		fig, (avg_price_axes, volume_axes) = plt.subplots(1, 2, figsize=(12,15))
@@ -135,6 +146,9 @@ class ProductCollection:
 
 		return new
 	'''
+
+	def has_valid_length(self):
+		return len(self.df.index) != 0
 
 	def export_data(self, csv_file):
 		"""Exports data from the underlying data structure to the .csv file. 
