@@ -9,19 +9,16 @@ from matplotlib.dates import (YEARLY, DateFormatter,
 class ProductCollection:
 	"""Represents a collection of product data scraped from eBayScraper.com.
 	Implemented with the pandas module.
-
-
-	Two ways to get a ProductCollection
-
-	use the constructor
-	use the import_data(csv_file) method."""
+	"""
 
 	def __init__(self, csv_file, *groups):
-		"""Returns a ProductCollection:
-		if the csv_file has a valid length
-		else if groups are passed to the constructor.
+		"""Returns a ProductCollection if the csv_file has a valid length, else if groups are passed to the constructor.
+		Otherwise, returns None.
 
-		Otherwise, returns None."""
+		:param csv_file: The (potential) csv_file to import item data from
+		:type csv_file: str
+		:param groups: The classification for a specific item.
+		:type groups: list of str"""
 
 		df = None
 		if os.path.isfile(csv_file):
@@ -43,11 +40,18 @@ class ProductCollection:
 		self.row_count = len(self.df.index)
 		self.count_added = 0
 
+	def _valid_item_data(title, price, date, sale_type):
+		return type(title) == str and type(price) != str and type(date) != str and type(sale_type) == str
+
+	def _organize_row(self, title, price, date, sale_type):
+		"""Returns the proper format for a single row in the pandas DataFrame."""
+		return [sale_type] + self.groups + [title, price, date]
+
 	def add_item(self, title, price, date, sale_type):
 		"""Adds an item to the collection."""
-		assert type(title) == str and type(price) != str and type(date) != str and type(sale_type) == str
+		assert ProductCollection._valid_item_data(title, price, date, sale_type)
 
-		self.df.loc[self.row_count] = [sale_type] + self.groups + [title, price, date]
+		self.df.loc[self.row_count] = self._organize_row(title, price, date, sale_type)
 		self.row_count += 1
 		self.count_added += 1
 
@@ -125,32 +129,6 @@ class ProductCollection:
 
 		fig.savefig(png_file)
 		plt.close()
-
-	'''
-	@staticmethod
-	def import_data(csv_file):
-		"""Loads data from .csv file to the underlying data structure. Returns a new ProductCollection object.
-		Returns False if the csv_file did not have enough data! That is, the csv_file did not have any 
-		item data.
-		
-		Design question. Is this the only site of constructing a ProductCollection object?
-		~Table().read_table(csv_file)
-
-		:param csv_file: The .csv file with the previously scraped data
-		:type csv_file: str
-		:rtype: ProductCollection
-		"""
-		new = ProductCollection()
-
-		new.df = pd.read_csv(csv_file)
-
-		new.df['date'] = new.df['date'].astype('datetime64[ns]')
-		new.row_count = len(new.df.index)
-		new.groups = [new.df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
-		new.count_added = 0
-
-		return new
-	'''
 
 	def has_valid_length(self):
 		return len(self.df.index) != 0

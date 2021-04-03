@@ -112,19 +112,6 @@ def find_key(html, sequence):
     else:
         return None
 
-    """
-    keys = [key for key in keys if key != None]
-    print("keys: ", keys)
-
-
-    if len(set(keys)) == 1:
-        #all the keys are identical
-        if keys[0] != None:
-            return keys[0]
-    print("nothing matching")
-    return None
-    """
-
 def get_listings_iteration(html):
     """Returns the total number of listings for the query and the number of page iterations.
 
@@ -141,14 +128,15 @@ def get_listings_iteration(html):
 
     # type of temp_num must be str at this point
 
-    # 4/1/21 this try except block is unnecessary. just find total_listings = int(temp_num)
+    total_listings = int(temp_num)
+    """
     try:
         total_listings = int(temp_num)
     except Exception as e:
         print(f"Cannot find total listings")
         print("{0:30}: {1}\n".format("extract", temp_num))
         raise e
-        #return None, None
+    """
 
     #ebay won't show us more that 10,000 items from their page even though there might be more to look at
     max_iteration = min(50, int(total_listings/200 +1))
