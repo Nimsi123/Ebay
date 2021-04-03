@@ -60,7 +60,7 @@ def run_test():
 	os.system('color')
 	Client.initialize_client()
 	totalQueries = query_list(d)
-	totalQueries.scrape(Client, start_index = 30, single_oper = True, print_stats = True, deep_scrape = False)
+	totalQueries.scrape(Client, start_index = 0, single_oper = True, print_stats = True, deep_scrape = False)
 	totalQueries.visualize(single_oper = True, print_stats = True)
 	webbrowser.open("file://" + os.path.realpath("web/index.html"))
 

@@ -38,17 +38,25 @@ class query_list:
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
 		counter = start_index
+		print("query_collection: ", self.query_collection)
+		print(start_index, end_index)
+		print(self.query_collection[start_index:end_index])
 		for groupA, groupB, groupC in self.query_collection[start_index:end_index]:
+			print("groupC: ", groupC)
 			printer.new_query(groupC, counter)
 			csv_file = csv_dir(groupC)
 
+			collection = ProductCollection(csv_file, groupA, groupB, groupC)
+
+			"""
 			# instantiate a ProductCollection object
-			if os.path.isfile(csv_file) and os.path.getsize(csv_file) != 0:
+			if os.path.isfile(csv_file) and ProductCollection.has_valid_length(csv_file):
 				collection = ProductCollection.import_data(csv_file)
 			else:
 				with open(csv_file, "w") as file:
 					pass
 				collection = ProductCollection(groupA, groupB, groupC)
+			"""
 
 			# scrape
 			for sale_type in query_list.SALE_TYPES:
@@ -76,7 +84,8 @@ class query_list:
 			if not (os.path.isfile(csv_file) and os.path.getsize(csv_file) != 0):
 				return
 
-			ProductCollection.import_data(csv_file).scatter(png_file)
+			#ProductCollection.import_data(csv_file).scatter(png_file)
+			ProductCollection(csv_file).scatter(png_file)
 
 			if single_oper:
 				return

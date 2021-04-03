@@ -15,13 +15,20 @@ class ProductCollection:
 	use the constructor
 	use the import_data(csv_file) method."""
 
-	def __init__(self, *groups):
+	def __init__(self, csv_file, *groups):
 
-		#should know where to write the scraped data
-		#should know where to save the charts
-		self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
-		self.row_count = 0
-		self.groups = list(groups)
+		df = pd.read_csv(csv_file)
+
+		if len(df.index) == 0:
+			self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
+			assert len(groups) != 0
+			self.groups = list(groups)
+		else:
+			df['date'] = df['date'].astype('datetime64[ns]')
+			self.df = df
+			self.groups = [df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
+
+		self.row_count = len(df.index)
 		self.count_added = 0
 
 	def add_item(self, title, price, date, sale_type):
@@ -103,9 +110,12 @@ class ProductCollection:
 		fig.savefig(png_file)
 		plt.close()
 
+	'''
 	@staticmethod
 	def import_data(csv_file):
 		"""Loads data from .csv file to the underlying data structure. Returns a new ProductCollection object.
+		Returns False if the csv_file did not have enough data! That is, the csv_file did not have any 
+		item data.
 		
 		Design question. Is this the only site of constructing a ProductCollection object?
 		~Table().read_table(csv_file)
@@ -119,12 +129,12 @@ class ProductCollection:
 		new.df = pd.read_csv(csv_file)
 
 		new.df['date'] = new.df['date'].astype('datetime64[ns]')
-
 		new.row_count = len(new.df.index)
 		new.groups = [new.df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
 		new.count_added = 0
 
 		return new
+	'''
 
 	def export_data(self, csv_file):
 		"""Exports data from the underlying data structure to the .csv file. 
