@@ -7,7 +7,13 @@ from matplotlib.dates import (YEARLY, DateFormatter,
 
 class ProductCollection:
 	"""Represents a collection of product data scraped from eBayScraper.com.
-	Implemented with the pandas module."""
+	Implemented with the pandas module.
+
+
+	Two ways to get a ProductCollection
+
+	use the constructor
+	use the import_data(csv_file) method."""
 
 	def __init__(self, *groups):
 

@@ -1,29 +1,36 @@
 import os
 from termcolor import colored
 
-def new_query(name):
+def new_query(name, count):
 	opening_lines = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
 	new_query =     "\t\tNew Query"
 	collecting =    "{0:30}: {1}".format("COLLECTING", name)
-	#count_index =   "{0:30}: {1}".format("COUNT INDEX", count)
+	count_index =   "{0:30}: {1}".format("COUNT INDEX", count)
 	minus_lines = "---------------------------------------------\n"
 
 	print(opening_lines)
 	print(colored(new_query, "green"))
 	print(colored(collecting, "green"))
-	#print(colored(count_index, "green"))
+	print(colored(count_index, "green"))
 	print(minus_lines)
 
 def start_graph(name):
-	print("Graphing" + name)
+	print("Graphing " + name)
 
 def start_scrape(name, listing_type):
 	start_str = "{0:20}: {1}".format(name, listing_type)
 	print(colored(start_str, "green"))
 
-def end_scrape(listing_type, list_len):
-	length_of = "Length of " + "{0:20}: {1}".format(listing_type, list_len)
-	print(colored(length_of, "green"))
+def end_scrape(listing_type, total_listings, list_len):
+	total_possible = "{0:30}: {1}".format("Total listings", total_listings)
+	length_of =      "{0:30}: {1}".format("Length of " + listing_type, list_len)
+
+	color = "green"
+	if total_listings == None or list_len < 0.5 * total_listings:
+		color = "red"
+
+	print(colored(total_possible, color))
+	print(colored(length_of, color))
 
 def product_stats(total_listings, max_iteration):
 	print("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
@@ -45,10 +52,11 @@ def page_stats_one(num_item_listings, added, skipped_early, bad, class_code):
 	print("{0:30}: {1}".format("class_code", class_code))
 	print("----")
 
-def page_stats_two(count, item_list_length, date_appended):
+def page_stats_two(count, item_list_length, date_appended, thread_time):
 	print("{0:30}: {1}".format("current item_list length", item_list_length))
 	print("{0:30}: {1}".format("iter count", count))
 	print("{0:30}: {1}".format("EARLIEST DATE", date_appended))
+	print("{0:30}: {1}".format("Thread run-time", thread_time))
 
 	print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 

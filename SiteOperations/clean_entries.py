@@ -1,6 +1,11 @@
 import datetime
 import bs4
 
+"""Clean functions return a list with a single element to signal a bad input."""
+NOT_FOUND = ["element not found in html"]
+
+strip_comma = lambda entry: NOT_FOUND if entry == None else entry.replace(',', '')
+
 def clean_title(entry):
     """Cleans the title entry.
 
@@ -9,6 +14,9 @@ def clean_title(entry):
     :returns: The cleaned title
     :rtype: str
     """
+    if entry == None:
+        return NOT_FOUND
+
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     return entry
@@ -26,6 +34,9 @@ def clean_price(entry):
     >>> clean_price("100") #returns None
     >>>
     """
+    if entry == None:
+        return NOT_FOUND
+
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("$") != -1:
@@ -43,12 +54,15 @@ def clean_shipping(entry):
 
     :param entry: The shipping entry string.
     :type entry: str
-    :returns: The shipping. Otherwise, returns None if bad entry.
+    :returns: The shipping. Otherwise, returns [entry] if bad entry.
     :rtype: float
     """
+    if entry == None:
+        return NOT_FOUND
+
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
-    if entry in ["Free shipping", "Shipping not specified", "Freight"] or entry.find("$") == -1:
+    if entry in ["Free shipping", "Shipping not specified", "Freight"] or entry.find("$") == -1 or entry == "":
         return 0
     else:
         try:
@@ -69,6 +83,9 @@ def clean_date(entry):
     :returns: A ``datetime`` object representing the date sold. Otherwise, returns None if bad entry.
     :rtype: ``datetime``
     """
+    if entry == None:
+        return NOT_FOUND
+
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("Sold") == -1:

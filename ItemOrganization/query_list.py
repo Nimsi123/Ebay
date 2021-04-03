@@ -8,49 +8,60 @@ from eBayScraper.SiteOperations.fast_download import fast_download
 
 from eBayScraper.data_files.directories import make_eBay_link, csv_dir, png_dir
 
+"""TODO:
+
+i'm getting way to many "bad" listings
+
+problem with scraping and visualizing with brand new products that have never been scraped before.
+
+ebay brought back the extra keys in the sale date. bring back the key code!
+
+"""
 
 class query_list:
 	"""
 	Represents all of the eBay queries we are keeping track of.
 	"""
+	SALE_TYPES = ["BIN", "Auction"]
 
 	def __init__(self, json):
-		self.query_collection = list(query_list.split(json))		
+		self.query_collection = list(query_list.split(json)) # (groupA, groupB, groupC)
+
+	def index_of(self, query):
+		for i in range(len(self.query_collection)):
+			q = self.query_collection[i]
+			if q[2] == query:
+				return i
+
+		raise ValueError(query + " is not in the query_list.")
 
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
+		counter = start_index
 		for groupA, groupB, groupC in self.query_collection[start_index:end_index]:
-			printer.new_query(groupC)
+			printer.new_query(groupC, counter)
 			csv_file = csv_dir(groupC)
 
-			with open(csv_file, "r") as f:
-				if len(f.readlines()) == 0:
-					empty = True
-				else:
-					empty = False
-
-			if os.path.isfile(csv_file) and not empty:
-				try:
-					collection = ProductCollection.import_data(csv_file)
-				except:
-					with open(csv_file, "w") as file:
-						pass
-					collection = ProductCollection(groupA, groupB, groupC)
+			# instantiate a ProductCollection object
+			if os.path.isfile(csv_file) and os.path.getsize(csv_file) != 0:
+				collection = ProductCollection.import_data(csv_file)
 			else:
 				with open(csv_file, "w") as file:
 					pass
 				collection = ProductCollection(groupA, groupB, groupC)
 
-			for sale_type in ["BIN", "Auction"]:
+			# scrape
+			for sale_type in query_list.SALE_TYPES:
 				cmdline_args = (print_stats, deep_scrape)
 
 				if print_stats: 
 					printer.start_scrape(groupC, sale_type)
-				fast_download(client, collection, sale_type, make_eBay_link(sale_type, groupC), *cmdline_args) #fast_download takes care of date_stored
+				total_listings = fast_download(client, collection, sale_type, make_eBay_link(sale_type, groupC), *cmdline_args)
 				if print_stats:
-					printer.end_scrape(sale_type, collection.get_count_added())
+					printer.end_scrape(sale_type, total_listings, collection.get_count_added())
 
 			collection.export_data(csv_file)
+			counter += 1
 
 			if single_oper:
 				return
@@ -60,17 +71,9 @@ class query_list:
 			if print_stats:
 				printer.start_graph(groupC)
 
-			csv_file = csv_dir(groupC)
-			png_file = png_dir(groupC)
-			assert os.path.isfile(csv_file)
+			csv_file, png_file = csv_dir(groupC), png_dir(groupC)
 
-			with open(csv_file, "r") as f:
-				if len(f.readlines()) == 0:
-					empty = True
-				else:
-					empty = False
-
-			if empty:
+			if not (os.path.isfile(csv_file) and os.path.getsize(csv_file) != 0):
 				return
 
 			ProductCollection.import_data(csv_file).scatter(png_file)
@@ -88,7 +91,7 @@ class query_list:
 	            for sub in value:
 	                yield (groupA, key, sub)
 	        else:
-	            yield from query_list.split_helper(value, key)
+	            yield from query_list.split_helper(value, groupA)
 
 	def split(json):
 		"""
