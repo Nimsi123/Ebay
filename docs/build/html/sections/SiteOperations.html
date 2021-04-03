@@ -220,7 +220,7 @@
 <dd class="field-odd"><p><strong>entry</strong> (<em>str</em>) -- The shipping entry string.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The shipping. Otherwise, returns None if bad entry.</p>
+<dd class="field-even"><p>The shipping. Otherwise, returns [entry] if bad entry.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -248,6 +248,13 @@
 </div>
 <div class="section" id="module-fast_download">
 <span id="fast-download-py"></span><span id="fastdownloadref"></span><h2>fast_download.py<a class="headerlink" href="#module-fast_download" title="Permalink to this headline">¶</a></h2>
+<dl class="py data">
+<dt id="fast_download.ITEM_PER_PAGE">
+<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">ITEM_PER_PAGE</code><em class="property"> = 200</em><a class="headerlink" href="#fast_download.ITEM_PER_PAGE" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO:
+OPTIMIZATION: find the key once. don't find the key for every listing.</p>
+</dd></dl>
+
 <dl class="py function">
 <dt id="fast_download.fast_download">
 <code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">fast_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">storage</span></em>, <em class="sig-param"><span class="n">sale_type</span></em>, <em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">print_stats</span></em>, <em class="sig-param"><span class="n">deep_scrape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.fast_download" title="Permalink to this definition">¶</a></dt>
@@ -290,9 +297,10 @@ Use threads to download html concurrently. Iterate sequentially through the html
 <span id="traverse-html-py"></span><span id="traversehtmlref"></span><h2>traverse_html.py<a class="headerlink" href="#module-traverse_html" title="Permalink to this headline">¶</a></h2>
 <dl class="py function">
 <dt id="traverse_html.extract">
-<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">class_name</span></em>, <em class="sig-param"><span class="n">clean_func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.extract" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">extract</code><span class="sig-paren">(</span><em class="sig-param">html</em>, <em class="sig-param">element_type</em>, <em class="sig-param">class_name</em>, <em class="sig-param">clean_func</em>, <em class="sig-param">find=&lt;function find_element&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.extract" title="Permalink to this definition">¶</a></dt>
 <dd><p>Searches <code class="docutils literal notranslate"><span class="pre">html</span></code> for the contents of the first html tag of <code class="docutils literal notranslate"><span class="pre">element_type</span></code> and <code class="docutils literal notranslate"><span class="pre">class_name</span></code>.
-Before returning the html contents, clean the value with the <code class="docutils literal notranslate"><span class="pre">clean_func</span></code>.</p>
+Before returning the html contents, clean the value with the <code class="docutils literal notranslate"><span class="pre">clean_func</span></code>.
+Passes None to clean_func if nothing is found.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -303,7 +311,7 @@ Before returning the html contents, clean the value with the <code class="docuti
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return value of clean_func on the inner contents on the found html tag. Returns None if nothing is found.</p>
+<dd class="field-even"><p>The return value of clean_func on the inner contents on the found html tag.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>Ranges from str to int to datetime.datetime.</p>
@@ -312,8 +320,32 @@ Before returning the html contents, clean the value with the <code class="docuti
 </dd></dl>
 
 <dl class="py function">
+<dt id="traverse_html.extract_nested">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">extract_nested</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">find</span></em>, <em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">outer_spec</span></em>, <em class="sig-param"><span class="n">inner_element_type</span></em>, <em class="sig-param"><span class="n">inner_class_name</span></em>, <em class="sig-param"><span class="n">clean_func</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.extract_nested" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some attributes are nested within two blocks. Returns the attribute accessed by diving
+into one block, and then going deeper.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="traverse_html.find_class_names">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">find_class_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">content</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.find_class_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the class names of all elements for which 'content' matches the element's contents.
+Helper method to find_key. This 'class_name' is what ebay generated for every letter in the date.
+We want to find the class_name that is common to all letters in &quot;Sold&quot;, for example.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>html</strong> -- The html block to search</p></li>
+<li><p><strong>element_type</strong> (<em>str</em>) -- The html tag type to inspect</p></li>
+<li><p><strong>content</strong> (<em>str</em>) -- The content to compare with the content in the html tag.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="traverse_html.find_element">
-<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">find_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">attr_key</span></em>, <em class="sig-param"><span class="n">attr_value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.find_element" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">find_element</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">attrs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.find_element" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -334,8 +366,36 @@ Before returning the html contents, clean the value with the <code class="docuti
 </dd></dl>
 
 <dl class="py function">
+<dt id="traverse_html.find_key">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">find_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">sequence</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.find_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the class name, or 'key', most commonly seen in all sub elements in 'tag_block' that
+have the letters in sequence.</p>
+<dl class="simple">
+<dt>Why?</dt><dd><p>--&gt; ebay changed the class_name of the element representing the sale date</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="traverse_html.find_letters">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">find_letters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">element_type</span></em>, <em class="sig-param"><span class="n">attrs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.find_letters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string of letters. Each letter in the returned string is
+in an html tag of 'element_type' with corresponding attrs.
+Should return something like &quot;Sold Jun 11, 2020&quot;.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>html</strong> -- The HTML block to search.</p></li>
+<li><p><strong>element_type</strong> (<em>str</em>) -- The HTML tag type to search for.</p></li>
+<li><p><strong>attrs</strong> (<em>dict</em>) -- Attributes that the target html tag must have.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="traverse_html.get_data">
-<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em>, <em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns all meaningfull item data from the html block.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -365,6 +425,21 @@ Before returning the html contents, clean the value with the <code class="docuti
 <dd class="field-odd"><p>tuple</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="traverse_html.get_subelement">
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">get_subelement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">outer_spec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.get_subelement" title="Permalink to this definition">¶</a></dt>
+<dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">html</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="s2">&quot;&lt;span class = &#39;out&#39;&gt;&lt;div class = &#39;in&#39;&gt;&lt;/div&gt;&lt;/span&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_subelement</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="s2">&quot;out&quot;</span><span class="p">)])</span>
+<span class="go">&lt;div class=&quot;in&quot;&gt;&lt;/div&gt;</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">html</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="s2">&quot;&lt;span class = &#39;out&#39;&gt;&lt;div class = &#39;in2&#39;&gt;&lt;/div&gt;&lt;div class = &#39;in&#39;&gt;&lt;/div&gt;&lt;/span&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">get_subelement</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;span&quot;</span><span class="p">,</span> <span class="s2">&quot;out&quot;</span><span class="p">)])</span>
+<span class="go">&lt;div class=&quot;in2&quot;&gt;&lt;/div&gt;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py function">
@@ -403,7 +478,7 @@ Before returning the html contents, clean the value with the <code class="docuti
 
 <dl class="py function">
 <dt id="traverse_html.search_listings">
-<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">search_listings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">print_stats</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.search_listings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">search_listings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">print_stats</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.search_listings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields item data from listings in a single page's html.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

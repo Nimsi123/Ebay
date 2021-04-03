@@ -31,11 +31,11 @@ Example Commands
 
 	python driver.py -s 		# Starts the scraper
 
-	python driver.py -s -p  	# Starts the scraper and prints details about the scraping process
+	python driver.py -s --print 	# Starts the scraper; prints details about the scraping process
 
-	python driver.py -g 		# Creates graphs from the scraped data
+	python driver.py --graph 	# Creates graphs from the scraped data
 
-	python driver.py -web 		# Opens the web interface to view graphs
+	python driver.py --web 		# Opens the web interface to view graphs
 
 Command Line arguments
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -53,7 +53,7 @@ Command Line arguments
 	   * - ``-d``
 	     - | Performs a deep scrape. The scraper does not stop scraping once it 
 	       | reaches a point where the data overlaps from the past.
-	   * - ``-synchr``
+	   * - ``--synchr``
 	     - | Performs a synchronous scrape. This approach does not use 
 	       | threading to increase the scraping speed.
 
@@ -65,7 +65,7 @@ Command Line arguments
 
 	   * - Command line argument
 	     - Description
-	   * - ``-g``
+	   * - ``--graph``
 	     - | Graphs charts from scraped data. 
 	       | Creates .png files in ``eBayScraper/data_files/PNG``
 
@@ -75,7 +75,7 @@ Command Line arguments
 
 	   * - Command line argument
 	     - Description
-	   * - ``-p``
+	   * - ``--print``
 	     - Prints the progress on either scraping or graphing.
 	   * - ``-so``
 	     - Only performs one scraping or graphing process.
@@ -88,5 +88,5 @@ Command Line arguments
 
 	   * - Command line argument
 	     - Description
-	   * - ``-web``
+	   * - ``--web``
 	     - Opens up an interactive web page to view the result of your scrapes.

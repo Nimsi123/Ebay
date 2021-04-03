@@ -200,11 +200,11 @@
 <h2>Example Commands<a class="headerlink" href="#example-commands" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">python driver.py -s             # Starts the scraper</span>
 
-<span class="go">python driver.py -s -p          # Starts the scraper and prints details about the scraping process</span>
+<span class="go">python driver.py -s --print     # Starts the scraper; prints details about the scraping process</span>
 
-<span class="go">python driver.py -g             # Creates graphs from the scraped data</span>
+<span class="go">python driver.py --graph        # Creates graphs from the scraped data</span>
 
-<span class="go">python driver.py -web           # Opens the web interface to view graphs</span>
+<span class="go">python driver.py --web          # Opens the web interface to view graphs</span>
 </pre></div>
 </div>
 </div>
@@ -233,7 +233,7 @@
 </div>
 </td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-synchr</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--synchr</span></code></p></td>
 <td><div class="line-block">
 <div class="line">Performs a synchronous scrape. This approach does not use</div>
 <div class="line">threading to increase the scraping speed.</div>
@@ -254,7 +254,7 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-g</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--graph</span></code></p></td>
 <td><div class="line-block">
 <div class="line">Graphs charts from scraped data.</div>
 <div class="line">Creates .png files in <code class="docutils literal notranslate"><span class="pre">eBayScraper/data_files/PNG</span></code></div>
@@ -275,7 +275,7 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-p</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--print</span></code></p></td>
 <td><p>Prints the progress on either scraping or graphing.</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">-so</span></code></p></td>
@@ -295,7 +295,7 @@
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">-web</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--web</span></code></p></td>
 <td><p>Opens up an interactive web page to view the result of your scrapes.</p></td>
 </tr>
 </tbody>

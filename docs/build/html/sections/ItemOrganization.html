@@ -171,7 +171,7 @@
 <span id="productcollection-py"></span><span id="productcollectionref"></span><h2>ProductCollection.py<a class="headerlink" href="#module-ProductCollection" title="Permalink to this headline">¶</a></h2>
 <dl class="py class">
 <dt id="ProductCollection.ProductCollection">
-<em class="property">class </em><code class="sig-prename descclassname">ProductCollection.</code><code class="sig-name descname">ProductCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ProductCollection.ProductCollection" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ProductCollection.</code><code class="sig-name descname">ProductCollection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">csv_file</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">groups</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ProductCollection.ProductCollection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Represents a collection of product data scraped from eBayScraper.com.
 Implemented with the pandas module.</p>
@@ -209,22 +209,6 @@ Typically invoked after scraping data.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>pandas.Timestamp or None if there are no items stored</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ProductCollection.ProductCollection.import_data">
-<em class="property">static </em><code class="sig-name descname">import_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">csv_file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ProductCollection.ProductCollection.import_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads data from .csv file to the underlying data structure. Returns a new ProductCollection object.</p>
-<p>Design question. Is this the only site of constructing a ProductCollection object?
-~Table().read_table(csv_file)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>csv_file</strong> (<em>str</em>) -- The .csv file with the previously scraped data</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#ProductCollection.ProductCollection" title="ProductCollection.ProductCollection">ProductCollection</a></p>
 </dd>
 </dl>
 </dd></dl>

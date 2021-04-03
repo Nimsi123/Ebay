@@ -19,8 +19,7 @@ Adding ScraperAPI api keys
 eBayScraper relies on ScraperAPI for retrieving eBay HTML. 
 
 #. Start a free-trial with `ScraperAPI <https://www.scraperapi.com/>`_.
-#. Open ``data_files/api_keys.py``. Add the api key as a string to the list ``api_keys``. You can add multiple api keys; 
-if an api key reaches its request limit, eBayScraper will switch to another api key.
+#. Open ``data_files/api_keys.py``. Add the api key as a string to the list ``api_keys``. You can add multiple api keys; if an api key reaches its request limit, eBayScraper will switch to another api key.
 
 	Within ``api_keys.py``, this would look like
 

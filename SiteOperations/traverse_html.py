@@ -37,10 +37,16 @@ def find_element(html, element_type, attrs):
     return None
 
 def find_letters(html, element_type, attrs):
-    """Returns a string of letters. All letters are in an html block of 'element_type' with 'class_code.'
-    Why?
-        --> class_code is used to encrypt the letters that make up the sale date string
-    Should return something like "Sold Jun 11, 2020"
+    """Returns a string of letters. Each letter in the returned string is
+    in an html tag of 'element_type' with corresponding attrs.
+    Should return something like "Sold Jun 11, 2020".
+
+    :param html: The HTML block to search.
+    :type html: 
+    :param element_type: The HTML tag type to search for.
+    :type element_type: str
+    :param attrs: Attributes that the target html tag must have.
+    :type attrs: dict
     """
 
     saleDate = ""
@@ -61,13 +67,16 @@ def find_letters(html, element_type, attrs):
     return saleDate
 
 def find_class_names(html, element_type, content):
-    """
-    in the 'html' code, there are elements of 'element_type' that has 'content'
-    return the class names of all elements for which 'content' matches the element's .contents
-    Why?
-        --> helper method to find_key
-    this 'class_name' is what ebay generated for every letter in the date
-    content is one letter in "Sold". we want to find the class_name that is common to all letters in "Sold"
+    """Return the class names of all elements for which 'content' matches the element's contents. 
+    Helper method to find_key. This 'class_name' is what ebay generated for every letter in the date. 
+    We want to find the class_name that is common to all letters in "Sold", for example. 
+
+    :param html: The html block to search
+    :type html:
+    :param element_type: The html tag type to inspect
+    :type element_type: str
+    :param content: The content to compare with the content in the html tag.
+    :type content: str
     """
 
     class_names = []
@@ -206,9 +215,8 @@ def get_subelement(html, outer_spec):
     return outer_block
 
 def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name, clean_func):
-    """
-    Some attributes are nested within two blocks.
-    Returns the attribute accessed by diving into one block, and then going deeper.
+    """Some attributes are nested within two blocks. Returns the attribute accessed by diving 
+    into one block, and then going deeper.
     """
 
     outer_block = get_subelement(html, outer_spec)
@@ -221,8 +229,9 @@ def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name,
     return cleaned_inner
 
 def extract(html, element_type, class_name, clean_func, find = find_element):
-    """ Searches ``html`` for the contents of the first html tag of ``element_type`` and ``class_name``. 
-    Before returning the html contents, clean the value with the ``clean_func``.
+    """Searches ``html`` for the contents of the first html tag of ``element_type`` and ``class_name``. 
+    Before returning the html contents, clean the value with the ``clean_func``. 
+    Passes None to clean_func if nothing is found.
     
     :param html: a block of code representing a single listing
     :type html:
@@ -233,7 +242,6 @@ def extract(html, element_type, class_name, clean_func, find = find_element):
     :param clean_func: The function that converts the web text into a usable, readable format in the underlying data structure.
     :type clean_func: function
     :returns: The return value of clean_func on the inner contents on the found html tag.
-    Passes None to clean_func if nothing is found.
     :rtype: Ranges from str to int to datetime.datetime. 
     """
 

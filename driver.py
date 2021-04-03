@@ -16,16 +16,16 @@ def get_kwargs(user_args):
 	cmd_vals = {
 		("scrape", "-s"): False,
 		("deep_scrape", "-d"): False,
-		("synchronous_scrape", "-synchr"): False,
+		("synchronous_scrape", "--synchr"): False,
 
-		("graph", "-g"): False,
+		("graph", "--graph"): False,
 
-		("print_stats", "-p"): False,
+		("print_stats", "--print"): False,
 		("single_oper", "-so"): False,
 
-		("web", "-web"): False,
+		("web", "--web"): False,
 
-		("test", "-t"): False,
+		("test", "--test"): False,
 		("setup", "--setup"): False,
 		
 	}

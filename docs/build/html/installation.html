@@ -180,7 +180,7 @@
 <p>eBayScraper relies on ScraperAPI for retrieving eBay HTML.</p>
 <ol class="arabic">
 <li><p>Start a free-trial with <a class="reference external" href="https://www.scraperapi.com/">ScraperAPI</a>.</p></li>
-<li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/api_keys.py</span></code>. Add the api key as a string to the list <code class="docutils literal notranslate"><span class="pre">api_keys</span></code>. You can add multiple api keys; if the number of requests is maxed out on a key, eBayScraper will switch to another api key.</p>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">data_files/api_keys.py</span></code>. Add the api key as a string to the list <code class="docutils literal notranslate"><span class="pre">api_keys</span></code>. You can add multiple api keys; if an api key reaches its request limit, eBayScraper will switch to another api key.</p>
 <blockquote>
 <div><p>Within <code class="docutils literal notranslate"><span class="pre">api_keys.py</span></code>, this would look like</p>
 <div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
