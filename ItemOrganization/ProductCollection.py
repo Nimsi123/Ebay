@@ -1,4 +1,5 @@
 import pandas as pd 
+import os
 
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
@@ -22,20 +23,24 @@ class ProductCollection:
 
 		Otherwise, returns None."""
 
-		df = pd.read_csv(csv_file)
+		df = None
+		if os.path.isfile(csv_file):
+			df = pd.read_csv(csv_file)
 
-		if len(df.index) == 0:
-			self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
-			if len(groups) == 0:
-				# cannot make a valid ProductCollection
-				return
-			self.groups = list(groups)
-		else:
+		if df is not None and len(df.index) != 0:
 			df['date'] = df['date'].astype('datetime64[ns]')
 			self.df = df
 			self.groups = [df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
+		else:
+			if len(groups) == 0:
+				# cannot make a valid ProductCollection
+				return
 
-		self.row_count = len(df.index)
+			self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
+			self.groups = list(groups)
+
+
+		self.row_count = len(self.df.index)
 		self.count_added = 0
 
 	def add_item(self, title, price, date, sale_type):

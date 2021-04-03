@@ -107,7 +107,10 @@ def find_key(html, sequence):
     for letter in sequence:
         keys.extend(find_class_names(tagBlock, "span", letter))
 
-    return max(set(keys), key = keys.count)
+    if set(keys):
+        return max(set(keys), key = keys.count)
+    else:
+        return None
 
     """
     keys = [key for key in keys if key != None]

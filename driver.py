@@ -42,6 +42,9 @@ def get_kwargs(user_args):
 
 	return kwargs
 
+def get_subset(d, keys):
+	return {key: d[key] for key in keys}
+
 def check_setup():
 	"""Prints to the user if their setup is successful.
 	"""
@@ -85,8 +88,8 @@ if __name__ == "__main__":
 
 	if kwargs["scrape"]:
 		Client.initialize_client()
-		totalQueries.scrape(Client, start_index = 213, **{key: kwargs[key] for key in ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]})
+		totalQueries.scrape(Client, **get_subset(kwargs, ["single_oper", "synchronous_scrape", "print_stats", "deep_scrape"]))
 	if kwargs["graph"]:
-		totalQueries.visualize(kwargs["single_oper"], kwargs["print_stats"])
+		totalQueries.visualize(**get_subset(kwargs, ["single_oper", "print_stats"]))
 	if kwargs["web"]:
 		webbrowser.open("file://" + os.path.realpath("web/index.html"))
