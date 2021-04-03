@@ -49,9 +49,23 @@ def check_setup():
 	"""Prints to the user if their setup is successful.
 	"""
 	from eBayScraper.data_files.api_keys import api_keys
+	from scraper_api import ScraperAPIClient
 	
+	all_good = True
+
+	if api_keys == [] or d == {}:
+		all_good = False
+
+	#validate api keys
+	for key in api_keys:
+		try:
+			ScraperAPIClient(key).account()
+		except:
+			all_good = False
+			break
+
 	os.system('color')
-	if (api_keys != [] and d != {}):
+	if all_good:
 		print(colored("Setup is successful!", "green"))
 	else:
 		print(colored("Make sure the list in data_files/api_keys.py and the dictionary in data_files/queries.py are not empty!", "red"))
