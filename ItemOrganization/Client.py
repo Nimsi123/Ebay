@@ -1,40 +1,39 @@
 from termcolor import colored
 from scraper_api import ScraperAPIClient
-import pandas as pd
 
 from eBayScraper.data_files.api_keys import api_keys
-from eBayScraper.data_files.directories import CLIENT_REQUESTS_DIR
-
 #from eBayScraper.ItemOrganization.timer import timer
- 
+
 class Client:
 
 	def next_client():
 		"""Once an api key has run out of free requests, switch to the next available api_key. 
-		Increments Client.current_index, updates Client.current_client, and initializes Client.counter."""
+		"""
 
-		Client.current_index += 1
-		if Client.current_index == len(api_keys):
-			print(colored("ran out of api requests.", "red"))
-			import sys
-			sys.exit()
+		while (len(Client.data) >= 1 and Client.over_client_limit()):
+			Client.data.pop(0)
 
-		Client.current_client = ScraperAPIClient( api_keys[Client.current_index] )
-		Client.counter = Client.df["counter"][Client.current_index]
+			if len(Client.data) == 0:
+				print(colored("Ran out of api requests!", "red"))
+				import sys
+				sys.exit()
 
-		if Client.counter >= Client.counter_limit:
-			Client.next_client()
+			Client.current_client, Client.requests = Client.current_client_and_requests()
 
 	def update_counter():
 		"""Increments Client.counter and updates .csv file with new counter values."""
-		Client.counter += 1
+		Client.requests += 1
 
-		Client.df.at[Client.current_index, "counter"] = Client.counter
-		Client.df.to_csv(CLIENT_REQUESTS_DIR, index = False)
+	def over_client_limit():
+		return Client.requests >= Client.requests_limit
+
+	def current_client_and_requests():
+		return ScraperAPIClient(Client.data[0][0]), Client.data[0][1]
 
 	#@timer
 	def get(url):
-		"""Essentially a wrapper function to client.get(url). If the counter exceedes the counter_limit, use the next available client.
+		"""Essentially a wrapper function to client.get(url). 
+		Attempts to get the next client if we're over the current client limit.
 
 		:param url: Downloads the HTML at the url.
 		:type url: str
@@ -44,32 +43,31 @@ class Client:
 
 		#print("{0:30}: {1}\n".format("CLIENT COUNTER", Client.counter))
 
-		if Client.counter >= Client.counter_limit:
+		if Client.over_client_limit():
 			Client.next_client()
 
-		Client.update_counter()
+		attempts = 0
+		while attempts < 3:
+			try:
+				html = Client.current_client.get(url)
+				Client.update_counter()
+				return html
+			except:
+				print("Client failed to retrieve HTML.")
+				print("Link: " + url)
+				attempts += 1
 
-		try:
-			return Client.current_client.get(url)
-		except:
-			print("Client failed to retrieve HTML.")
-			print("Link: " + url)
-			return Client.current_client.get(url)
+		print(colored("Could not retrieve HTML from link!", "red"))
+		import sys
+		sys.exit()
 
 	def initialize_client():
 		"""Initializes the Client's data before starting up the scraping.
-		Updates Client.csv with the requestCount number for each api key. 
 		"""
 		
-		#update CLIENT_REQUESTS_DIR
-		data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in api_keys]
-		Client.df = pd.DataFrame(data, columns= ["api_key", "counter"])
-		Client.df.to_csv(CLIENT_REQUESTS_DIR)
-
-		Client.counter_limit = 1000
-		Client.current_index = -1
-
-		Client.next_client()
+		Client.data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in api_keys]
+		Client.current_client, Client.requests = Client.current_client_and_requests()
+		Client.requests_limit = 1000
 
 	""" 	Miscellaneous 	"""
 	def print_usage():
