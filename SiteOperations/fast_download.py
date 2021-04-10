@@ -35,6 +35,7 @@ def run_threads(client, link, count, page_count):
 	#run threads and download html
 	with ThreadPoolExecutor(max_workers=THREAD_LIMIT) as executor:
 		while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
+			print("LINK: " + link)
 			executor.submit(html_download, client, link, count)
 			time.sleep(REQUEST_WAIT)
 

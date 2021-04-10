@@ -27,6 +27,8 @@ def get_kwargs(user_args):
 
 		("test", "--test"): False,
 		("setup", "--setup"): False,
+
+		("scrape-test", "--scrape-test"): False,
 		
 	}
 	possible_args = [key[1] for key in cmd_vals.keys()]
@@ -81,6 +83,12 @@ def run_test():
 	totalQueries.visualize(single_oper = True, print_stats = True)
 	webbrowser.open("file://" + os.path.realpath("web/index.html"))
 
+def run_scrape_test():
+	os.system('color')
+	Client.initialize_client()
+	totalQueries = query_list(d)
+	totalQueries.scrape(Client, start_index = 30, single_oper = True, print_stats = True, deep_scrape = True)
+
 if __name__ == "__main__":
 
 	kwargs = get_kwargs(sys.argv[1:])
@@ -94,6 +102,11 @@ if __name__ == "__main__":
 
 	if kwargs["test"]:
 		run_test()
+		import sys
+		sys.exit()
+
+	if kwargs["scrape-test"]:
+		run_scrape_test()
 		import sys
 		sys.exit()
 

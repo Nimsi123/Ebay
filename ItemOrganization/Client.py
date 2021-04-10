@@ -64,7 +64,6 @@ class Client:
 	def initialize_client():
 		"""Initializes the Client's data before starting up the scraping.
 		"""
-		
 		Client.data = [(key, ScraperAPIClient(key).account()["requestCount"]) for key in api_keys]
 		Client.current_client, Client.requests = Client.current_client_and_requests()
 		Client.requests_limit = 1000
