@@ -52,11 +52,10 @@ def page_stats_one(num_item_listings, added, skipped_early, bad, class_code):
 	print("{0:30}: {1}".format("class_code", class_code))
 	print("----")
 
-def page_stats_two(count, item_list_length, date_appended, thread_time):
+def page_stats_two(count, item_list_length, date_appended):
 	print("{0:30}: {1}".format("current item_list length", item_list_length))
 	print("{0:30}: {1}".format("iter count", count))
 	print("{0:30}: {1}".format("EARLIEST DATE", date_appended))
-	print("{0:30}: {1}".format("Thread run-time", thread_time))
 
 	print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n")
 
