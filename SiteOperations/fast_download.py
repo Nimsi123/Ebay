@@ -24,8 +24,8 @@ def link_generator(link):
 	def next_link(link):
 		"""Returns the next link given the previous one."""
 
-		end = old_link.find("&_pgn=") + len("&_pgn=")
-		return old_link[:end] + str(int(old_link[end:]) + 1)
+		end = link.find("&_pgn=") + len("&_pgn=")
+		return link[:end] + str(int(link[end:]) + 1)
 
 	link += "&_pgn=1"
 	while True:
@@ -75,7 +75,7 @@ def yield_html(client, link, page_count):
 		with ThreadPoolExecutor(max_workers=THREAD_LIMIT) as executor:
 			while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
 				link = next(yield_link)
-				print("LINK: ", link)
+				print("downloading: ", link)
 				executor.submit(html_download, client, link, count)
 				time.sleep(REQUEST_WAIT)
 

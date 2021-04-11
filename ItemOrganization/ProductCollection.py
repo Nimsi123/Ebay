@@ -24,7 +24,7 @@ class ProductCollection:
 		if os.path.isfile(csv_file):
 			self.df = pd.read_csv(csv_file)
 
-		if self.df is None or len(df.index) == 0:
+		if self.df is None or len(self.df.index) == 0:
 			if len(groups) == 0:
 				# cannot make a valid ProductCollection
 				return

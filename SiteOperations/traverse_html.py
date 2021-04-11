@@ -4,7 +4,6 @@ import pandas as pd
 from eBayScraper.SiteOperations.clean_entries import strip_comma, clean_title, clean_price, clean_shipping, clean_date, NOT_FOUND
 from eBayScraper.SiteOperations import printer
 from eBayScraper.ItemOrganization.timer import timer
-from eBayScraper.data_files.directories import BAD_LISTING_DIR
 
 """
 There is no need for extract nested! Just dive as deep as you want for the nested expression.
@@ -138,14 +137,6 @@ def get_listings_iteration(html):
     # type of temp_num must be str at this point
 
     total_listings = int(temp_num)
-    """
-    try:
-        total_listings = int(temp_num)
-    except Exception as e:
-        print(f"Cannot find total listings")
-        print("{0:30}: {1}\n".format("extract", temp_num))
-        raise e
-    """
 
     #ebay won't show us more that 10,000 items from their page even though there might be more to look at
     max_iteration = min(50, int(total_listings/200 +1))
