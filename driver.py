@@ -88,6 +88,7 @@ def run_scrape_test():
 	Client.initialize_client()
 	totalQueries = query_list(d)
 	totalQueries.scrape(Client, start_index = 54, single_oper = True, print_stats = True, deep_scrape = True)
+	totalQueries.visualize(start_index = 54, single_oper = True, print_stats = True)
 
 if __name__ == "__main__":
 
