@@ -3,29 +3,34 @@ import time
 from bs4 import BeautifulSoup
 
 from eBayScraper.SiteOperations.clean_entries import NOT_FOUND
-from eBayScraper.SiteOperations.traverse_html import next_link, extract, is_overlapping, search_listings, get_listings_iteration, find_key
+from eBayScraper.SiteOperations.traverse_html import extract, is_overlapping, search_listings, get_listings_iteration, find_key
 from eBayScraper.SiteOperations import printer
 from eBayScraper.data_files.directories import HTML_STORE_DIR
 from eBayScraper.ItemOrganization.timer import timer
 
+# constants
 THREAD_LIMIT = 5
 REQUEST_WAIT = 0.5
 MAX_PAGES = 50
 ITEM_PER_PAGE = 200
 
-
-"""
-TODO: 
-OPTIMIZATION: find the key once. don't find the key for every listing.
-"""
-
 def link_generator(link):
+	"""Returns an iterator over successive eBay links.
+
+	:param link: The starting link
+	:type link: str 
+	"""
+
+	def next_link(link):
+		"""Returns the next link given the previous one."""
+
+		end = old_link.find("&_pgn=") + len("&_pgn=")
+		return old_link[:end] + str(int(old_link[end:]) + 1)
+
 	link += "&_pgn=1"
 	while True:
 		yield link
-
-		end = old_link.find("&_pgn=") + len("&_pgn=")
-		link = old_link[:end] + str(int(old_link[end:]) + 1)
+		link = next_link(link)
 
 def html_download(client, url, i):
 	"""Get the HTML from the eBay page and export it to the file 'scrape_{i}.txt' for the parameter i.
@@ -40,13 +45,29 @@ def html_download(client, url, i):
 		file.write(client.get(url).text)
 
 def yield_html(client, link, page_count):
-	"""Responsible for yielding html pages. Counters stay within THREAD_LIMIT and MAX_PAGES.
+	"""Responsible for yielding html pages. 
+	There are at most THREAD_LIMIT threads running at the same time.
+	We scrape min(MAX_PAGES, page_count) pages.
+
+	:param link: The starting link
+	:type link: str
+	:param page_count: The number of pages eBay posts for an item. Each page holds 200 listings.
+	:type page_count: int
+	:returns: A BeautifulSoup object representing the page HTML.
+	:rtype: 
 	"""
 	count = 0
 	yield_link = link_generator(link)
 
 	@timer
 	def run_threads():
+		"""Runs threads to request multiple eBay pages concurrently. Returns once all threads complete.
+		Uses html_download, a function that requests html and stores it in local text files.
+		Uses the count variable and yield_link iterator instantiated in the enclosing function.
+
+		:returns: an interval of digits which map to newly 'downloaded' text files
+		:rtype: tuple
+		"""
 		nonlocal count
 
 		sub_c = 0
@@ -66,14 +87,11 @@ def yield_html(client, link, page_count):
 	while count < min(MAX_PAGES, page_count):
 
 		interval = run_threads()
-
 		for i in range(*interval):
-			#receive and parse html from text file
 			with open(HTML_STORE_DIR.format(i), "r", encoding = "utf-8") as raw_html:
-				html = BeautifulSoup(raw_html, 'html.parser')
-				yield html
+				yield BeautifulSoup(raw_html, 'html.parser')
 
-def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
+def fast_download(client, storage, sale_type, link, bad_listings, print_stats, deep_scrape):
 	"""Adds item data to ``storage``. Item data is collected from every listing posted on the html pages, starting at the ``link``.
 	Until we reach an overlap point or page_count, iterate through the eBay pages.
 	Use threads to download html concurrently. Iterate sequentially through the html text and stores useful data in ``storage``.
@@ -91,11 +109,9 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 	:param deep_scrape: Determines whether we end the search at an overlap point or not.
 	:type deep_scrape: bool
 	"""
-	recent_date_stored = storage.get_recent_date(sale_type)
-
+	
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
 	total_listings, page_count = get_listings_iteration(html)
-
 	if total_listings is NOT_FOUND and page_count is NOT_FOUND:
 		return total_listings
 
@@ -104,21 +120,22 @@ def fast_download(client, storage, sale_type, link, print_stats, deep_scrape):
 
 	count = 0
 	storage.reset_count_added()
+	recent_date_stored = storage.get_recent_date(sale_type)
 	for html in yield_html(client, link, page_count):
-		# if a key is used by eBay, every page has a unique key. 
-		# only need to find it once per page.
 		key = find_key(html, ["S", "o", "l", "d"])
 
 		date = None
-		for title, price, date in search_listings(html, key, print_stats): # search_listings might yield nothing!
+		for title, price, date in search_listings(html, key, bad_listings, print_stats): 
 			storage.add_item(title, price, date, sale_type)
 
-		oldest_date = date #the oldest date just added is the one last assigned in the for loop above
+		# search_listings might yield nothing!
+		# the oldest date just added is the one last assigned in the for loop above
+
 		count += 1
 		if print_stats:
-			printer.page_stats_two(count, storage.get_count_added(), oldest_date)
+			printer.page_stats_two(count, storage.get_count_added(), date)
 
-		if is_overlapping(recent_date_stored, oldest_date) and not deep_scrape:
+		if is_overlapping(recent_date_stored, date) and not deep_scrape:
 			return total_listings
 
 	return total_listings

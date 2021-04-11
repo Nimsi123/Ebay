@@ -152,21 +152,6 @@ def get_listings_iteration(html):
 
     return total_listings, max_iteration
 
-def next_link(old_link):
-    """Given an old link to an eBay page, returns a link to the next page.
-
-    :param old_link: The previous link
-    :type old_link: str
-    :returns: The next link.
-    :rtype: str
-    """
-
-    if old_link.find("&_pgn=") == -1:
-        return old_link + "&_pgn=2"
-    else:
-        end = old_link.find("&_pgn=") + len("&_pgn=")
-        return old_link[:end] + str((int(old_link[end:]) + 1))
-
 '''
 def get_subelement(html, outer_spec):
 
@@ -293,7 +278,7 @@ def get_data(listing, key):
 def good_data(*data):
     return all([type(attr) is not list for attr in data])
 
-def search_listings(html, key, print_stats = False):
+def search_listings(html, key, bad_listings, print_stats = False):
     """Yields item data from listings in a single page's html.
     
     :param html: html code for an entire webpage
@@ -303,8 +288,6 @@ def search_listings(html, key, print_stats = False):
     :yields: the title, total_cost and date associated with a single listing on the html page.
     """
     element_type, class_code = "li", "s-item"
-    bad_listing_store = pd.read_csv(BAD_LISTING_DIR)
-
     counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
 
     for listing in html.find_all(element_type, class_ = class_code):
@@ -315,17 +298,11 @@ def search_listings(html, key, print_stats = False):
             yield title, total_cost, date
             counter["added"] += 1
         else:
-            title, price, date, shipping = [item[0] if type(item) == list else item for item in [title, price, date, shipping]]
-            bad_listing_store = bad_listing_store.append({
-                "title": title,
-                "price": price,
-                "shipping": shipping,
-                "date": date
-                }, ignore_index=True)
-
+            bad_listings.add(
+                *[item[0] if type(item) == list else item for item in [title, price, date, shipping]]
+            )
             counter["bad"] += 1
 
-    bad_listing_store.drop_duplicates().to_csv(BAD_LISTING_DIR, index = None)
 
     if print_stats:
         num_listings = len(html.find_all(element_type))

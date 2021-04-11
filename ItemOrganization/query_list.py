@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import os.path
 
 from eBayScraper.ItemOrganization.ProductCollection import ProductCollection
+from eBayScraper.ItemOrganization.BadListings import BadListings
 from eBayScraper.SiteOperations import printer
 from eBayScraper.SiteOperations.fast_download import fast_download
 
@@ -38,21 +39,12 @@ class query_list:
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
 		counter = start_index
+		bad_listings = BadListings()
 		for groupA, groupB, groupC in self.query_collection[start_index:end_index]:
 			printer.new_query(groupC, counter)
 			csv_file = csv_dir(groupC)
 
 			collection = ProductCollection(csv_file, groupA, groupB, groupC)
-
-			"""
-			# instantiate a ProductCollection object
-			if os.path.isfile(csv_file) and ProductCollection.has_valid_length(csv_file):
-				collection = ProductCollection.import_data(csv_file)
-			else:
-				with open(csv_file, "w") as file:
-					pass
-				collection = ProductCollection(groupA, groupB, groupC)
-			"""
 
 			# scrape
 			for sale_type in query_list.SALE_TYPES:
@@ -60,11 +52,12 @@ class query_list:
 
 				if print_stats: 
 					printer.start_scrape(groupC, sale_type)
-				total_listings = fast_download(client, collection, sale_type, make_eBay_link(sale_type, groupC), *cmdline_args)
+				total_listings = fast_download(client, collection, sale_type, make_eBay_link(sale_type, groupC), bad_listings, *cmdline_args)
 				if print_stats:
 					printer.end_scrape(sale_type, total_listings, collection.get_count_added())
 
 			collection.export_data(csv_file)
+			bad_listings.export()
 			counter += 1
 
 			if single_oper:

@@ -20,22 +20,19 @@ class ProductCollection:
 		:param groups: The classification for a specific item.
 		:type groups: list of str"""
 
-		df = None
+		self.df = None
 		if os.path.isfile(csv_file):
-			df = pd.read_csv(csv_file)
+			self.df = pd.read_csv(csv_file)
 
-		if df is not None and len(df.index) != 0:
-			df['date'] = df['date'].astype('datetime64[ns]')
-			self.df = df
-			self.groups = [df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
-		else:
+		if self.df is None or len(df.index) == 0:
 			if len(groups) == 0:
 				# cannot make a valid ProductCollection
 				return
-
 			self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
 			self.groups = list(groups)
-
+		else:
+			self.df['date'] = self.df['date'].astype('datetime64[ns]')
+			self.groups = [self.df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
 
 		self.row_count = len(self.df.index)
 		self.count_added = 0
