@@ -11,6 +11,10 @@ Move the folder to the ``/Python/Python39/`` directory, or the equivalent for yo
 Setup
 *****
 
+Run the following command.
+:: 
+	pip install requirements.txt
+
 We will only be working within ``eBayScraper/data_files`` for the setup.
 
 Adding ScraperAPI api keys

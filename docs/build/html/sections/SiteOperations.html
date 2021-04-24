@@ -248,16 +248,9 @@
 </div>
 <div class="section" id="module-fast_download">
 <span id="fast-download-py"></span><span id="fastdownloadref"></span><h2>fast_download.py<a class="headerlink" href="#module-fast_download" title="Permalink to this headline">¶</a></h2>
-<dl class="py data">
-<dt id="fast_download.ITEM_PER_PAGE">
-<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">ITEM_PER_PAGE</code><em class="property"> = 200</em><a class="headerlink" href="#fast_download.ITEM_PER_PAGE" title="Permalink to this definition">¶</a></dt>
-<dd><p>TODO:
-OPTIMIZATION: find the key once. don't find the key for every listing.</p>
-</dd></dl>
-
 <dl class="py function">
 <dt id="fast_download.fast_download">
-<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">fast_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">storage</span></em>, <em class="sig-param"><span class="n">sale_type</span></em>, <em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">print_stats</span></em>, <em class="sig-param"><span class="n">deep_scrape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.fast_download" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">fast_download</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">storage</span></em>, <em class="sig-param"><span class="n">sale_type</span></em>, <em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">bad_listings</span></em>, <em class="sig-param"><span class="n">print_stats</span></em>, <em class="sig-param"><span class="n">deep_scrape</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.fast_download" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds item data to <code class="docutils literal notranslate"><span class="pre">storage</span></code>. Item data is collected from every listing posted on the html pages, starting at the <code class="docutils literal notranslate"><span class="pre">link</span></code>.
 Until we reach an overlap point or page_count, iterate through the eBay pages.
 Use threads to download html concurrently. Iterate sequentially through the html text and stores useful data in <code class="docutils literal notranslate"><span class="pre">storage</span></code>.</p>
@@ -285,6 +278,39 @@ Use threads to download html concurrently. Iterate sequentially through the html
 <li><p><strong>url</strong> (<em>str</em>) -- The link to the eBay page.</p></li>
 <li><p><strong>i</strong> (<em>int</em>) -- The page number counter.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="fast_download.link_generator">
+<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">link_generator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">link</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.link_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator over successive eBay links.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>link</strong> (<em>str</em>) -- The starting link</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="fast_download.yield_html">
+<code class="sig-prename descclassname">fast_download.</code><code class="sig-name descname">yield_html</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">client</span></em>, <em class="sig-param"><span class="n">link</span></em>, <em class="sig-param"><span class="n">page_count</span></em><span class="sig-paren">)</span><a class="headerlink" href="#fast_download.yield_html" title="Permalink to this definition">¶</a></dt>
+<dd><p>Responsible for yielding html pages.
+There are at most THREAD_LIMIT threads running at the same time.
+We scrape min(MAX_PAGES, page_count) pages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>link</strong> (<em>str</em>) -- The starting link</p></li>
+<li><p><strong>page_count</strong> (<em>int</em>) -- The number of pages eBay posts for an item. Each page holds 200 listings.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A BeautifulSoup object representing the page HTML.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p></p>
 </dd>
 </dl>
 </dd></dl>
@@ -460,25 +486,8 @@ Should return something like &quot;Sold Jun 11, 2020&quot;.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="traverse_html.next_link">
-<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">next_link</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">old_link</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.next_link" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given an old link to an eBay page, returns a link to the next page.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>old_link</strong> (<em>str</em>) -- The previous link</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The next link.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="traverse_html.search_listings">
-<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">search_listings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">print_stats</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.search_listings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">traverse_html.</code><code class="sig-name descname">search_listings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">html</span></em>, <em class="sig-param"><span class="n">key</span></em>, <em class="sig-param"><span class="n">bad_listings</span></em>, <em class="sig-param"><span class="n">print_stats</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#traverse_html.search_listings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Yields item data from listings in a single page's html.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
