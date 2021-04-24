@@ -1,5 +1,5 @@
-termcolor
-pandas
-matplotlib
-scraperapi-sdk
-bs4
+termcolor >= 1.1.0
+pandas >= 1.2.3s
+matplotlib >= 3.4.1
+scraperapi-sdk >= 0.2.2
+bs4 >= 0.0.1
