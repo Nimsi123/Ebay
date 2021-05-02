@@ -1,5 +1,6 @@
 import os
 from termcolor import colored
+from eBayScraper.SiteOperations.clean_entries import NOT_FOUND
 
 def new_query(name, count):
 	opening_lines = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
@@ -26,7 +27,7 @@ def end_scrape(listing_type, total_listings, list_len):
 	length_of =      "{0:30}: {1}".format("Length of " + listing_type, list_len)
 
 	color = "green"
-	if total_listings == None or list_len < 0.5 * total_listings:
+	if total_listings == NOT_FOUND or list_len < 0.5 * total_listings:
 		color = "red"
 
 	print(colored(total_possible, color))
