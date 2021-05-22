@@ -90,7 +90,11 @@ def run_scrape_test():
 	totalQueries.scrape(Client, start_index = 54, single_oper = True, print_stats = True, deep_scrape = True)
 	totalQueries.visualize(start_index = 54, single_oper = True, print_stats = True)
 
-if __name__ == "__main__":
+totalQueries = query_list(d)
+to_js_json()
+run_scrape_test()
+
+if __name__ == "__main__" and 0:
 
 	kwargs = get_kwargs(sys.argv[1:])
 	totalQueries = query_list(d)

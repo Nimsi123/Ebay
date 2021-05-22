@@ -21,7 +21,7 @@ class ProductCollection:
 		:type groups: list of str"""
 
 		self.df = None
-		if os.path.isfile(csv_file):
+		if os.path.isfile(csv_file) and not os.stat(csv_file).st_size == 0:
 			self.df = pd.read_csv(csv_file)
 
 		if self.df is None or len(self.df.index) == 0:

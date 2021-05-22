@@ -3,7 +3,7 @@ import time
 from bs4 import BeautifulSoup
 
 from eBayScraper.SiteOperations.clean_entries import NOT_FOUND
-from eBayScraper.SiteOperations.traverse_html import extract, is_overlapping, search_listings, get_listings_iteration, find_key
+from eBayScraper.SiteOperations.traverse_html import extract, is_overlapping, search_listings, get_num_listings_iteration, find_key
 from eBayScraper.SiteOperations import printer
 from eBayScraper.data_files.directories import HTML_STORE_DIR
 from eBayScraper.ItemOrganization.timer import timer
@@ -111,7 +111,7 @@ def fast_download(client, storage, sale_type, link, bad_listings, print_stats, d
 	"""
 	
 	html = BeautifulSoup(client.get(link).text, 'html.parser')
-	total_listings, page_count = get_listings_iteration(html)
+	total_listings, page_count = get_num_listings_iteration(html)
 	if total_listings is NOT_FOUND and page_count is NOT_FOUND:
 		return total_listings
 
