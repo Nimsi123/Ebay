@@ -75,7 +75,7 @@ def yield_html(client, link, page_count):
 		with ThreadPoolExecutor(max_workers=THREAD_LIMIT) as executor:
 			while sub_c < THREAD_LIMIT and count < min(MAX_PAGES, page_count):
 				link = next(yield_link)
-				print("downloading: ", link)
+				#print("downloading: ", link)
 				executor.submit(html_download, client, link, count)
 				time.sleep(REQUEST_WAIT)
 
@@ -91,6 +91,7 @@ def yield_html(client, link, page_count):
 			with open(HTML_STORE_DIR.format(i), "r", encoding = "utf-8") as raw_html:
 				yield BeautifulSoup(raw_html, 'html.parser')
 
+@timer
 def fast_download(client, storage, sale_type, link, bad_listings, print_stats, deep_scrape):
 	"""Adds item data to ``storage``. Item data is collected from every listing posted on the html pages, starting at the ``link``.
 	Until we reach an overlap point or page_count, iterate through the eBay pages.

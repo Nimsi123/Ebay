@@ -6,10 +6,13 @@ import matplotlib.dates as mdates
 from matplotlib.dates import (YEARLY, DateFormatter,
                               rrulewrapper, RRuleLocator, drange)
 
+from eBayScraper.ItemOrganization.timer import timer
+
 class ProductCollection:
 	"""Represents a collection of product data scraped from eBayScraper.com.
 	Implemented with the pandas module.
 	"""
+	columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"]
 
 	def __init__(self, csv_file, *groups):
 		"""Returns a ProductCollection if the csv_file has a valid length, else if groups are passed to the constructor.
@@ -28,14 +31,14 @@ class ProductCollection:
 			if len(groups) == 0:
 				# cannot make a valid ProductCollection
 				return
-			self.df = pd.DataFrame(columns = ["sale_condition", "groupA", "groupB", "groupC", "title", "price", "date"])
+			self.df = pd.DataFrame(columns = ProductCollection.columns)
 			self.groups = list(groups)
 		else:
 			self.df['date'] = self.df['date'].astype('datetime64[ns]')
 			self.groups = [self.df.loc[0, group] for group in ["groupA", "groupB", "groupC"]]
 
-		self.row_count = len(self.df.index)
-		self.count_added = 0
+		self.reset_count_added()
+		self.reset_new_entries() # a list of new item data
 
 	def _valid_item_data(title, price, date, sale_type):
 		return type(title) == str and type(price) != str and type(date) != str and type(sale_type) == str
@@ -44,13 +47,26 @@ class ProductCollection:
 		"""Returns the proper format for a single row in the pandas DataFrame."""
 		return [sale_type] + self.groups + [title, price, date]
 
+	@timer
 	def add_item(self, title, price, date, sale_type):
-		"""Adds an item to the collection."""
+		"""Adds an item to the collection.
+
+		Takes non-trivial time with a large DataFrame (~0.01 seconds)."""
 		assert ProductCollection._valid_item_data(title, price, date, sale_type)
 
-		self.df.loc[self.row_count] = self._organize_row(title, price, date, sale_type)
-		self.row_count += 1
+		self.new_entries.append(self._organize_row(title, price, date, sale_type))
 		self.count_added += 1
+
+	def has_valid_length(self):
+		return len(self.df.index) != 0
+
+	def merge_new_with_stored(self):
+		if self.new_entries == []:
+			return
+
+		df = pd.DataFrame(self.new_entries, columns = ProductCollection.columns)
+		self.df = pd.concat(self.df, df)
+		self.reset_new_entries()
 
 	def get_recent_date(self, sale_type):
 		"""Returns the most recent date stored in based on the sale_type. 
@@ -60,6 +76,10 @@ class ProductCollection:
 		:rtype: pandas.Timestamp or None if there are no items stored
 		"""
 		assert sale_type in ["BIN", "Auction"]
+
+		if self.new_entries != []:
+			self.merge_new_with_stored()
+		
 		if not self.has_valid_length():
 			return None
 
@@ -70,6 +90,9 @@ class ProductCollection:
 
 		return trimmed_series[0]
 
+	def reset_new_entries(self):
+		self.new_entries = []
+
 	def reset_count_added(self):
 		"""Resets the counter that tracks the number of items added to storage."""
 		self.count_added = 0
@@ -77,9 +100,6 @@ class ProductCollection:
 	def get_count_added(self):
 		"""Returns the number of newly added items."""
 		return self.count_added
-
-	def get_row_count(self):
-		return self.row_count
 
 	@staticmethod
 	def set_axis_details(ax, x_title, y_title, graph_title):
@@ -107,6 +127,7 @@ class ProductCollection:
 
 	def scatter(self, png_file):
 		"""Creates a scatter plot that overlaps the data from all sale_type(s). Saves the plot to a .png file."""
+		self.merge_new_with_stored()
 		if not self.has_valid_length():
 			return None
 
@@ -127,9 +148,6 @@ class ProductCollection:
 		fig.savefig(png_file)
 		plt.close()
 
-	def has_valid_length(self):
-		return len(self.df.index) != 0
-
 	def export_data(self, csv_file):
 		"""Exports data from the underlying data structure to the .csv file. 
 		Typically invoked after scraping data.
@@ -140,4 +158,5 @@ class ProductCollection:
 		#remove groupA and groupB from the subset to look at for efficiency?
 		#we could even remove groupC, since in these csv file, the group data is all identical!
 		#the above assumption might not always be true
+		self.merge_new_with_stored()
 		self.df.drop_duplicates(subset = ["sale_condition", "title", "price", "date"]).to_csv(csv_file, index = False)
