@@ -1,7 +1,8 @@
-import datetime
+from datetime import datetime
 import bs4
 
-"""Clean functions return a list with a single element to signal a bad input."""
+"""Clean functions return a list with a single element to signal a bad input.
+This can be the NOT_FOUND element, or a custom list with the bad string as the first and only element."""
 NOT_FOUND = ["element not found in html"]
 
 strip_comma = lambda entry: NOT_FOUND if entry == None else entry.replace(',', '')
@@ -43,10 +44,8 @@ def clean_price(entry):
         try:
             return round(float(entry.replace(',', '').strip()[1:]), 2)
         except:
-            #print("bad price: ", entry)
             return [entry]
     else:
-        #print("bad price: ", entry)
         return [entry]
 
 def clean_shipping(entry):
@@ -62,17 +61,21 @@ def clean_shipping(entry):
 
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
-    if entry in ["Free shipping", "Shipping not specified", "Freight"] or entry.find("$") == -1 or entry == "":
+    def zero_for_shipping(entry):
+        """Determines if we should set shipping to zero."""
+        return entry in ["Free shipping", "Shipping not specified", "Freight"] \
+                or entry.find("$") == -1 or entry == ""
+
+    if zero_for_shipping(entry):
         return 0
     else:
         try:
             message = entry.replace(',', '').strip()[2:len(entry)-9]
-            if "shipping" in message:
+            if "shipping" in message: #both cases occur frequently
                 return round(float(message[:-9]))
             else:
                 return round(float(message), 2)
         except:
-            #print("bad shipping: ", entry)
             return [entry]
 
 def clean_date(entry):
@@ -89,32 +92,7 @@ def clean_date(entry):
     assert type(entry) == str, "entry is of type {}, not str".format(type(entry))
 
     if entry.find("Sold") == -1:
-        #print("bad date: ", entry)
         return [entry]
 
-    date = entry[len("Sold  "):]
-
-    endMonth = date.find(" ")
-    month = date[:endMonth]
-
-    endDay = date.find(", ")
-    day = date[endMonth +1:endDay]
-
-    year = date[endDay + len(", "):]
-
-    month_dict = {
-        "JAN": 1,
-        "FEB": 2,
-        "MAR": 3,
-        "APR": 4,
-        "MAY": 5,
-        "JUN": 6,
-        "JUL": 7,
-        "AUG": 8,
-        "SEP": 9,
-        "OCT": 10,
-        "NOV": 11,
-        "DEC": 12
-    }
-
-    return datetime.datetime(int(year), month_dict[month.upper()], int(day))
+    date_str = entry[len("Sold  "):]
+    return datetime.strptime(date_str, "%b %d, %Y")

@@ -5,15 +5,6 @@ from eBayScraper.SiteOperations.clean_entries import strip_comma, clean_title, c
 from eBayScraper.SiteOperations import printer
 from eBayScraper.ItemOrganization.timer import timer
 
-"""
-There is no need for extract nested! Just dive as deep as you want for the nested expression.
-
->>> x = BeautifulSoup("<div class = 'foo shoo' id = 'bar'></div>")
->>> x.find_all("div", attrs={"class": "foo"})
-[<div class="foo shoo" id="bar"></div>]
-"""
-
-# TODO: replace all calls to find_element with the bs4 method .find! it does pretty much the exact same thing!
 def find_element(html, element_type, attrs):
     """Returns the FIRST element found in the html code block for which the element's value at attr_key matches the attr_value.
 
@@ -50,18 +41,18 @@ def find_letters(html, element_type, attrs):
 
     saleDate = ""
     for element in html.find_all(element_type, attrs = attrs):
-        if element.contents != None:
-            try:
-                #add another letter to the string
-                saleDate += element.contents[0]
+        if element.contents == None:
+            continue
 
-            except:
-                #code enters this block if element.contents[0] fails
-                #   this means we have come to an end of all the letters and we much reach a verdict: either we got the right letters, or we didn't
-                if saleDate.find("Sold") == -1:
-                    return None
-                else:
-                    return saleDate
+        try:
+            saleDate += element.contents[0]
+        except:
+            #we have come to an end of all the letters and we much reach a verdict: 
+            # either we got the right letters, or we didn't
+            if saleDate.find("Sold") == -1:
+                return None
+            else:
+                return saleDate
 
     return saleDate
 
@@ -80,16 +71,13 @@ def find_class_names(html, element_type, content):
 
     class_names = []
     for element in html.find_all(element_type):
-        if element.get("class") == None:
+        if element.get("class") == None or len(element.contents) == 0:
             continue
         else:
             class_name = element.get("class")[0]
 
-        if len(element.contents) == 0:
-            continue
-
         if element.contents[0] == content:
-            #the class name is the KEY
+            #the contents in the html tag matches what we desire. the class name is a possible KEY
             class_names.append(class_name)
 
     return class_names
@@ -120,7 +108,7 @@ def find_key(html, sequence):
     else:
         return None
 
-def get_listings_iteration(html):
+def get_num_listings_iteration(html):
     """Returns the total number of listings for the query and the number of page iterations.
 
     :param html: the webpage's entire html
@@ -135,74 +123,12 @@ def get_listings_iteration(html):
         return NOT_FOUND, NOT_FOUND
 
     # type of temp_num must be str at this point
-
     total_listings = int(temp_num)
 
-    #ebay won't show us more that 10,000 items from their page even though there might be more to look at
+    # ebay won't show us more that 10,000 items from their page even though there might be more to look at
     max_iteration = min(50, int(total_listings/200 +1))
 
     return total_listings, max_iteration
-
-'''
-def get_subelement(html, outer_spec):
-
-    """
-    Follows the specifications of outer_spec down the tree. Returns the FIRST html tag that is a found down the tree.
-    >>> html = BeautifulSoup("<span class = 'out'><div class = 'in2'></div><div class = 'in'><div><div></div></div></div></span>", "html.parser")
-    >>> get_subelement(html, [("span", "out"), ("div", "in")])
-    <div class="in"><div><div></div></div></div>
-    """
-
-    if len(outer_spec) == 0:
-        return html
-
-    element_type, class_name = outer_spec[0]
-    elements = html.find_all(element_type, class_ = class_name)
-
-    for element in elements:
-        sub_elem = get_subelement(element, outer_spec[1:])
-        if sub_elem:
-            return sub_elem
-
-    return None
-'''
-
-
-def get_subelement(html, outer_spec):
-    """
-    >>> html = BeautifulSoup("<span class = 'out'><div class = 'in'></div></span>", "html.parser")
-    >>> get_subelement(html, [("span", "out")])
-    <div class="in"></div>
-
-    >>> html = BeautifulSoup("<span class = 'out'><div class = 'in2'></div><div class = 'in'></div></span>", "html.parser")
-    >>> get_subelement(html, [("span", "out")])
-    <div class="in2"></div>
-
-    """
-
-    outer_block = html
-    for outer_element_type, outer_class_name in outer_spec:
-        outer_block = find_element(outer_block, outer_element_type, {"class": outer_class_name})
-
-        if outer_block == None:
-            return None
-        else:
-            outer_block = outer_block.contents[0]
-    return outer_block
-
-def extract_nested(find, html, outer_spec, inner_element_type, inner_class_name, clean_func):
-    """Some attributes are nested within two blocks. Returns the attribute accessed by diving 
-    into one block, and then going deeper.
-    """
-
-    outer_block = get_subelement(html, outer_spec)
-
-    if outer_block == None:
-        return None
-
-    cleaned_inner = extract(outer_block, inner_element_type, inner_class_name, clean_func, find = find)
-
-    return cleaned_inner
 
 def extract(html, element_type, class_name, clean_func, find = find_element):
     """Searches ``html`` for the contents of the first html tag of ``element_type`` and ``class_name``. 
@@ -228,12 +154,16 @@ def extract(html, element_type, class_name, clean_func, find = find_element):
 
     while type(raw) == bs4.Tag:
         #go deeper in a nest
+        if raw.contents == []:
+            return clean_func(None)
+
         raw = raw.contents[0]
 
     return clean_func(str(raw)) #usable format for my algorithm
 
 def is_overlapping(date_stored, date_appended):
-    """Determines whether date_stored is more into the past than date_appended. That is, date_appended is closer to the present day.
+    """Determines whether date_stored is more into the past than date_appended. 
+    That is, date_appended is closer to the present day.
 
     :param date_stored, date_appended: Dates in time.
     :type date_stored, date_appended: datetime.datetime
@@ -246,6 +176,8 @@ def is_overlapping(date_stored, date_appended):
 
 def get_data(listing, key):
     """Returns all meaningfull item data from the html block.
+
+    Takes ~0.001 seconds. Pretty fast. 0.001 * 30,000 listings -> 30 seconds
 
     :param listing: html block containing item data for a single listing.
     :type listing:
@@ -260,9 +192,16 @@ def get_data(listing, key):
     if key == None:
         date = extract(listing, "div", "s-item__title--tagblock", clean_date)
     else:
-        # we use extract_nested in case there might be other elements like <span class = '{key}'></span> within listing,
+        # in case there might be other elements like <span class = '{key}'></span> within listing,
         # but outside of <div class = "s-item__title--tagblock"></div>
-        date = extract_nested(find_letters, listing, [("div", "s-item__title--tagblock")], "span", key, clean_date)
+        
+        outer_block = find_element(listing, "div", {"class": "s-item__title--tagblock"})
+
+        if outer_block == None:
+            date = NOT_FOUND
+        else:
+            outer_block = outer_block.contents[0]
+            date = extract(outer_block, "span", key, clean_date, find_letters)
 
     return title, price, shipping, date
 
@@ -270,23 +209,30 @@ def good_data(*data):
     return all([type(attr) is not list for attr in data])
 
 def search_listings(html, key, bad_listings, print_stats = False):
-    """Yields item data from listings in a single page's html.
+    """Returns all item data from listings in a single page's html.
     
+    (time measured from function call to return, not each yield time.)
+    Improved time from 2.5 - 1.9 seconds by fixing BadListings.add
+    Improved time from 1.9 to below 0.4 seconds by removing the generator feature. 
+    Our data wasn't very memory expensive, so it didn't make sense to use a generator.
+
     :param html: html code for an entire webpage
     :type html:
     :param print_stats: Determines whether to print updates on the scraping process
     :type print_stats: bool
-    :yields: the title, total_cost and date associated with a single listing on the html page.
+    :returns: the title, total_cost and date associated with all listings on the html page.
+    :rtype: list of lists
     """
     element_type, class_code = "li", "s-item"
     counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
+    listing_data = []
 
     for listing in html.find_all(element_type, class_ = class_code):
         title, price, shipping, date = get_data(listing, key)
 
         if good_data(title, price, date, shipping):
             total_cost = round(price+shipping, 2)
-            yield title, total_cost, date
+            listing_data.append([title, total_cost, date])
             counter["added"] += 1
         else:
             bad_listings.add(
@@ -294,7 +240,8 @@ def search_listings(html, key, bad_listings, print_stats = False):
             )
             counter["bad"] += 1
 
-
     if print_stats:
         num_listings = len(html.find_all(element_type))
         printer.page_stats_one(num_listings, **counter)
+
+    return listing_data
