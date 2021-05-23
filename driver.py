@@ -83,18 +83,7 @@ def run_test():
 	totalQueries.visualize(single_oper = True, print_stats = True)
 	webbrowser.open("file://" + os.path.realpath("web/index.html"))
 
-def run_scrape_test():
-	os.system('color')
-	Client.initialize_client()
-	totalQueries = query_list(d)
-	totalQueries.scrape(Client, start_index = 54, single_oper = True, print_stats = True, deep_scrape = True)
-	totalQueries.visualize(start_index = 54, single_oper = True, print_stats = True)
-
-totalQueries = query_list(d)
-to_js_json()
-run_scrape_test()
-
-if __name__ == "__main__" and 0:
+if __name__ == "__main__":
 
 	kwargs = get_kwargs(sys.argv[1:])
 	totalQueries = query_list(d)

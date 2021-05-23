@@ -213,7 +213,7 @@ def search_listings(html, key, bad_listings, print_stats = False):
     
     (time measured from function call to return, not each yield time.)
     Improved time from 2.5 - 1.9 seconds by fixing BadListings.add
-    Improved time from 1.9 to 0.3 seconds by removing the generator feature. 
+    Improved time from 1.9 to below 0.4 seconds by removing the generator feature. 
     Our data wasn't very memory expensive, so it didn't make sense to use a generator.
 
     :param html: html code for an entire webpage
@@ -223,9 +223,6 @@ def search_listings(html, key, bad_listings, print_stats = False):
     :returns: the title, total_cost and date associated with all listings on the html page.
     :rtype: list of lists
     """
-    import time
-    start = time.time()
-
     element_type, class_code = "li", "s-item"
     counter = dict([("added", 0), ("skipped_early", 0), ("class_code", 0), ("bad", 0)])
     listing_data = []
@@ -235,7 +232,6 @@ def search_listings(html, key, bad_listings, print_stats = False):
 
         if good_data(title, price, date, shipping):
             total_cost = round(price+shipping, 2)
-            #yield title, total_cost, date
             listing_data.append([title, total_cost, date])
             counter["added"] += 1
         else:
@@ -244,10 +240,8 @@ def search_listings(html, key, bad_listings, print_stats = False):
             )
             counter["bad"] += 1
 
-
     if print_stats:
         num_listings = len(html.find_all(element_type))
         printer.page_stats_one(num_listings, **counter)
 
-    print(time.time() - start, "seconds")
     return listing_data

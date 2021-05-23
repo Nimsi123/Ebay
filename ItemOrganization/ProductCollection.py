@@ -6,8 +6,6 @@ import matplotlib.dates as mdates
 from matplotlib.dates import (YEARLY, DateFormatter,
                               rrulewrapper, RRuleLocator, drange)
 
-from eBayScraper.ItemOrganization.timer import timer
-
 class ProductCollection:
 	"""Represents a collection of product data scraped from eBayScraper.com.
 	Implemented with the pandas module.
@@ -47,11 +45,11 @@ class ProductCollection:
 		"""Returns the proper format for a single row in the pandas DataFrame."""
 		return [sale_type] + self.groups + [title, price, date]
 
-	@timer
 	def add_item(self, title, price, date, sale_type):
 		"""Adds an item to the collection.
 
-		Takes non-trivial time with a large DataFrame (~0.01 seconds)."""
+		Takes non-trivial time with a large DataFrame (~0.01 seconds).
+		Improved time to ~ 5 * 10^-6 seconds. Before, we were adding row by row to the df."""
 		assert ProductCollection._valid_item_data(title, price, date, sale_type)
 
 		self.new_entries.append(self._organize_row(title, price, date, sale_type))
@@ -65,7 +63,7 @@ class ProductCollection:
 			return
 
 		df = pd.DataFrame(self.new_entries, columns = ProductCollection.columns)
-		self.df = pd.concat(self.df, df)
+		self.df = pd.concat([self.df, df])
 		self.reset_new_entries()
 
 	def get_recent_date(self, sale_type):
