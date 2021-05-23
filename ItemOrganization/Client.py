@@ -2,7 +2,6 @@ from termcolor import colored
 from scraper_api import ScraperAPIClient
 
 from eBayScraper.data_files.api_keys import api_keys
-#from eBayScraper.ItemOrganization.timer import timer
 
 class Client:
 
@@ -30,7 +29,6 @@ class Client:
 	def current_client_and_requests():
 		return ScraperAPIClient(Client.data[0][0]), Client.data[0][1]
 
-	#@timer
 	def get(url):
 		"""Essentially a wrapper function to client.get(url). 
 		Attempts to get the next client if we're over the current client limit.
