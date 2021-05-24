@@ -34,7 +34,7 @@ class query_list:
 			if q[2] == query:
 				return i
 
-		raise -1
+		return -1
 
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
