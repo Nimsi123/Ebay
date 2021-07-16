@@ -1,6 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import os.path
+import pandas as pd 
 
 from eBayScraper.ItemOrganization.ProductCollection import ProductCollection
 from eBayScraper.ItemOrganization.BadListings import BadListings
@@ -34,7 +35,7 @@ class query_list:
 			if q[2] == query:
 				return i
 
-		raise -1
+		return -1
 
 	def scrape(self, client, start_index = 0, end_index = 999, single_oper = False, synchronous_scrape = False, print_stats = False, deep_scrape = False):
 
@@ -98,6 +99,19 @@ class query_list:
 		:ytype: tuple
 		"""
 		yield from query_list.split_helper(json)
+
+	def aggregate_csv(self):
+		"""Aggregates data across csv files into a single csv file."""
+
+		frames = []
+		for groupA, groupB, groupC in self.query_collection:
+			csv_file = csv_dir(groupC)
+			collection = ProductCollection(csv_file, groupA, groupB, groupC)
+			frames.append(collection.df)
+
+		aggregated_df = pd.concat(frames)
+		aggregated_df.to_csv("aggregate.csv", index = False)
+
 
 	'''
 	def sql_export():
