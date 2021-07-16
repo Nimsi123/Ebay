@@ -83,7 +83,10 @@ def run_test():
 	totalQueries.visualize(single_oper = True, print_stats = True)
 	webbrowser.open("file://" + os.path.realpath("web/index.html"))
 
-if __name__ == "__main__":
+totalQueries = query_list(d)
+totalQueries.aggregate_csv()
+
+if __name__ == "__main__" and False:
 
 	kwargs = get_kwargs(sys.argv[1:])
 	totalQueries = query_list(d)
